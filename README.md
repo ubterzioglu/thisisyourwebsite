@@ -577,6 +577,9 @@ Bu dokümantasyon dosyası oluşturuldu.
 - ✅ Tamamlanan siteler showcase'i
 - ✅ Karanlık/Açık tema toggle
 
+#### Düzeltmeler
+- ✅ Vercel deployment hatası düzeltildi: `vercel.json` dosyasındaki runtime formatı `@vercel/node` olarak güncellendi
+
 ---
 
 ## Notlar
