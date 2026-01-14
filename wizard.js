@@ -52,6 +52,9 @@ function renderQuestion() {
   const container = document.getElementById('question-container');
   const step = currentStep;
   
+  // Color palette: blue, green, orange, purple, yellow
+  const colors = ['#00A8FF', '#32CD32', '#FF9500', '#9D4EDD', '#FFD700'];
+  
   // Reset container class - will be set per step
   container.className = 'question-card';
   
@@ -125,6 +128,9 @@ function renderQuestion() {
   
   // Summary step
   if (step === SUMMARY_STEP) {
+    const summaryColorIndex = (QUESTIONS.length + 4) % colors.length;
+    const summaryBorderColor = colors[summaryColorIndex];
+    container.style.border = `3px solid ${summaryBorderColor}`;
     const userSummary = buildUserSummary(answers);
     container.innerHTML = `
       <h2 class="question-title">Özet</h2>
@@ -151,6 +157,9 @@ function renderQuestion() {
   
   // CV upload step
   if (step === CV_STEP) {
+    const cvColorIndex = (QUESTIONS.length + 2) % colors.length;
+    const cvBorderColor = colors[cvColorIndex];
+    container.style.border = `3px solid ${cvBorderColor}`;
     const fileSizeInfo = cvFile ? ` (${(cvFile.size / 1024 / 1024).toFixed(2)}MB)` : '';
     container.innerHTML = `
       <h2 class="question-title">CV Yükleme</h2>
@@ -164,7 +173,7 @@ function renderQuestion() {
         type="file" 
         id="cv-input" 
         accept=".pdf,.docx,.doc"
-        style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem;"
+        style="width: 100%; padding: 1rem; border: 2px solid ${cvBorderColor}; border-radius: 12px; font-size: 0.9rem;"
       />
       ${cvFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${cvFile.name}${fileSizeInfo}</p>` : ''}
     `;
@@ -202,6 +211,9 @@ function renderQuestion() {
   
   // Photo upload step
   if (step === PHOTO_STEP) {
+    const photoColorIndex = (QUESTIONS.length + 1) % colors.length;
+    const photoBorderColor = colors[photoColorIndex];
+    container.style.border = `3px solid ${photoBorderColor}`;
     const fileSizeInfo = photoFile ? ` (${(photoFile.size / 1024 / 1024).toFixed(2)}MB)` : '';
     container.innerHTML = `
       <h2 class="question-title">Fotoğraf Yükleme</h2>
@@ -215,7 +227,7 @@ function renderQuestion() {
         type="file" 
         id="photo-input" 
         accept="image/jpeg,image/png,image/webp"
-        style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem;"
+        style="width: 100%; padding: 1rem; border: 2px solid ${photoBorderColor}; border-radius: 12px; font-size: 0.9rem;"
       />
       ${photoFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${photoFile.name}${fileSizeInfo}</p>` : ''}
     `;
@@ -253,6 +265,9 @@ function renderQuestion() {
   
   // Long text step
   if (step === LONG_TEXT_STEP) {
+    const longTextColorIndex = (QUESTIONS.length + 3) % colors.length;
+    const longTextBorderColor = colors[longTextColorIndex];
+    container.style.border = `3px solid ${longTextBorderColor}`;
     container.innerHTML = `
       <h2 class="question-title">Ek Notlarınız</h2>
       <p style="margin-bottom: 1.5rem; color: #666;">
@@ -262,6 +277,7 @@ function renderQuestion() {
         id="long-text-input" 
         class="textarea-input" 
         placeholder="İsteğe bağlı olarak ek notlarınızı buraya yazabilirsiniz..."
+        style="border-color: ${longTextBorderColor};"
       >${longText}</textarea>
     `;
     document.getElementById('long-text-input').value = longText;
@@ -280,6 +296,11 @@ function renderQuestion() {
     return;
   }
   
+  // Apply color based on step number (cycle through 5 colors)
+  const colorIndex = (step - 1) % colors.length;
+  const borderColor = colors[colorIndex];
+  container.style.border = `3px solid ${borderColor}`;
+  
   let html = `<h2 class="question-title">${question.question}</h2>`;
   
   if (question.type === 'text') {
@@ -290,6 +311,7 @@ function renderQuestion() {
         class="text-input" 
         value="${answers[question.id] || ''}"
         placeholder="Cevabınızı yazın..."
+        style="border-color: ${borderColor};"
       />
     `;
   } else if (question.type === 'yesno') {
@@ -307,10 +329,12 @@ function renderQuestion() {
     `;
   } else if (question.type === 'single') {
     html += '<div class="answer-options">';
-    question.options.forEach(option => {
+    question.options.forEach((option, index) => {
       const selected = answers[question.id] === option ? 'selected' : '';
+      const optionColorIndex = (colorIndex + index) % colors.length;
+      const optionBorderColor = colors[optionColorIndex];
       html += `
-        <button class="option-button ${selected}" data-value="${option}">
+        <button class="option-button ${selected}" data-value="${option}" style="border-color: ${optionBorderColor};">
           ${option}
         </button>
       `;
@@ -319,10 +343,12 @@ function renderQuestion() {
   } else if (question.type === 'multi') {
     html += '<div class="answer-options">';
     const selectedValues = answers[question.id] || [];
-    question.options.forEach(option => {
+    question.options.forEach((option, index) => {
       const isSelected = Array.isArray(selectedValues) && selectedValues.includes(option);
+      const optionColorIndex = (colorIndex + index) % colors.length;
+      const optionBorderColor = colors[optionColorIndex];
       html += `
-        <label class="option-checkbox ${isSelected ? 'selected' : ''}">
+        <label class="option-checkbox ${isSelected ? 'selected' : ''}" style="border-color: ${optionBorderColor};">
           <input type="checkbox" value="${option}" ${isSelected ? 'checked' : ''} />
           <span>${option}</span>
         </label>
@@ -548,7 +574,7 @@ function updateProgress() {
   document.getElementById('btn-reset').style.display = currentStep > 0 ? 'block' : 'none';
   
   // Update button text
-  document.getElementById('btn-back').textContent = '← Geri';
+  document.getElementById('btn-back').textContent = '⬅️ Geri';
   
   // Update next/finish button
   const nextBtn = document.getElementById('btn-next');
@@ -568,7 +594,7 @@ function updateProgress() {
       nextBtn.style.display = 'none';
     } else {
       // Show button for multi, text, and other steps
-      nextBtn.textContent = 'İleri →';
+      nextBtn.textContent = 'İleri ➡️';
       nextBtn.className = 'btn-nav btn-next';
       nextBtn.style.display = 'block';
     }
