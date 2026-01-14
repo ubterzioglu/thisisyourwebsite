@@ -1,6 +1,20 @@
 // Wizard logic for 20 questions + long text
 import { QUESTIONS, buildUserSummary } from './config/questions.js';
 
+// Format summary with bold labels
+function formatSummaryWithBold(summary) {
+  if (!summary) return '';
+  return summary.split('\n').map(line => {
+    const colonIndex = line.indexOf(':');
+    if (colonIndex > 0) {
+      const label = line.substring(0, colonIndex);
+      const value = line.substring(colonIndex);
+      return `<div style="margin-bottom: 0.5rem;"><strong>${label}</strong>${value}</div>`;
+    }
+    return `<div style="margin-bottom: 0.5rem;">${line}</div>`;
+  }).join('');
+}
+
 // Generate slug (base64url, browser-compatible)
 function generateSlug() {
   const array = new Uint8Array(18);
@@ -143,14 +157,19 @@ function renderQuestion() {
       </div>
       <div style="background: #f9f9f9; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;">
         <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">20 Soru Özeti:</h3>
-        <div style="white-space: pre-line; line-height: 1.8; color: #444;">${userSummary || 'Özet bulunamadı'}</div>
+        <div style="line-height: 1.8; color: #444;">${formatSummaryWithBold(userSummary) || 'Özet bulunamadı'}</div>
       </div>
       ${longText ? `
         <div style="background: #fff3cd; border-radius: 12px; padding: 2rem; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
           <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">Sizin ek istekleriniz:</h3>
           <div style="white-space: pre-wrap; line-height: 1.8; color: #444;">${longText}</div>
         </div>
-      ` : ''}
+      ` : `
+        <div style="background: #f9f9f9; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;">
+          <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">Ek Notlar:</h3>
+          <div style="color: #999; font-style: italic;">Ek not eklenmedi.</div>
+        </div>
+      `}
     `;
     return;
   }
@@ -277,7 +296,7 @@ function renderQuestion() {
         id="long-text-input" 
         class="textarea-input" 
         placeholder="İsteğe bağlı olarak ek notlarınızı buraya yazabilirsiniz..."
-        style="border-color: ${longTextBorderColor};"
+        style="border-color: ${longTextBorderColor}; background-color: white;"
       >${longText}</textarea>
     `;
     document.getElementById('long-text-input').value = longText;
