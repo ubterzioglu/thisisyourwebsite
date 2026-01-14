@@ -580,6 +580,12 @@ Bu dokümantasyon dosyası oluşturuldu.
 #### Düzeltmeler
 - ✅ Vercel deployment hatası düzeltildi: `vercel.json` dosyasındaki runtime formatı `@vercel/node` olarak güncellendi
 
+#### Temizlik
+- ✅ Proje temizliği yapıldı: Vercel config klasörü, build çıktıları ve gereksiz dosyalar temizlendi
+- ✅ `.vercel`, `.next`, `dist`, `build`, `out` klasörleri silindi
+- ✅ `node_modules`, lock dosyaları temizlendi (gerekirse `npm install` ile yeniden kurulabilir)
+- ✅ `.gitignore` dosyası güncellendi: build klasörleri ve lock dosyaları eklendi
+
 ---
 
 ## Notlar

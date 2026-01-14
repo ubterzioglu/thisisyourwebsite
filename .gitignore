@@ -8,6 +8,17 @@ node_modules/
 # Vercel
 .vercel
 
+# Build outputs
+.next/
+dist/
+build/
+out/
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
 # IDE
 .vscode/
 .idea/
