@@ -1,6 +1,9 @@
 // Email gönderme endpoint'i
-// multipart/form-data veya application/x-www-form-urlencoded kabul eder: name, email, message
+// JSON body kabul eder: name, email, message, attachments
 import nodemailer from 'nodemailer';
+
+const MAX_ATTACHMENT_BYTES = 2 * 1024 * 1024; // 2MB per file
+const MAX_TOTAL_ATTACHMENT_BYTES = 3 * 1024 * 1024; // 3MB total
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -57,6 +60,7 @@ export default async function handler(req, res) {
 
     // Prepare attachments (convert base64 to Buffer)
     const emailAttachments = [];
+    let totalAttachmentBytes = 0;
     if (attachments && Array.isArray(attachments)) {
       console.log('Processing attachments:', attachments.length);
       for (const att of attachments) {
@@ -64,6 +68,13 @@ export default async function handler(req, res) {
           console.log('Adding attachment:', att.filename, 'Content type:', att.contentType, 'Content length:', att.content.length);
           try {
             const buffer = Buffer.from(att.content, 'base64');
+            if (buffer.length > MAX_ATTACHMENT_BYTES) {
+              return res.status(413).json({ error: 'Attachment too large (max 2MB per file)' });
+            }
+            totalAttachmentBytes += buffer.length;
+            if (totalAttachmentBytes > MAX_TOTAL_ATTACHMENT_BYTES) {
+              return res.status(413).json({ error: 'Total attachments too large (max 3MB)' });
+            }
             emailAttachments.push({
               filename: att.filename,
               content: buffer,

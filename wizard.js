@@ -17,6 +17,8 @@ let longText = '';
 let publicSlug = null;
 let photoFile = null;
 let cvFile = null;
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB per file
+const MAX_TOTAL_FILE_SIZE_BYTES = 3 * 1024 * 1024; // 3MB total
 
 // Get slug from URL or generate new one
 function getSlug() {
@@ -144,7 +146,7 @@ function renderQuestion() {
         CV dosyanızı yükleyebilirsiniz (PDF tercihen, DOCX kabul edilir). İsteğe bağlıdır.
       </p>
       <p style="margin-bottom: 1.5rem; color: #ff9800; font-weight: 600; font-size: 0.9rem;">
-        ⚠️ Maksimum dosya boyutu: 4MB
+        ⚠️ Maksimum dosya boyutu: 2MB (toplam 3MB)
       </p>
       <input 
         type="file" 
@@ -166,7 +168,7 @@ function renderQuestion() {
         Profil fotoğrafınızı yükleyebilirsiniz (JPG, PNG, WEBP). İsteğe bağlıdır.
       </p>
       <p style="margin-bottom: 1.5rem; color: #ff9800; font-weight: 600; font-size: 0.9rem;">
-        ⚠️ Maksimum dosya boyutu: 4MB
+        ⚠️ Maksimum dosya boyutu: 2MB (toplam 3MB)
       </p>
       <input 
         type="file" 
@@ -196,7 +198,18 @@ function renderQuestion() {
     return;
   }
   
+  // Check if step is within questions range
+  if (step < 1 || step > QUESTIONS.length) {
+    console.error('Invalid step for question:', step, 'QUESTIONS.length:', QUESTIONS.length);
+    return;
+  }
+  
   const question = QUESTIONS[step - 1]; // step 0 is intro, so questions start from step 1
+  if (!question) {
+    console.error('Question not found for step:', step);
+    return;
+  }
+  
   let html = `<h2 class="question-title">${question.question}</h2>`;
   
   if (question.type === 'text') {
@@ -279,11 +292,14 @@ function attachEventListeners() {
       input.addEventListener('change', (e) => {
         const file = e.target.files[0] || null;
         if (file) {
-          // Dosya boyutu kontrolü: 4MB limit (Vercel Serverless Functions için)
-          const maxSize = 4 * 1024 * 1024; // 4MB
-          if (file.size > maxSize) {
-            alert(`CV dosyası çok büyük! Maksimum dosya boyutu: 4MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+          // Dosya boyutu kontrolü: 2MB limit (Vercel Serverless Functions için)
+          if (file.size > MAX_FILE_SIZE_BYTES) {
+            alert(`CV dosyası çok büyük! Maksimum dosya boyutu: 2MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
             e.target.value = ''; // Dosya seçimini temizle
+            cvFile = null;
+          } else if ((photoFile ? photoFile.size : 0) + file.size > MAX_TOTAL_FILE_SIZE_BYTES) {
+            alert('Toplam dosya boyutu 3MB limitini aşıyor. Lütfen daha küçük dosyalar seçin.');
+            e.target.value = '';
             cvFile = null;
           } else {
             cvFile = file;
@@ -305,11 +321,14 @@ function attachEventListeners() {
       input.addEventListener('change', (e) => {
         const file = e.target.files[0] || null;
         if (file) {
-          // Dosya boyutu kontrolü: 4MB limit (Vercel Serverless Functions için)
-          const maxSize = 4 * 1024 * 1024; // 4MB
-          if (file.size > maxSize) {
-            alert(`Fotoğraf dosyası çok büyük! Maksimum dosya boyutu: 4MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+          // Dosya boyutu kontrolü: 2MB limit (Vercel Serverless Functions için)
+          if (file.size > MAX_FILE_SIZE_BYTES) {
+            alert(`Fotoğraf dosyası çok büyük! Maksimum dosya boyutu: 2MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
             e.target.value = ''; // Dosya seçimini temizle
+            photoFile = null;
+          } else if (file.size + (cvFile ? cvFile.size : 0) > MAX_TOTAL_FILE_SIZE_BYTES) {
+            alert('Toplam dosya boyutu 3MB limitini aşıyor. Lütfen daha küçük dosyalar seçin.');
+            e.target.value = '';
             photoFile = null;
           } else {
             photoFile = file;
@@ -505,19 +524,26 @@ async function submitWizard() {
   btnNext.textContent = 'Gönderiliyor...';
   
   try {
+    // Debug: Check file variables
+    console.log('=== SUBMIT DEBUG ===');
+    console.log('photoFile:', photoFile);
+    console.log('cvFile:', cvFile);
+    console.log('photoFile type:', typeof photoFile);
+    console.log('cvFile type:', typeof cvFile);
+    
     // Build summary
     const userSummary = buildUserSummary(answers);
     
     // Prepare attachments
     const attachments = [];
-    const maxSize = 4 * 1024 * 1024; // 4MB limit (Vercel Serverless Functions için)
     
     // Convert photo to base64 if exists
-    if (photoFile) {
-      if (photoFile.size > maxSize) {
-        throw new Error(`Fotoğraf dosyası çok büyük! Maksimum: 4MB, Seçilen: ${(photoFile.size / 1024 / 1024).toFixed(2)}MB`);
+    if (photoFile && photoFile instanceof File) {
+      console.log('Photo file found:', photoFile.name, photoFile.size, photoFile.type);
+      if (photoFile.size > MAX_FILE_SIZE_BYTES) {
+        throw new Error(`Fotoğraf dosyası çok büyük! Maksimum: 2MB, Seçilen: ${(photoFile.size / 1024 / 1024).toFixed(2)}MB`);
       }
-      console.log('Converting photo to base64:', photoFile.name, photoFile.type, photoFile.size);
+      console.log('Converting photo to base64...');
       const photoBase64 = await fileToBase64(photoFile);
       console.log('Photo base64 length:', photoBase64.length);
       attachments.push({
@@ -525,14 +551,18 @@ async function submitWizard() {
         content: photoBase64,
         contentType: photoFile.type || getContentTypeFromFilename(photoFile.name)
       });
+      console.log('Photo attachment added');
+    } else {
+      console.log('No photo file or invalid file object');
     }
     
     // Convert CV to base64 if exists
-    if (cvFile) {
-      if (cvFile.size > maxSize) {
-        throw new Error(`CV dosyası çok büyük! Maksimum: 4MB, Seçilen: ${(cvFile.size / 1024 / 1024).toFixed(2)}MB`);
+    if (cvFile && cvFile instanceof File) {
+      console.log('CV file found:', cvFile.name, cvFile.size, cvFile.type);
+      if (cvFile.size > MAX_FILE_SIZE_BYTES) {
+        throw new Error(`CV dosyası çok büyük! Maksimum: 2MB, Seçilen: ${(cvFile.size / 1024 / 1024).toFixed(2)}MB`);
       }
-      console.log('Converting CV to base64:', cvFile.name, cvFile.type, cvFile.size);
+      console.log('Converting CV to base64...');
       const cvBase64 = await fileToBase64(cvFile);
       console.log('CV base64 length:', cvBase64.length);
       attachments.push({
@@ -540,9 +570,20 @@ async function submitWizard() {
         content: cvBase64,
         contentType: cvFile.type || getContentTypeFromFilename(cvFile.name)
       });
+      console.log('CV attachment added');
+    } else {
+      console.log('No CV file or invalid file object');
+    }
+    
+    // Check total size
+    const totalSize = (photoFile && photoFile instanceof File ? photoFile.size : 0) + 
+                     (cvFile && cvFile instanceof File ? cvFile.size : 0);
+    if (totalSize > MAX_TOTAL_FILE_SIZE_BYTES) {
+      throw new Error('Toplam dosya boyutu 3MB limitini aşıyor. Lütfen daha küçük dosyalar seçin.');
     }
     
     console.log('Total attachments:', attachments.length);
+    console.log('=== END DEBUG ===');
     
     // Send email (wizard verilerini email olarak gönder)
     let emailBody = `Yeni Wizard Gönderimi\n\nSlug: ${publicSlug}\n\n`;
