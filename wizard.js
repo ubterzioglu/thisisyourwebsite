@@ -38,8 +38,7 @@ const PHOTO_STEP = QUESTIONS.length + 1;
 const CV_STEP = QUESTIONS.length + 2;
 const LONG_TEXT_STEP = QUESTIONS.length + 3;
 const SUMMARY_STEP = QUESTIONS.length + 4;
-const REVISION_STEP = QUESTIONS.length + 5;
-const TOTAL_STEPS = QUESTIONS.length + 6;
+const TOTAL_STEPS = QUESTIONS.length + 5;
 
 // Get slug from URL or generate new one
 function getSlug() {
@@ -101,45 +100,6 @@ function renderQuestion() {
     return;
   }
   
-  // Revision info step (after summary, before submit)
-  if (step === REVISION_STEP) {
-    container.innerHTML = `
-      <h2 class="question-title">Revizyon Hakkınız</h2>
-      <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 1rem; color: #1976d2; font-size: 1.25rem;">📝 3 Revizyon Hakkı</h3>
-        <div style="line-height: 1.8; color: #444;">
-          <p style="margin-bottom: 1rem;">
-            Web siteniz hazır olduğunda, size özel bir <strong>revizyon linki</strong> göndereceğiz.
-          </p>
-          <p style="margin-bottom: 1rem;">
-            Bu link üzerinden web sitenizde değişiklik yapmak istediğiniz noktaları belirtebilirsiniz.
-          </p>
-          <p style="margin: 0; font-weight: 600; color: #1976d2;">
-            Toplam <strong>3 revizyon hakkınız</strong> bulunmaktadır.
-          </p>
-        </div>
-      </div>
-      <div style="text-align: center; margin-top: 1.5rem;">
-        <button id="reset-at-end" class="btn-nav btn-reset" style="margin-bottom: 1rem; display: inline-block;">🔄 Başa Dön</button>
-        <p style="color: #666; margin-top: 1rem;">
-          Formu göndermek için "Gönder" butonuna tıklayın.
-        </p>
-      </div>
-    `;
-    
-    // Attach reset button event listener for end page
-    setTimeout(() => {
-      const resetBtn = document.getElementById('reset-at-end');
-      if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-          resetWizard();
-        });
-      }
-    }, 0);
-    
-    return;
-  }
-  
   // Summary step
   if (step === SUMMARY_STEP) {
     const summaryColorIndex = (QUESTIONS.length + 4) % colors.length;
@@ -147,7 +107,6 @@ function renderQuestion() {
     container.style.border = `3px solid ${summaryBorderColor}`;
     const userSummary = buildUserSummary(answers);
     container.innerHTML = `
-      <h2 class="question-title">Özet</h2>
       <p style="margin-bottom: 1.5rem; color: #666;">
         Lütfen bilgilerinizi kontrol edin. Göndermek için "Gönder" butonuna tıklayın.
       </p>
@@ -169,6 +128,20 @@ function renderQuestion() {
           <div style="color: #999; font-style: italic;">Ek not eklenmedi.</div>
         </div>
       `}
+      <div style="background: #fff3cd; border-radius: 12px; padding: 2rem; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">📝 3 Revizyon Hakkı</h3>
+        <div style="line-height: 1.8; color: #444;">
+          <p style="margin-bottom: 1rem;">
+            Web siteniz hazır olduğunda, size özel bir <strong>revizyon linki</strong> göndereceğiz.
+          </p>
+          <p style="margin-bottom: 1rem;">
+            Bu link üzerinden web sitenizde değişiklik yapmak istediğiniz noktaları belirtebilirsiniz.
+          </p>
+          <p style="margin: 0; font-weight: 600;">
+            Toplam <strong>3 revizyon hakkınız</strong> bulunmaktadır.
+          </p>
+        </div>
+      </div>
     `;
     return;
   }
@@ -396,11 +369,6 @@ function attachEventListeners() {
     return;
   }
   
-  // Revision info step - no input needed
-  if (step === REVISION_STEP) {
-    return;
-  }
-  
   // Summary step - no input needed
   if (step === SUMMARY_STEP) {
     return;
@@ -578,8 +546,6 @@ function updateProgress() {
     progressText = 'Ek Notlar';
   } else if (currentStep === SUMMARY_STEP) {
     progressText = 'Özet';
-  } else if (currentStep === REVISION_STEP) {
-    progressText = 'Revizyon Bilgisi';
   } else {
     progressText = `Soru ${currentStep} / ${QUESTIONS.length}`;
   }
