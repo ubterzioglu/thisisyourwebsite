@@ -4,7 +4,6 @@
   "description": "Ücretsiz kişisel web sitesi sıra yönetimi sistemi",
   "type": "module",
   "scripts": {
-    "dev": "vercel dev",
     "build": "echo 'No build step required'"
   },
   "dependencies": {

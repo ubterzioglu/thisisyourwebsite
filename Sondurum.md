@@ -74,9 +74,10 @@
      - `ZOHO_SMTP_PASS`
 
 3. **Local Test**
-   - `vercel dev` ile local test
+   - `npx vercel dev` veya `vercel dev` ile local test (NOT: `npm run dev` değil!)
    - `send-form-example.html` dosyasını aç
    - Form gönder, mail gelip gelmediğini kontrol et
+   - **Not:** `package.json`'daki `dev` script'i kaldırıldı (recursive invocation hatası için)
 
 ### Orta Öncelik
 4. **Multipart/Form-Data Desteği (İsteğe Bağlı)**
