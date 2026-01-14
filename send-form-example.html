@@ -107,10 +107,19 @@
       
       const formData = new FormData(e.target);
       
+      // FormData'yı JSON'a çevir (Vercel Serverless Functions için)
+      const jsonData = {};
+      for (let [key, value] of formData.entries()) {
+        jsonData[key] = value;
+      }
+      
       try {
         const response = await fetch('/api/send', {
           method: 'POST',
-          body: formData
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(jsonData)
         });
         
         const result = await response.json();

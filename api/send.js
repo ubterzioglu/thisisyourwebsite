@@ -22,10 +22,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Form data parse et
-    // Vercel Serverless Functions'da multipart/form-data için req.body otomatik parse edilir
-    // veya application/x-www-form-urlencoded için de req.body kullanılır
-    const { name, email, message } = req.body;
+    // JSON body parse et
+    // Vercel Serverless Functions'da JSON body otomatik parse edilir
+    let body = req.body;
+    
+    // Eğer string ise parse et (bazı durumlarda gerekebilir)
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch (e) {
+        return res.status(400).json({ error: 'Invalid JSON body' });
+      }
+    }
+    
+    const { name, email, message } = body;
 
     if (!name || !email || !message) {
       return res.status(400).json({ error: 'name, email, and message are required' });

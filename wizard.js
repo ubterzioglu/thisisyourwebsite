@@ -1,5 +1,5 @@
 // Wizard logic for 20 questions + long text
-import { QUESTIONS, buildUserSummary, buildAiPrompt } from './config/questions.js';
+import { QUESTIONS, buildUserSummary } from './config/questions.js';
 
 // Generate slug (base64url, browser-compatible)
 function generateSlug() {
@@ -29,57 +29,9 @@ function getSlug() {
   return newSlug;
 }
 
-// Create intake record via API
-async function createIntake(slug) {
-  try {
-    const response = await fetch('/api/intakes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug })
-    });
-    
-    if (!response.ok) {
-      console.error('Error creating intake:', response.statusText);
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error creating intake:', error);
-    return false;
-  }
-}
-
-// Update intake record via API
-async function updateIntake(slug, data) {
-  try {
-    const response = await fetch(`/api/intakes?slug=${encodeURIComponent(slug)}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    
-    if (!response.ok) {
-      console.error('Error updating intake:', response.statusText);
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error updating intake:', error);
-    return false;
-  }
-}
-
 // Initialize wizard
-async function initWizard() {
+function initWizard() {
   publicSlug = getSlug();
-  
-  // Create intake record if new
-  if (window.location.search.indexOf('slug=') === -1) {
-    await createIntake(publicSlug);
-  }
-  
   renderQuestion();
   updateProgress();
 }
@@ -268,35 +220,41 @@ document.getElementById('btn-next').addEventListener('click', async () => {
 async function submitWizard() {
   const btnNext = document.getElementById('btn-next');
   btnNext.disabled = true;
-  btnNext.textContent = 'Kaydediliyor...';
+  btnNext.textContent = 'Gönderiliyor...';
   
   try {
-    // Build summaries
+    // Build summary
     const userSummary = buildUserSummary(answers);
-    const aiPrompt = buildAiPrompt(answers, longText);
     
-    // Update Supabase
-    const success = await updateIntake(publicSlug, {
-      answers: answers,
-      long_text: longText,
-      user_summary: userSummary,
-      ai_prompt: aiPrompt,
-      status: 'submitted',
-      updated_at: new Date().toISOString()
+    // Send email (wizard verilerini email olarak gönder)
+    const emailBody = `Yeni Wizard Gönderimi\n\nSlug: ${publicSlug}\n\n20 Soru Özeti:\n${userSummary || 'Özet bulunamadı'}\n\n`;
+    const emailMessage = longText ? `${emailBody}Ek Notlar:\n${longText}` : emailBody;
+    
+    const response = await fetch('/api/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: 'Wizard Form',
+        email: 'wizard@thisisyour.website',
+        message: emailMessage
+      })
     });
     
-    if (!success) {
-      alert('Kaydetme sırasında bir hata oluştu. Lütfen tekrar deneyin.');
-      btnNext.disabled = false;
-      btnNext.textContent = '✅ Bitir';
-      return;
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Email gönderilemedi');
     }
     
-    // Redirect to result page
+    // Email başarıyla gönderildi
+    alert('Formunuz başarıyla gönderildi! Teşekkürler.');
+    
+    // Redirect to result page (veya ana sayfaya)
     window.location.href = `result.html?slug=${publicSlug}`;
   } catch (error) {
     console.error('Submit error:', error);
-    alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+    alert('Bir hata oluştu: ' + error.message + '\nLütfen tekrar deneyin.');
     btnNext.disabled = false;
     btnNext.textContent = '✅ Bitir';
   }
