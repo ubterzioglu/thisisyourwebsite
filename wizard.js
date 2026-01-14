@@ -59,23 +59,25 @@ function renderQuestion() {
   if (step === INTRO_STEP) {
     container.className = 'question-card intro-card';
     container.innerHTML = `
-      <h2 class="question-title intro-title">Kişisel Web Siteniz İçin Tasarım Tercihleri</h2>
-      <div style="line-height: 1.6; color: #444; margin-bottom: 1rem;">
-        <p style="margin-bottom: 0.75rem;">
-          Bu form, CV'nizdeki bilgileri <strong>nasıl sunacağımızı</strong> belirlemek için hazırlanmıştır.
+      <h2 class="question-title intro-title" style="font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem;">Kişisel Web Siteniz İçin Tasarım Tercihleri</h2>
+      <div style="line-height: 1.6; color: #444; margin-bottom: 1rem; font-size: 0.9rem;">
+        <p style="margin-bottom: 0.75rem; font-weight: normal;">
+          Toplam Süre: 3 dk
         </p>
-        <p style="margin-bottom: 0.75rem;">
-          İçerik sormuyoruz, sadece <strong>tasarım ve sunum tercihlerinizi</strong> alıyoruz.
+        <p style="margin-bottom: 0.75rem; font-weight: normal;">
+          Bu form, kişisel web sayfanızın tasarımını şekillendirmek için hazırlanmıştır.
         </p>
-        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; border-radius: 8px; margin: 1rem 0;">
-          <p style="margin: 0; font-weight: 600; color: #856404; font-size: 0.9rem;">⚠️ Önemli:</p>
-          <p style="margin: 0.5rem 0 0 0; color: #856404; font-size: 0.9rem;">
-            Bu formdaki sorular dışında <strong>ek soru sorulmayacak</strong>.<br>
-            Yazı yazmak istersen, en sondaki <strong>Ek Notlar</strong> alanını kullanabilirsin.
-          </p>
-        </div>
-        <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
-          Toplam <strong>20 soru</strong> + fotoğraf yükleme + CV yükleme + ek notlar + özet sayfası
+        <p style="margin-bottom: 0.75rem; font-weight: normal;">
+          İçerik sormuyoruz, sadece tasarım ve sunum tercihlerinizi alıyoruz.
+        </p>
+        <p style="margin-bottom: 0.75rem; font-weight: normal;">
+          Bu formdaki sorular dışında ek soru sorulmayacaktır.
+        </p>
+        <p style="margin-bottom: 0.75rem; font-weight: normal;">
+          İletmek istediğin notlar için en sondaki "Ek Notlar" alanını kullanabilirsiniz.
+        </p>
+        <p style="margin-top: 1rem; color: #666; font-weight: normal;">
+          Toplam 20 soru + Fotoğraf ve CV Yükleme + Sizden Ek Notlar
         </p>
       </div>
     `;
