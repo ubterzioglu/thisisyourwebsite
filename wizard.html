@@ -40,6 +40,10 @@
       padding: 2.5rem;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       margin-bottom: 2rem;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
     
     .question-title {
@@ -143,6 +147,17 @@
       background: linear-gradient(135deg, #32cd32 0%, #228b22 100%);
       color: white;
     }
+
+    .btn-reset {
+      background: #f5f5f5;
+      color: #666;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .btn-reset:hover {
+      background: #e0e0e0;
+    }
     
     .text-input, .textarea-input {
       width: 100%;
@@ -182,7 +197,10 @@
     </div>
     
     <div class="wizard-nav">
-      <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Geri</button>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <button id="btn-reset" class="btn-nav btn-reset" style="display: none;">🔄 Sıfırla</button>
+        <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Geri</button>
+      </div>
       <button id="btn-next" class="btn-nav btn-next">İleri →</button>
     </div>
   </div>

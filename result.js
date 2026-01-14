@@ -1,19 +1,32 @@
 // Result page logic - Simple success message (no database)
 function init() {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('error').style.display = 'none';
-  document.getElementById('result-content').style.display = 'block';
+  const loadingEl = document.getElementById('loading');
+  const errorEl = document.getElementById('error');
+  const resultContentEl = document.getElementById('result-content');
+  const summaryContentEl = document.getElementById('summary-content');
+  
+  // Null check
+  if (!loadingEl || !errorEl || !resultContentEl || !summaryContentEl) {
+    console.error('Required elements not found in result.html');
+    return;
+  }
+  
+  loadingEl.style.display = 'none';
+  errorEl.style.display = 'none';
+  resultContentEl.style.display = 'block';
   
   // Display success message
-  const summaryContent = document.getElementById('summary-content');
-  summaryContent.textContent = 'Formunuz başarıyla gönderildi! Teşekkürler.';
-  summaryContent.style.textAlign = 'center';
-  summaryContent.style.fontSize = '1.25rem';
-  summaryContent.style.color = '#32cd32';
-  summaryContent.style.fontWeight = '600';
+  summaryContentEl.textContent = 'Formunuz başarıyla gönderildi! Teşekkürler.';
+  summaryContentEl.style.textAlign = 'center';
+  summaryContentEl.style.fontSize = '1.25rem';
+  summaryContentEl.style.color = '#32cd32';
+  summaryContentEl.style.fontWeight = '600';
   
-  // Hide long text section
-  document.getElementById('long-text-content').parentElement.parentElement.style.display = 'none';
+  // Hide long text section if it exists (optional)
+  const longTextContentEl = document.getElementById('long-text-content');
+  if (longTextContentEl && longTextContentEl.parentElement && longTextContentEl.parentElement.parentElement) {
+    longTextContentEl.parentElement.parentElement.style.display = 'none';
+  }
 }
 
 // Initialize on load

@@ -1,197 +1,206 @@
-// 20 Soru Konfigürasyonu
+// 20 Soru Konfigürasyonu - Yeni Liste
 export const QUESTIONS = [
-  // Q1: Purpose (single)
+  // Q1: Site amacı
   {
     id: 'q01',
     type: 'single',
-    question: 'Web sitenizin ana amacı nedir?',
-    options: ['CV/Özgeçmiş', 'Portföy', 'Link-in-Bio', 'Kişisel Blog', 'İş Profili'],
-    summaryTemplate: (answer) => `Sitenin amacı: ${answer}`,
-    promptTemplate: (answer) => `Purpose: ${answer === 'CV/Özgeçmiş' ? 'CV/Resume' : answer === 'Link-in-Bio' ? 'Link-in-Bio' : answer}`
+    question: 'Bu site senin için ne yapsın?',
+    options: ['İş bulmama yardım etsin', 'Bana müşteri getirsin', 'Kişisel markamı güçlendirsin', 'Dijital kartvizitim olsun', 'Hepsinden biraz'],
+    summaryTemplate: (answer) => `Site amacı: ${answer}`,
+    promptTemplate: (answer) => `Site purpose: ${answer}`
   },
   
-  // Q2: Name (text)
+  // Q2: Algı
   {
     id: 'q02',
-    type: 'text',
-    question: 'Adınız ve Soyadınız?',
-    summaryTemplate: (answer) => `İsim: ${answer}`,
-    promptTemplate: (answer) => `Name: ${answer}`
+    type: 'single',
+    question: 'Siteye giren biri seni nasıl algılasın?',
+    options: ['Profesyonel', 'Güven veren', 'Yaratıcı', 'Samimi', 'Güçlü'],
+    summaryTemplate: (answer) => `Algı: ${answer}`,
+    promptTemplate: (answer) => `Perception: ${answer}`
   },
   
-  // Q3: Headline (text)
+  // Q3: Hedef kitle
   {
     id: 'q03',
-    type: 'text',
-    question: 'Profesyonel başlık/Unvanınız? (örn: Senior Developer, UX Designer)',
-    summaryTemplate: (answer) => `Unvan: ${answer}`,
-    promptTemplate: (answer) => `Headline: ${answer}`
+    type: 'single',
+    question: 'Site en çok kime hitap etsin?',
+    options: ['İşveren / HR', 'Müşteri', 'Teknik insanlar', 'Teknik olmayan insanlar', 'Herkes'],
+    summaryTemplate: (answer) => `Hedef kitle: ${answer}`,
+    promptTemplate: (answer) => `Target audience: ${answer}`
   },
   
-  // Q4: Language (multi)
+  // Q4: Genel tasarım hissi
   {
     id: 'q04',
-    type: 'multi',
-    question: 'Web sitesi hangi dillerde olsun?',
-    options: ['Türkçe', 'İngilizce'],
-    summaryTemplate: (answer) => `Dil: ${Array.isArray(answer) ? answer.join(' + ') : answer}`,
-    promptTemplate: (answer) => `Languages: ${Array.isArray(answer) ? answer.join(', ') : answer}`
+    type: 'single',
+    question: 'Genel tasarım hissi',
+    options: ['Sade & net', 'Modern & şık', 'Cesur & farklı', 'Kurumsal', 'Kişisel'],
+    summaryTemplate: (answer) => `Genel tasarım hissi: ${answer}`,
+    promptTemplate: (answer) => `General design vibe: ${answer}`
   },
   
-  // Q5: Sections (multi)
+  // Q5: Tasarımda öne çıkan
   {
     id: 'q05',
-    type: 'multi',
-    question: 'Hangi bölümler olsun?',
-    options: ['Hakkımda', 'Deneyim', 'Projeler', 'Eğitim', 'İletişim', 'Blog'],
-    summaryTemplate: (answer) => `Bölümler: ${Array.isArray(answer) ? answer.join(', ') : answer}`,
-    promptTemplate: (answer) => `Sections: ${Array.isArray(answer) ? answer.join(', ') : answer}`
+    type: 'single',
+    question: 'Tasarımda ne öne çıksın?',
+    options: ['Metin ağırlıklı', 'Görsel ağırlıklı', 'Dengeli', 'Minimum her şey'],
+    summaryTemplate: (answer) => `Tasarımda öne çıkan: ${answer}`,
+    promptTemplate: (answer) => `Design focus: ${answer}`
   },
   
-  // Q6: Contact methods (multi)
+  // Q6: Ziyaretçi tüketim şekli
   {
     id: 'q06',
-    type: 'multi',
-    question: 'Hangi iletişim yöntemleri gösterilsin?',
-    options: ['E-posta', 'Telefon', 'LinkedIn', 'Twitter/X', 'Instagram', 'GitHub'],
-    summaryTemplate: (answer) => `İletişim: ${Array.isArray(answer) ? answer.join(', ') : answer}`,
-    promptTemplate: (answer) => `Contact methods: ${Array.isArray(answer) ? answer.join(', ') : answer}`
+    type: 'single',
+    question: 'Ziyaretçi siteyi nasıl tüketsin?',
+    options: ['Hızlıca göz atsın', 'Detaylı incelesin', 'Aşağı doğru akıp gitsin', 'Sadece önemli başlıklar'],
+    summaryTemplate: (answer) => `Ziyaretçi tüketim şekli: ${answer}`,
+    promptTemplate: (answer) => `Visitor consumption pattern: ${answer}`
   },
   
-  // Q7: Social links (multi)
+  // Q7: Sayfa yapısı
   {
     id: 'q07',
-    type: 'multi',
-    question: 'Hangi sosyal medya linklerini ekleyelim?',
-    options: ['LinkedIn', 'Twitter/X', 'Instagram', 'GitHub', 'YouTube', 'Behance'],
-    summaryTemplate: (answer) => `Sosyal medya: ${Array.isArray(answer) ? answer.join(', ') : 'Yok'}`,
-    promptTemplate: (answer) => `Social links: ${Array.isArray(answer) ? answer.join(', ') : 'None'}`
+    type: 'single',
+    question: 'Sayfa yapısı nasıl olsun?',
+    options: ['Tek sayfa (one-page)', 'Bölümlere ayrılmış', 'Kısa ama vurucu', 'Detaylı ama düzenli'],
+    summaryTemplate: (answer) => `Sayfa yapısı: ${answer}`,
+    promptTemplate: (answer) => `Page structure: ${answer}`
   },
   
-  // Q8: Photo (yesno)
+  // Q8: Öne çıkan bölümler (multi, max 3)
   {
     id: 'q08',
-    type: 'yesno',
-    question: 'Profesyonel fotoğrafınız var mı?',
-    summaryTemplate: (answer) => `Fotoğraf: ${answer === 'true' ? 'Var' : 'Yok'}`,
-    promptTemplate: (answer) => `Photo: ${answer === 'true' ? 'Yes' : 'No'}`
+    type: 'multi',
+    question: 'Hangi bölümler özellikle öne çıksın?',
+    options: ['Deneyim', 'Projeler', 'Beceriler', 'Eğitim', 'İletişim'],
+    summaryTemplate: (answer) => `Öne çıkan bölümler: ${Array.isArray(answer) ? answer.slice(0, 3).join(', ') : answer}`,
+    promptTemplate: (answer) => `Highlighted sections: ${Array.isArray(answer) ? answer.slice(0, 3).join(', ') : answer}`
   },
   
-  // Q9: Theme vibe (single)
+  // Q9: Proje sunumu
   {
     id: 'q09',
     type: 'single',
-    question: 'Tasarım tarzı?',
-    options: ['Minimal', 'Modern', 'Kreatif', 'Kurumsal', 'Kişisel'],
-    summaryTemplate: (answer) => `Tasarım: ${answer}`,
-    promptTemplate: (answer) => `Theme: ${answer}`
+    question: 'Projeler nasıl sunulsun?',
+    options: ['Kart kart', 'Liste halinde', 'Az ama seçilmiş', 'Hepsi ama sade'],
+    summaryTemplate: (answer) => `Proje sunumu: ${answer}`,
+    promptTemplate: (answer) => `Project display: ${answer}`
   },
   
-  // Q10: Primary color (single)
+  // Q10: Ana sayfada ilk görünen
   {
     id: 'q10',
     type: 'single',
-    question: 'Ana renk tercihi?',
-    options: ['Siyah/Beyaz', 'Mavi', 'Mor', 'Yeşil', 'Turuncu', 'Kırmızı', 'Pastel'],
-    summaryTemplate: (answer) => `Renk: ${answer}`,
-    promptTemplate: (answer) => `Primary color: ${answer}`
+    question: 'Ana sayfada ilk ne görülsün?',
+    options: ['Güçlü bir giriş alanı', 'Net bir çağrı butonu', 'Görsel ağırlıklı alan', 'Kısa özet + devamı'],
+    summaryTemplate: (answer) => `Ana sayfada ilk görünen: ${answer}`,
+    promptTemplate: (answer) => `First thing on homepage: ${answer}`
   },
   
-  // Q11: CTA style (single)
+  // Q11: Renk yaklaşımı
   {
     id: 'q11',
     type: 'single',
-    question: 'Ana çağrı butonu stili?',
-    options: ['İletişime Geçin', 'Portföyü Görüntüle', 'CV İndir', 'Projeleri Keşfet', 'Blogu Oku'],
-    summaryTemplate: (answer) => `Ana buton: ${answer}`,
-    promptTemplate: (answer) => `CTA: ${answer}`
+    question: 'Renk yaklaşımı',
+    options: ['Siyah / Beyaz', 'Soğuk tonlar', 'Sıcak tonlar', 'Pastel', 'Sürprize açığım'],
+    summaryTemplate: (answer) => `Renk yaklaşımı: ${answer}`,
+    promptTemplate: (answer) => `Color approach: ${answer}`
   },
   
-  // Q12: Content tone (single)
+  // Q12: Yazı dili hissi
   {
     id: 'q12',
     type: 'single',
-    question: 'İçerik üslubu?',
-    options: ['Profesyonel', 'Samimi', 'Yaratıcı', 'Resmi', 'Eğlenceli'],
-    summaryTemplate: (answer) => `Üslup: ${answer}`,
-    promptTemplate: (answer) => `Tone: ${answer}`
+    question: 'Yazı dili hissi',
+    options: ['Resmi', 'Profesyonel ama sıcak', 'Samimi', 'Yaratıcı', 'Minimal'],
+    summaryTemplate: (answer) => `Yazı dili hissi: ${answer}`,
+    promptTemplate: (answer) => `Writing tone: ${answer}`
   },
   
-  // Q13: Top 3 highlights (multi - max 3)
+  // Q13: Site duygusu
   {
     id: 'q13',
-    type: 'multi',
-    question: 'Öne çıkarılacak 3 özellik?',
-    options: ['Deneyim', 'Beceriler', 'Projeler', 'Eğitim', 'Başarılar', 'Teknolojiler'],
-    summaryTemplate: (answer) => `Öne çıkanlar: ${Array.isArray(answer) ? answer.slice(0, 3).join(', ') : answer}`,
-    promptTemplate: (answer) => `Highlights: ${Array.isArray(answer) ? answer.slice(0, 3).join(', ') : answer}`
+    type: 'single',
+    question: 'Site hangi duyguyu versin?',
+    options: ['"Bu kişi işini biliyor"', '"Bununla çalışılır"', '"Bu farklı"', '"Güvenilir biri"'],
+    summaryTemplate: (answer) => `Site duygusu: ${answer}`,
+    promptTemplate: (answer) => `Site feeling: ${answer}`
   },
   
-  // Q14: Work status (single)
+  // Q14: Ana aksiyon
   {
     id: 'q14',
     type: 'single',
-    question: 'Şu anki çalışma durumunuz?',
-    options: ['Tam Zamanlı Çalışıyorum', 'Freelancer', 'İş Arıyorum', 'Öğrenci', 'Emekli', 'Diğer'],
-    summaryTemplate: (answer) => `Durum: ${answer}`,
-    promptTemplate: (answer) => `Work status: ${answer}`
+    question: 'Ana aksiyon ne olsun?',
+    options: ['İletişime geç', 'CV indir', 'Projeleri gör', 'Sadece incelensin'],
+    summaryTemplate: (answer) => `Ana aksiyon: ${answer}`,
+    promptTemplate: (answer) => `Main CTA: ${answer}`
   },
   
-  // Q15: Location (yesno)
+  // Q15: Site dili
   {
     id: 'q15',
-    type: 'yesno',
-    question: 'Konum bilgisi gösterilsin mi?',
-    summaryTemplate: (answer) => `Konum: ${answer === 'true' ? 'Göster' : 'Gizle'}`,
-    promptTemplate: (answer) => `Show location: ${answer === 'true' ? 'Yes' : 'No'}`
+    type: 'multi',
+    question: 'Site dili',
+    options: ['Türkçe', 'İngilizce'],
+    summaryTemplate: (answer) => `Site dili: ${Array.isArray(answer) ? answer.join(' + ') : answer}`,
+    promptTemplate: (answer) => `Languages: ${Array.isArray(answer) ? answer.join(', ') : answer}`
   },
   
-  // Q16: Testimonials (yesno)
+  // Q16: Konum bilgisi
   {
     id: 'q16',
-    type: 'yesno',
-    question: 'Referanslar/Testimonial eklenmeli mi?',
-    summaryTemplate: (answer) => `Referanslar: ${answer === 'true' ? 'Evet' : 'Hayır'}`,
-    promptTemplate: (answer) => `Testimonials: ${answer === 'true' ? 'Yes' : 'No'}`
+    type: 'single',
+    question: 'Konum bilgisi',
+    options: ['Gösterilsin', 'Gösterilmesin'],
+    summaryTemplate: (answer) => `Konum bilgisi: ${answer}`,
+    promptTemplate: (answer) => `Show location: ${answer === 'Gösterilsin' ? 'Yes' : 'No'}`
   },
   
-  // Q17: Projects count (single)
+  // Q17: Sosyal bağlantılar
   {
     id: 'q17',
-    type: 'single',
-    question: 'Kaç proje gösterilsin?',
-    options: ['3', '5', '10', 'Hepsi', 'Yok'],
-    summaryTemplate: (answer) => `Proje sayısı: ${answer}`,
-    promptTemplate: (answer) => `Projects: ${answer}`
+    type: 'multi',
+    question: 'Sosyal bağlantılar',
+    options: ['LinkedIn', 'GitHub', 'Instagram', 'X / Twitter', 'YouTube', 'Behance'],
+    summaryTemplate: (answer) => `Sosyal bağlantılar: ${Array.isArray(answer) ? answer.join(', ') : 'Yok'}`,
+    promptTemplate: (answer) => `Social links: ${Array.isArray(answer) ? answer.join(', ') : 'None'}`
   },
   
-  // Q18: Blog (yesno)
+  // Q18: Site karakteri
   {
     id: 'q18',
-    type: 'yesno',
-    question: 'Blog bölümü olsun mu?',
-    summaryTemplate: (answer) => `Blog: ${answer === 'true' ? 'Evet' : 'Hayır'}`,
-    promptTemplate: (answer) => `Blog: ${answer === 'true' ? 'Yes' : 'No'}`
+    type: 'single',
+    question: 'Site karakteri',
+    options: ['Düz & ciddi', 'Hafif esprili', 'Net & direkt', 'Yumuşak & akıcı'],
+    summaryTemplate: (answer) => `Site karakteri: ${answer}`,
+    promptTemplate: (answer) => `Site character: ${answer}`
   },
   
-  // Q19: Download CV (yesno)
+  // Q19: İçerik yoğunluğu
   {
     id: 'q19',
-    type: 'yesno',
-    question: 'CV indirme butonu olsun mu?',
-    summaryTemplate: (answer) => `CV indirme: ${answer === 'true' ? 'Evet' : 'Hayır'}`,
-    promptTemplate: (answer) => `CV download: ${answer === 'true' ? 'Yes' : 'No'}`
+    type: 'single',
+    question: 'İçerik yoğunluğu',
+    options: ['Az ama vurucu', 'Dengeli', 'Detaylı'],
+    summaryTemplate: (answer) => `İçerik yoğunluğu: ${answer}`,
+    promptTemplate: (answer) => `Content density: ${answer}`
   },
   
-  // Q20: Domain/Username (single)
+  // Q20: Genel yaklaşım
   {
     id: 'q20',
     type: 'single',
-    question: 'Tercih ettiğiniz domain/username?',
-    options: ['Adınız (örn: ahmet-yilmaz)', 'Unvan (örn: senior-developer)', 'İş adı', 'Fikir yok'],
-    summaryTemplate: (answer) => `Domain tercihi: ${answer}`,
-    promptTemplate: (answer) => `Domain preference: ${answer}`
+    question: 'Genel yaklaşım',
+    options: ['Klasik', 'Modern', 'Deneysel', 'Güvenli tarafta'],
+    summaryTemplate: (answer) => `Genel yaklaşım: ${answer}`,
+    promptTemplate: (answer) => `General approach: ${answer}`
   }
+  
+  // Fotoğraf ve CV yükleme adımları wizard.js'de ayrı adımlar olarak zaten var
 ];
 
 // User-friendly summary builder (Turkish, non-technical)

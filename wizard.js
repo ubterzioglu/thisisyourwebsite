@@ -15,6 +15,8 @@ let currentStep = 0;
 let answers = {};
 let longText = '';
 let publicSlug = null;
+let photoFile = null;
+let cvFile = null;
 
 // Get slug from URL or generate new one
 function getSlug() {
@@ -39,10 +41,145 @@ function initWizard() {
 // Render current question
 function renderQuestion() {
   const container = document.getElementById('question-container');
-  const totalSteps = QUESTIONS.length + 1; // 20 questions + 1 long text
+  const totalSteps = QUESTIONS.length + 6; // 1 intro + 20 questions + 1 long text + 1 photo + 1 CV + 1 summary + 1 revision info
   const step = currentStep;
   
-  // Long text step (last step)
+  // Intro step (step 0)
+  if (step === 0) {
+    container.innerHTML = `
+      <h2 class="question-title">Kişisel Web Siteniz İçin Tasarım Tercihleri</h2>
+      <div style="line-height: 1.8; color: #444; margin-bottom: 2rem;">
+        <p style="margin-bottom: 1rem;">
+          Bu form, CV'nizdeki bilgileri <strong>nasıl sunacağımızı</strong> belirlemek için hazırlanmıştır.
+        </p>
+        <p style="margin-bottom: 1rem;">
+          İçerik sormuyoruz, sadece <strong>tasarım ve sunum tercihlerinizi</strong> alıyoruz.
+        </p>
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;">
+          <p style="margin: 0; font-weight: 600; color: #856404;">⚠️ Önemli:</p>
+          <p style="margin: 0.5rem 0 0 0; color: #856404;">
+            Bu formdaki sorular dışında <strong>ek soru sorulmayacak</strong>.<br>
+            Yazı yazmak istersen, en sondaki <strong>Ek Notlar</strong> alanını kullanabilirsin.
+          </p>
+        </div>
+        <p style="margin-top: 1.5rem; color: #666; font-size: 0.95rem;">
+          Toplam <strong>20 soru</strong> + fotoğraf ve CV yükleme + özet sayfası
+        </p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Revision info step (after summary, before submit)
+  if (step === QUESTIONS.length + 4) {
+    container.innerHTML = `
+      <h2 class="question-title">Revizyon Hakkınız</h2>
+      <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: #1976d2; font-size: 1.25rem;">📝 3 Revizyon Hakkı</h3>
+        <div style="line-height: 1.8; color: #444;">
+          <p style="margin-bottom: 1rem;">
+            Web siteniz hazır olduğunda, size özel bir <strong>revizyon linki</strong> göndereceğiz.
+          </p>
+          <p style="margin-bottom: 1rem;">
+            Bu link üzerinden web sitenizde değişiklik yapmak istediğiniz noktaları belirtebilirsiniz.
+          </p>
+          <p style="margin: 0; font-weight: 600; color: #1976d2;">
+            Toplam <strong>3 revizyon hakkınız</strong> bulunmaktadır.
+          </p>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button id="reset-at-end" class="btn-nav btn-reset" style="margin-bottom: 1rem; display: inline-block;">🔄 Başa Dön</button>
+        <p style="color: #666; margin-top: 1rem;">
+          Formu göndermek için "Gönder" butonuna tıklayın.
+        </p>
+      </div>
+    `;
+    
+    // Attach reset button event listener for end page
+    setTimeout(() => {
+      const resetBtn = document.getElementById('reset-at-end');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          resetWizard();
+        });
+      }
+    }, 0);
+    
+    return;
+  }
+  
+  // Summary step
+  if (step === QUESTIONS.length + 3) {
+    const userSummary = buildUserSummary(answers);
+    container.innerHTML = `
+      <h2 class="question-title">Özet</h2>
+      <p style="margin-bottom: 1.5rem; color: #666;">
+        Lütfen bilgilerinizi kontrol edin. Göndermek için "Gönder" butonuna tıklayın.
+      </p>
+      <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        ${photoFile ? '<div style="padding: 0.75rem 1.5rem; background: #d4edda; color: #155724; border-radius: 8px; font-weight: 600;">✅ Fotoğraf yüklendi!</div>' : ''}
+        ${cvFile ? '<div style="padding: 0.75rem 1.5rem; background: #d4edda; color: #155724; border-radius: 8px; font-weight: 600;">✅ CV yüklendi!</div>' : ''}
+      </div>
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">20 Soru Özeti:</h3>
+        <div style="white-space: pre-line; line-height: 1.8; color: #444;">${userSummary || 'Özet bulunamadı'}</div>
+      </div>
+      ${longText ? `
+        <div style="background: #fff3cd; border-radius: 12px; padding: 2rem; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
+          <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">Sizin ek istekleriniz:</h3>
+          <div style="white-space: pre-wrap; line-height: 1.8; color: #444;">${longText}</div>
+        </div>
+      ` : ''}
+    `;
+    return;
+  }
+  
+  // CV upload step
+  if (step === QUESTIONS.length + 2) {
+    const fileSizeInfo = cvFile ? ` (${(cvFile.size / 1024 / 1024).toFixed(2)}MB)` : '';
+    container.innerHTML = `
+      <h2 class="question-title">CV Yükleme</h2>
+      <p style="margin-bottom: 1rem; color: #666;">
+        CV dosyanızı yükleyebilirsiniz (PDF tercihen, DOCX kabul edilir). İsteğe bağlıdır.
+      </p>
+      <p style="margin-bottom: 1.5rem; color: #ff9800; font-weight: 600; font-size: 0.9rem;">
+        ⚠️ Maksimum dosya boyutu: 4MB
+      </p>
+      <input 
+        type="file" 
+        id="cv-input" 
+        accept=".pdf,.docx,.doc"
+        style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem;"
+      />
+      ${cvFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${cvFile.name}${fileSizeInfo}</p>` : ''}
+    `;
+    return;
+  }
+  
+  // Photo upload step
+  if (step === QUESTIONS.length + 1) {
+    const fileSizeInfo = photoFile ? ` (${(photoFile.size / 1024 / 1024).toFixed(2)}MB)` : '';
+    container.innerHTML = `
+      <h2 class="question-title">Fotoğraf Yükleme</h2>
+      <p style="margin-bottom: 1rem; color: #666;">
+        Profil fotoğrafınızı yükleyebilirsiniz (JPG, PNG, WEBP). İsteğe bağlıdır.
+      </p>
+      <p style="margin-bottom: 1.5rem; color: #ff9800; font-weight: 600; font-size: 0.9rem;">
+        ⚠️ Maksimum dosya boyutu: 4MB
+      </p>
+      <input 
+        type="file" 
+        id="photo-input" 
+        accept="image/jpeg,image/png,image/webp"
+        style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 1rem;"
+      />
+      ${photoFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${photoFile.name}${fileSizeInfo}</p>` : ''}
+    `;
+    return;
+  }
+  
+  // Long text step
   if (step === QUESTIONS.length) {
     container.innerHTML = `
       <h2 class="question-title">Ek Notlarınız</h2>
@@ -59,7 +196,7 @@ function renderQuestion() {
     return;
   }
   
-  const question = QUESTIONS[step];
+  const question = QUESTIONS[step - 1]; // step 0 is intro, so questions start from step 1
   let html = `<h2 class="question-title">${question.question}</h2>`;
   
   if (question.type === 'text') {
@@ -120,6 +257,73 @@ function renderQuestion() {
 function attachEventListeners() {
   const step = currentStep;
   
+  // Intro step - no input needed
+  if (step === 0) {
+    return;
+  }
+  
+  // Revision info step - no input needed
+  if (step === QUESTIONS.length + 4) {
+    return;
+  }
+  
+  // Summary step - no input needed
+  if (step === QUESTIONS.length + 3) {
+    return;
+  }
+  
+  // CV upload step
+  if (step === QUESTIONS.length + 2) {
+    const input = document.getElementById('cv-input');
+    if (input) {
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0] || null;
+        if (file) {
+          // Dosya boyutu kontrolü: 4MB limit (Vercel Serverless Functions için)
+          const maxSize = 4 * 1024 * 1024; // 4MB
+          if (file.size > maxSize) {
+            alert(`CV dosyası çok büyük! Maksimum dosya boyutu: 4MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+            e.target.value = ''; // Dosya seçimini temizle
+            cvFile = null;
+          } else {
+            cvFile = file;
+          }
+        } else {
+          cvFile = null;
+        }
+        // Re-render to show file name
+        renderQuestion();
+      });
+    }
+    return;
+  }
+  
+  // Photo upload step
+  if (step === QUESTIONS.length + 1) {
+    const input = document.getElementById('photo-input');
+    if (input) {
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0] || null;
+        if (file) {
+          // Dosya boyutu kontrolü: 4MB limit (Vercel Serverless Functions için)
+          const maxSize = 4 * 1024 * 1024; // 4MB
+          if (file.size > maxSize) {
+            alert(`Fotoğraf dosyası çok büyük! Maksimum dosya boyutu: 4MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+            e.target.value = ''; // Dosya seçimini temizle
+            photoFile = null;
+          } else {
+            photoFile = file;
+          }
+        } else {
+          photoFile = null;
+        }
+        // Re-render to show file name
+        renderQuestion();
+      });
+    }
+    return;
+  }
+  
   if (step === QUESTIONS.length) {
     // Long text step
     const input = document.getElementById('long-text-input');
@@ -131,7 +335,7 @@ function attachEventListeners() {
     return;
   }
   
-  const question = QUESTIONS[step];
+  const question = QUESTIONS[step - 1]; // step 0 is intro, so questions start from step 1
   
   if (question.type === 'text') {
     const input = document.getElementById('answer-input');
@@ -147,6 +351,16 @@ function attachEventListeners() {
         document.querySelectorAll('.option-button').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         answers[question.id] = btn.dataset.value;
+        
+        // Otomatik olarak bir sonraki soruya geç (kısa delay ile)
+        const totalSteps = QUESTIONS.length + 6;
+        if (currentStep < totalSteps - 1) {
+          setTimeout(() => {
+            currentStep++;
+            renderQuestion();
+            updateProgress();
+          }, 400); // 400ms delay - kullanıcı seçimini görebilsin
+        }
       });
     });
   } else if (question.type === 'multi') {
@@ -171,29 +385,69 @@ function attachEventListeners() {
 }
 
 function updateProgress() {
-  const totalSteps = QUESTIONS.length + 1;
+  const totalSteps = QUESTIONS.length + 6; // 1 intro + 20 questions + 1 long text + 1 photo + 1 CV + 1 summary + 1 revision info
   const progress = ((currentStep + 1) / totalSteps) * 100;
   document.getElementById('progress-fill').style.width = `${progress}%`;
-  document.getElementById('progress-text').textContent = 
-    currentStep === QUESTIONS.length 
-      ? 'Son Adım: Ek Notlar' 
-      : `Soru ${currentStep + 1} / ${QUESTIONS.length}`;
   
-  // Show/hide back button
+  let progressText = '';
+  if (currentStep === 0) {
+    progressText = 'Başlangıç';
+  } else if (currentStep === QUESTIONS.length) {
+    progressText = 'Ek Notlar';
+  } else if (currentStep === QUESTIONS.length + 1) {
+    progressText = 'Fotoğraf Yükleme';
+  } else if (currentStep === QUESTIONS.length + 2) {
+    progressText = 'CV Yükleme';
+  } else if (currentStep === QUESTIONS.length + 3) {
+    progressText = 'Özet';
+  } else if (currentStep === QUESTIONS.length + 4) {
+    progressText = 'Revizyon Bilgisi';
+  } else {
+    progressText = `Soru ${currentStep} / ${QUESTIONS.length}`;
+  }
+  document.getElementById('progress-text').textContent = progressText;
+  
+  // Show/hide back and reset buttons
   document.getElementById('btn-back').style.display = currentStep > 0 ? 'block' : 'none';
+  document.getElementById('btn-reset').style.display = currentStep > 0 ? 'block' : 'none';
   
   // Update next/finish button
   const nextBtn = document.getElementById('btn-next');
   if (currentStep === totalSteps - 1) {
-    nextBtn.textContent = '✅ Bitir';
+    nextBtn.textContent = '📧 Gönder';
     nextBtn.className = 'btn-nav btn-finish';
+  } else if (currentStep === 0) {
+    nextBtn.textContent = 'Başla →';
+    nextBtn.className = 'btn-nav btn-next';
   } else {
     nextBtn.textContent = 'İleri →';
     nextBtn.className = 'btn-nav btn-next';
   }
 }
 
+// Reset wizard function
+function resetWizard() {
+  if (confirm('Tüm cevaplarınız silinecek ve başa döneceksiniz. Emin misiniz?')) {
+    currentStep = 0;
+    answers = {};
+    longText = '';
+    photoFile = null;
+    cvFile = null;
+    
+    // Generate new slug
+    publicSlug = generateSlug();
+    window.history.replaceState({}, '', `?slug=${publicSlug}`);
+    
+    renderQuestion();
+    updateProgress();
+  }
+}
+
 // Navigation
+document.getElementById('btn-reset').addEventListener('click', () => {
+  resetWizard();
+});
+
 document.getElementById('btn-back').addEventListener('click', () => {
   if (currentStep > 0) {
     currentStep--;
@@ -203,7 +457,7 @@ document.getElementById('btn-back').addEventListener('click', () => {
 });
 
 document.getElementById('btn-next').addEventListener('click', async () => {
-  const totalSteps = QUESTIONS.length + 1;
+  const totalSteps = QUESTIONS.length + 6; // 1 intro + 20 questions + 1 long text + 1 photo + 1 CV + 1 summary + 1 revision info
   
   if (currentStep < totalSteps - 1) {
     // Validate current step (optional - allow skipping)
@@ -211,10 +465,38 @@ document.getElementById('btn-next').addEventListener('click', async () => {
     renderQuestion();
     updateProgress();
   } else {
-    // Finish: submit
+    // Finish: submit (on revision info page)
     await submitWizard();
   }
 });
+
+// Get content type from filename
+function getContentTypeFromFilename(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  const contentTypes = {
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'webp': 'image/webp',
+    'pdf': 'application/pdf',
+    'doc': 'application/msword',
+    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  };
+  return contentTypes[ext] || 'application/octet-stream';
+}
+
+// Convert file to base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = reader.result.split(',')[1]; // Remove data:image/...;base64, prefix
+      resolve(base64String);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 // Submit wizard
 async function submitWizard() {
@@ -226,20 +508,66 @@ async function submitWizard() {
     // Build summary
     const userSummary = buildUserSummary(answers);
     
+    // Prepare attachments
+    const attachments = [];
+    const maxSize = 4 * 1024 * 1024; // 4MB limit (Vercel Serverless Functions için)
+    
+    // Convert photo to base64 if exists
+    if (photoFile) {
+      if (photoFile.size > maxSize) {
+        throw new Error(`Fotoğraf dosyası çok büyük! Maksimum: 4MB, Seçilen: ${(photoFile.size / 1024 / 1024).toFixed(2)}MB`);
+      }
+      console.log('Converting photo to base64:', photoFile.name, photoFile.type, photoFile.size);
+      const photoBase64 = await fileToBase64(photoFile);
+      console.log('Photo base64 length:', photoBase64.length);
+      attachments.push({
+        filename: photoFile.name,
+        content: photoBase64,
+        contentType: photoFile.type || getContentTypeFromFilename(photoFile.name)
+      });
+    }
+    
+    // Convert CV to base64 if exists
+    if (cvFile) {
+      if (cvFile.size > maxSize) {
+        throw new Error(`CV dosyası çok büyük! Maksimum: 4MB, Seçilen: ${(cvFile.size / 1024 / 1024).toFixed(2)}MB`);
+      }
+      console.log('Converting CV to base64:', cvFile.name, cvFile.type, cvFile.size);
+      const cvBase64 = await fileToBase64(cvFile);
+      console.log('CV base64 length:', cvBase64.length);
+      attachments.push({
+        filename: cvFile.name,
+        content: cvBase64,
+        contentType: cvFile.type || getContentTypeFromFilename(cvFile.name)
+      });
+    }
+    
+    console.log('Total attachments:', attachments.length);
+    
     // Send email (wizard verilerini email olarak gönder)
-    const emailBody = `Yeni Wizard Gönderimi\n\nSlug: ${publicSlug}\n\n20 Soru Özeti:\n${userSummary || 'Özet bulunamadı'}\n\n`;
-    const emailMessage = longText ? `${emailBody}Ek Notlar:\n${longText}` : emailBody;
+    let emailBody = `Yeni Wizard Gönderimi\n\nSlug: ${publicSlug}\n\n`;
+    if (photoFile) emailBody += `✅ Fotoğraf yüklendi: ${photoFile.name}\n`;
+    if (cvFile) emailBody += `✅ CV yüklendi: ${cvFile.name}\n`;
+    emailBody += `\n20 Soru Özeti:\n${userSummary || 'Özet bulunamadı'}\n\n`;
+    const emailMessage = longText ? `${emailBody}Sizin ek istekleriniz:\n${longText}` : emailBody;
+    
+    const requestBody = {
+      name: 'Wizard Form',
+      email: 'wizard@thisisyour.website',
+      subject: `Yeni Wizard Gönderimi - ${publicSlug}`,
+      message: emailMessage,
+      attachments: attachments
+    };
+    
+    console.log('Sending request with attachments:', attachments.length);
+    console.log('Request body size:', JSON.stringify(requestBody).length);
     
     const response = await fetch('/api/send', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        name: 'Wizard Form',
-        email: 'wizard@thisisyour.website',
-        message: emailMessage
-      })
+      body: JSON.stringify(requestBody)
     });
     
     if (!response.ok) {

@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       }
     }
     
-    const { name, email, message } = body;
+    const { name, email, subject, message, attachments } = body;
 
     if (!name || !email || !message) {
       return res.status(400).json({ error: 'name, email, and message are required' });
@@ -55,13 +55,42 @@ export default async function handler(req, res) {
     // Email içeriği
     const emailBody = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
 
+    // Prepare attachments (convert base64 to Buffer)
+    const emailAttachments = [];
+    if (attachments && Array.isArray(attachments)) {
+      console.log('Processing attachments:', attachments.length);
+      for (const att of attachments) {
+        if (att.content && att.filename) {
+          console.log('Adding attachment:', att.filename, 'Content type:', att.contentType, 'Content length:', att.content.length);
+          try {
+            const buffer = Buffer.from(att.content, 'base64');
+            emailAttachments.push({
+              filename: att.filename,
+              content: buffer,
+              contentType: att.contentType || undefined
+            });
+            console.log('Attachment added successfully, buffer size:', buffer.length);
+          } catch (error) {
+            console.error('Error processing attachment:', att.filename, error);
+          }
+        } else {
+          console.warn('Invalid attachment:', att);
+        }
+      }
+    } else {
+      console.log('No attachments or attachments is not an array');
+    }
+    
+    console.log('Final email attachments count:', emailAttachments.length);
+
     // Email gönder
     const info = await transporter.sendMail({
       from: MAIL_FROM,
       to: MAIL_TO,
       replyTo: email,
-      subject: 'New form submission',
-      text: emailBody
+      subject: subject || 'New form submission',
+      text: emailBody,
+      attachments: emailAttachments.length > 0 ? emailAttachments : undefined
     });
 
     console.log('Email sent:', info.messageId);
