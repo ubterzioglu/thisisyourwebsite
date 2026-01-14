@@ -536,6 +536,49 @@ Bu dokümantasyon dosyası oluşturuldu.
 
 ---
 
+## Değişiklik Geçmişi (Changelog)
+
+### 2026-01-14
+
+#### Proje Oluşturma ve İlk Kurulum
+- ✅ Proje yapısı oluşturuldu (HTML, CSS, JS dosyaları)
+- ✅ Landing page (index.html) - Türkçe dil desteği ile
+- ✅ Başvuru formu sayfası (apply.html) - 20 soruluk form
+- ✅ Admin paneli (admin.html) - Sıra yönetimi
+- ✅ CSS dosyası (assets/styles.css) - Karanlık/Açık tema desteği
+- ✅ JavaScript dosyaları (app.js, apply.js, admin.js)
+- ✅ API endpoint'leri (Vercel Functions):
+  - `/api/public.js` - Public showcase
+  - `/api/apply-validate.js` - Token doğrulama
+  - `/api/apply-submit.js` - Form gönderimi
+  - `/api/admin-login.js` - Admin girişi
+  - `/api/admin-logout.js` - Admin çıkışı
+  - `/api/admin-queue.js` - Sıra listesi
+  - `/api/admin-queue-create.js` - Yeni öğe oluştur
+  - `/api/admin-queue-update.js` - Öğe güncelle
+  - `/api/admin/submission.js` - Gönderim detayları
+- ✅ Supabase veritabanı şeması (supabase-schema.sql)
+- ✅ Package.json ve Vercel konfigürasyonu
+- ✅ .gitignore dosyası
+
+#### Dokümantasyon
+- ✅ Tüm MD ve TXT dosyaları tek bir README.md dosyasında birleştirildi
+- ✅ Proje spesifikasyonu, kurulum rehberi, agent spesifikasyonları ve sohbet geçmişi dokümante edildi
+- ✅ Değişiklik geçmişi (Changelog) bölümü eklendi
+
+#### Dil Desteği
+- ✅ Sadece Türkçe dil desteği (İngilizce desteği kaldırıldı)
+
+#### Özellikler
+- ✅ 20 soruluk form sistemi (5 Evet/Hayır, 5 Tek seçim, 4 Çoklu seçim, 5 Kısa metin, 1 Uzun metin)
+- ✅ Otomatik özet üretimi (müşteri özeti + AI JSON payload)
+- ✅ Token tabanlı güvenli form erişimi
+- ✅ Admin paneli ile sıra yönetimi
+- ✅ Tamamlanan siteler showcase'i
+- ✅ Karanlık/Açık tema toggle
+
+---
+
 ## Notlar
 
 - Proje şu anda sadece Türkçe dil desteği ile çalışıyor
@@ -543,6 +586,7 @@ Bu dokümantasyon dosyası oluşturuldu.
 - Tüm kodlar vanilla HTML/CSS/JS ile yazılmış
 - Supabase Postgres veritabanı kullanılıyor
 - Vercel Serverless Functions backend olarak kullanılıyor
+- Tüm değişiklikler bu README.md dosyasına loglanacaktır
 
 ---
 
