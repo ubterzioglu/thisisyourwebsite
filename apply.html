@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Başvuru Formu | thisisyour.website</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="theme-light">
+  <div class="container">
+    <header class="header">
+      <h1>thisisyour.website</h1>
+      <div class="controls">
+        <button id="theme-toggle" class="theme-btn">🌙</button>
+      </div>
+    </header>
+
+    <main id="apply-form-container">
+      <div id="form-loading" class="loading">Yükleniyor...</div>
+      
+      <form id="apply-form" style="display:none;">
+        <h2>Başvuru Formu</h2>
+        <p style="margin-bottom: 2rem; color: #666;">Lütfen tüm soruları eksiksiz doldurun. Bu bilgiler kişisel web sitenizin oluşturulması için kullanılacaktır.</p>
+        
+        <!-- Form will be injected dynamically -->
+        <div id="form-fields"></div>
+        
+        <button type="submit" class="btn primary">Başvuruyu Gönder</button>
+      </form>
+      
+      <div id="thank-you" class="thank-you" style="display:none;">
+        <h2>Teşekkürler!</h2>
+        <p style="margin: 1rem 0;">Başvurunuz alındı. Özetiniz hazır:</p>
+        
+        <div class="summary-content">
+          <div id="summary-text"></div>
+        </div>
+        
+        <button id="copy-summary" class="btn secondary">Özeti Kopyala</button>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">Siteniz yakında hazır olacak!</p>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 thisisyour.website</p>
+    </footer>
+  </div>
+
+  <script src="assets/apply.js"></script>
+</body>
+</html>

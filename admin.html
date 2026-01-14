@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Paneli | thisisyour.website</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="theme-light">
+  <div class="container">
+    <header class="header">
+      <h1>Admin Paneli</h1>
+      <div class="controls">
+        <button id="logout-btn" class="btn secondary" style="display:none;">Çıkış</button>
+        <button id="theme-toggle" class="theme-btn">🌙</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Login Form -->
+      <div id="login-section">
+        <h2>Giriş Yap</h2>
+        <input type="password" id="admin-password" placeholder="Admin şifresi" />
+        <button id="login-btn" class="btn primary">Giriş Yap</button>
+        <p id="login-error" style="color: var(--error); margin-top: 1rem; display: none;"></p>
+      </div>
+
+      <!-- Admin Dashboard -->
+      <div id="admin-dashboard" style="display:none;">
+        <div class="dashboard-header">
+          <h2>Sıra Yönetimi</h2>
+          <button id="create-item-btn" class="btn secondary">+ Yeni Öğe</button>
+        </div>
+
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>İsim</th>
+              <th>Rol</th>
+              <th>Durum</th>
+              <th>Showcase</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+          <tbody id="queue-table-body">
+            <!-- Rows populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal for item details -->
+      <div id="item-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+        <div style="max-width: 800px; margin: 2rem auto; background: var(--bg-light); padding: 2rem; border-radius: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 id="modal-title">Öğe Detayları</h2>
+            <button id="close-modal" class="btn secondary">Kapat</button>
+          </div>
+          <div id="modal-content"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 thisisyour.website Admin</p>
+    </footer>
+  </div>
+
+  <script src="assets/admin.js"></script>
+</body>
+</html>
