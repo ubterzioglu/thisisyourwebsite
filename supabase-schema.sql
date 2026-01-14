@@ -69,3 +69,32 @@ CREATE INDEX idx_intakes_status ON intakes(status);
 CREATE TRIGGER update_intakes_updated_at BEFORE UPDATE
     ON intakes FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+-- Row Level Security (RLS) for intakes table
+ALTER TABLE intakes ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Allow anonymous users to insert new intakes
+CREATE POLICY "Allow anonymous insert" ON intakes
+    FOR INSERT
+    TO anon
+    WITH CHECK (true);
+
+-- Policy: Allow anonymous users to update their own intake by slug
+CREATE POLICY "Allow anonymous update by slug" ON intakes
+    FOR UPDATE
+    TO anon
+    USING (true)
+    WITH CHECK (true);
+
+-- Policy: Allow anonymous users to select their own intake by slug
+CREATE POLICY "Allow anonymous select by slug" ON intakes
+    FOR SELECT
+    TO anon
+    USING (true);
+
+-- Policy: Allow service role to do everything (for admin operations)
+CREATE POLICY "Allow service role all operations" ON intakes
+    FOR ALL
+    TO service_role
+    USING (true)
+    WITH CHECK (true);

@@ -29,65 +29,20 @@ function getSlug() {
   return newSlug;
 }
 
-// Initialize Supabase (load from CDN)
-function initSupabase() {
-  return new Promise((resolve) => {
-    if (window.supabase && window.supabase.createClient) {
-      resolve(window.supabase.createClient(
-        window.SUPABASE_URL,
-        window.SUPABASE_ANON_KEY
-      ));
-      return;
-    }
-    
-    // Load Supabase from CDN
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-    script.onload = () => {
-      resolve(window.supabase.createClient(
-        window.SUPABASE_URL,
-        window.SUPABASE_ANON_KEY
-      ));
-    };
-    script.onerror = () => {
-      console.error('Failed to load Supabase');
-      resolve(null);
-    };
-    document.head.appendChild(script);
-  });
-}
-
-// Get Supabase client
-async function getSupabase() {
-  if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-    console.error('Supabase credentials not configured');
-    return null;
-  }
-  return await initSupabase();
-}
-
-// Create intake record in Supabase
+// Create intake record via API
 async function createIntake(slug) {
-  const supabase = await getSupabase();
-  if (!supabase) {
-    console.warn('Supabase not available, using mock mode');
-    return true;
-  }
-  
   try {
-    const { error } = await supabase
-      .from('intakes')
-      .insert({
-        public_slug: slug,
-        status: 'in_progress',
-        answers: {},
-        created_at: new Date().toISOString()
-      });
+    const response = await fetch('/api/intakes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug })
+    });
     
-    if (error && error.code !== '23505') { // Ignore duplicate key error
-      console.error('Error creating intake:', error);
+    if (!response.ok) {
+      console.error('Error creating intake:', response.statusText);
       return false;
     }
+    
     return true;
   } catch (error) {
     console.error('Error creating intake:', error);
@@ -95,24 +50,20 @@ async function createIntake(slug) {
   }
 }
 
-// Update intake record
+// Update intake record via API
 async function updateIntake(slug, data) {
-  const supabase = await getSupabase();
-  if (!supabase) {
-    console.warn('Supabase not available, using mock mode');
-    return true;
-  }
-  
   try {
-    const { error } = await supabase
-      .from('intakes')
-      .update(data)
-      .eq('public_slug', slug);
+    const response = await fetch(`/api/intakes?slug=${encodeURIComponent(slug)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
     
-    if (error) {
-      console.error('Error updating intake:', error);
+    if (!response.ok) {
+      console.error('Error updating intake:', response.statusText);
       return false;
     }
+    
     return true;
   } catch (error) {
     console.error('Error updating intake:', error);

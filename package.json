@@ -8,7 +8,7 @@
     "build": "echo 'No build step required'"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
+    "@libsql/client": "^0.14.0"
   },
   "devDependencies": {
     "vercel": "^33.0.0"
