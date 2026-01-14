@@ -543,8 +543,12 @@ function updateProgress() {
   }
   
   // Show/hide back and reset buttons
+  // Always show reset button after intro, always show back button after intro
   document.getElementById('btn-back').style.display = currentStep > 0 ? 'block' : 'none';
   document.getElementById('btn-reset').style.display = currentStep > 0 ? 'block' : 'none';
+  
+  // Update button text
+  document.getElementById('btn-back').textContent = '← Geri';
   
   // Update next/finish button
   const nextBtn = document.getElementById('btn-next');

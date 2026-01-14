@@ -140,16 +140,37 @@
     .wizard-nav {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 1rem;
       margin-top: 0.5rem;
+      position: relative;
+    }
+    
+    .wizard-nav #btn-back {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
     
     .wizard-nav.intro-nav {
       justify-content: center;
     }
     
-    .wizard-nav.intro-nav > div:first-child {
-      display: none;
+    .wizard-nav.intro-nav #btn-reset,
+    .wizard-nav.intro-nav #btn-back {
+      display: none !important;
+    }
+    
+    .wizard-nav.intro-nav #btn-back {
+      position: static;
+      transform: none;
+    }
+    
+    .wizard-nav.intro-nav #btn-next {
+      width: 100%;
+      max-width: 400px;
+      position: static;
+      transform: none;
     }
     
     .wizard-nav.intro-nav #btn-next {
@@ -194,7 +215,8 @@
       background: #f5f5f5;
       color: #666;
       font-size: 0.9rem;
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 2rem;
+      margin-right: auto;
     }
 
     .btn-reset:hover {
@@ -240,10 +262,8 @@
     </div>
     
     <div class="wizard-nav">
-      <div style="display: flex; gap: 1rem; align-items: center;">
-        <button id="btn-reset" class="btn-nav btn-reset" style="display: none;">🔄 Sıfırla</button>
-        <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Geri</button>
-      </div>
+      <button id="btn-reset" class="btn-nav btn-reset" style="display: none;">🔄 Sıfırla</button>
+      <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Geri</button>
       <button id="btn-next" class="btn-nav btn-next">İleri →</button>
     </div>
   </div>
