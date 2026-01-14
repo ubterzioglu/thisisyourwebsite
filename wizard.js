@@ -20,9 +20,9 @@ let cvFile = null;
 const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB per file
 const MAX_TOTAL_FILE_SIZE_BYTES = 3 * 1024 * 1024; // 3MB total
 const INTRO_STEP = 0;
-const LONG_TEXT_STEP = QUESTIONS.length + 1;
-const PHOTO_STEP = QUESTIONS.length + 2;
-const CV_STEP = QUESTIONS.length + 3;
+const PHOTO_STEP = QUESTIONS.length + 1;
+const CV_STEP = QUESTIONS.length + 2;
+const LONG_TEXT_STEP = QUESTIONS.length + 3;
 const SUMMARY_STEP = QUESTIONS.length + 4;
 const REVISION_STEP = QUESTIONS.length + 5;
 const TOTAL_STEPS = QUESTIONS.length + 6;
@@ -71,7 +71,7 @@ function renderQuestion() {
           </p>
         </div>
         <p style="margin-top: 1.5rem; color: #666; font-size: 0.95rem;">
-          Toplam <strong>20 soru</strong> + fotoğraf ve CV yükleme + özet sayfası
+          Toplam <strong>20 soru</strong> + fotoğraf yükleme + CV yükleme + ek notlar + özet sayfası
         </p>
       </div>
     `;
@@ -434,6 +434,8 @@ function attachEventListeners() {
       input.value = answers[question.id] || '';
       input.addEventListener('input', (e) => {
         answers[question.id] = e.target.value;
+        // Update button visibility based on answer
+        updateProgress();
       });
     }
   } else if (question.type === 'yesno' || question.type === 'single') {
@@ -469,8 +471,38 @@ function attachEventListeners() {
             label.classList.remove('selected');
           }
         });
+        
+        // Update button visibility based on answer
+        updateProgress();
       });
     });
+  }
+}
+
+// Helper function to check if current step is a question
+function isCurrentStepAQuestion() {
+  return currentStep >= 1 && currentStep <= QUESTIONS.length;
+}
+
+// Helper function to get current question
+function getCurrentQuestion() {
+  if (!isCurrentStepAQuestion()) return null;
+  return QUESTIONS[currentStep - 1];
+}
+
+// Helper function to check if current question is answered
+function isCurrentQuestionAnswered() {
+  if (!isCurrentStepAQuestion()) return true; // Not a question, so "answered"
+  const question = getCurrentQuestion();
+  if (!question) return true;
+  
+  const answer = answers[question.id];
+  if (question.type === 'multi') {
+    return Array.isArray(answer) && answer.length > 0;
+  } else if (question.type === 'text') {
+    return answer !== undefined && answer !== null && answer.trim() !== '';
+  } else {
+    return answer !== undefined && answer !== null && answer !== '';
   }
 }
 
@@ -481,12 +513,12 @@ function updateProgress() {
   let progressText = '';
   if (currentStep === INTRO_STEP) {
     progressText = 'Başlangıç';
-  } else if (currentStep === LONG_TEXT_STEP) {
-    progressText = 'Ek Notlar';
   } else if (currentStep === PHOTO_STEP) {
     progressText = 'Fotoğraf Yükleme';
   } else if (currentStep === CV_STEP) {
     progressText = 'CV Yükleme';
+  } else if (currentStep === LONG_TEXT_STEP) {
+    progressText = 'Ek Notlar';
   } else if (currentStep === SUMMARY_STEP) {
     progressText = 'Özet';
   } else if (currentStep === REVISION_STEP) {
@@ -505,12 +537,23 @@ function updateProgress() {
   if (currentStep === TOTAL_STEPS - 1) {
     nextBtn.textContent = '📧 Gönder';
     nextBtn.className = 'btn-nav btn-finish';
+    nextBtn.style.display = 'block';
   } else if (currentStep === INTRO_STEP) {
     nextBtn.textContent = 'Başla →';
     nextBtn.className = 'btn-nav btn-next';
+    nextBtn.style.display = 'block';
   } else {
-    nextBtn.textContent = 'İleri →';
-    nextBtn.className = 'btn-nav btn-next';
+    // Check if current step is a question with auto-advance (single/yesno)
+    const question = getCurrentQuestion();
+    if (question && (question.type === 'single' || question.type === 'yesno')) {
+      // Hide button for auto-advance questions
+      nextBtn.style.display = 'none';
+    } else {
+      // Show button for multi, text, and other steps
+      nextBtn.textContent = 'İleri →';
+      nextBtn.className = 'btn-nav btn-next';
+      nextBtn.style.display = 'block';
+    }
   }
 }
 
@@ -547,7 +590,15 @@ document.getElementById('btn-back').addEventListener('click', () => {
 
 document.getElementById('btn-next').addEventListener('click', async () => {
   if (currentStep < TOTAL_STEPS - 1) {
-    // Validate current step (optional - allow skipping)
+    // Validate current step if it's a question
+    if (isCurrentStepAQuestion()) {
+      if (!isCurrentQuestionAnswered()) {
+        const question = getCurrentQuestion();
+        alert(`Lütfen bu soruyu cevaplayın: ${question.question}`);
+        return; // Don't advance if not answered
+      }
+    }
+    
     currentStep++;
     renderQuestion();
     updateProgress();
