@@ -298,7 +298,14 @@ function renderQuestion() {
         style="border-color: ${longTextBorderColor}; background-color: white;"
       >${longText}</textarea>
     `;
-    document.getElementById('long-text-input').value = longText;
+    const input = document.getElementById('long-text-input');
+    if (input) {
+      // Ensure value is set and persisted across renders
+      input.value = longText;
+      input.addEventListener('input', (e) => {
+        longText = e.target.value;
+      });
+    }
     return;
   }
   
