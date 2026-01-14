@@ -296,8 +296,10 @@ function attachEventListeners() {
     const input = document.getElementById('cv-input');
     if (input) {
       input.addEventListener('change', (e) => {
+        console.log('CV file input changed!', e.target.files);
         const file = e.target.files[0] || null;
         if (file) {
+          console.log('CV file selected:', file.name, file.size);
           // Dosya boyutu kontrolü: 2MB limit (Vercel Serverless Functions için)
           if (file.size > MAX_FILE_SIZE_BYTES) {
             alert(`CV dosyası çok büyük! Maksimum dosya boyutu: 2MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
@@ -309,9 +311,11 @@ function attachEventListeners() {
             cvFile = null;
           } else {
             cvFile = file;
+            console.log('CV file assigned to cvFile variable:', cvFile.name);
           }
         } else {
           cvFile = null;
+          console.log('CV file cleared');
         }
         // Re-render to show file name
         renderQuestion();
@@ -325,8 +329,10 @@ function attachEventListeners() {
     const input = document.getElementById('photo-input');
     if (input) {
       input.addEventListener('change', (e) => {
+        console.log('Photo file input changed!', e.target.files);
         const file = e.target.files[0] || null;
         if (file) {
+          console.log('Photo file selected:', file.name, file.size);
           // Dosya boyutu kontrolü: 2MB limit (Vercel Serverless Functions için)
           if (file.size > MAX_FILE_SIZE_BYTES) {
             alert(`Fotoğraf dosyası çok büyük! Maksimum dosya boyutu: 2MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
@@ -338,9 +344,11 @@ function attachEventListeners() {
             photoFile = null;
           } else {
             photoFile = file;
+            console.log('Photo file assigned to photoFile variable:', photoFile.name);
           }
         } else {
           photoFile = null;
+          console.log('Photo file cleared');
         }
         // Re-render to show file name
         renderQuestion();
