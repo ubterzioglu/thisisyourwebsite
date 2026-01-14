@@ -162,6 +162,35 @@ function renderQuestion() {
       />
       ${cvFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${cvFile.name}${fileSizeInfo}</p>` : ''}
     `;
+    // Attach event listener immediately after rendering
+    setTimeout(() => {
+      const input = document.getElementById('cv-input');
+      if (input) {
+        input.addEventListener('change', (e) => {
+          console.log('CV file input changed!', e.target.files);
+          const file = e.target.files[0] || null;
+          if (file) {
+            console.log('CV file selected:', file.name, file.size);
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+              alert(`CV dosyası çok büyük! Maksimum dosya boyutu: 2MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+              e.target.value = '';
+              cvFile = null;
+            } else if ((photoFile ? photoFile.size : 0) + file.size > MAX_TOTAL_FILE_SIZE_BYTES) {
+              alert('Toplam dosya boyutu 3MB limitini aşıyor. Lütfen daha küçük dosyalar seçin.');
+              e.target.value = '';
+              cvFile = null;
+            } else {
+              cvFile = file;
+              console.log('CV file assigned to cvFile variable:', cvFile.name);
+            }
+          } else {
+            cvFile = null;
+            console.log('CV file cleared');
+          }
+          renderQuestion();
+        });
+      }
+    }, 0);
     return;
   }
   
@@ -184,6 +213,35 @@ function renderQuestion() {
       />
       ${photoFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${photoFile.name}${fileSizeInfo}</p>` : ''}
     `;
+    // Attach event listener immediately after rendering
+    setTimeout(() => {
+      const input = document.getElementById('photo-input');
+      if (input) {
+        input.addEventListener('change', (e) => {
+          console.log('Photo file input changed!', e.target.files);
+          const file = e.target.files[0] || null;
+          if (file) {
+            console.log('Photo file selected:', file.name, file.size);
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+              alert(`Fotoğraf dosyası çok büyük! Maksimum dosya boyutu: 2MB\nSeçilen dosya: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+              e.target.value = '';
+              photoFile = null;
+            } else if (file.size + (cvFile ? cvFile.size : 0) > MAX_TOTAL_FILE_SIZE_BYTES) {
+              alert('Toplam dosya boyutu 3MB limitini aşıyor. Lütfen daha küçük dosyalar seçin.');
+              e.target.value = '';
+              photoFile = null;
+            } else {
+              photoFile = file;
+              console.log('Photo file assigned to photoFile variable:', photoFile.name);
+            }
+          } else {
+            photoFile = null;
+            console.log('Photo file cleared');
+          }
+          renderQuestion();
+        });
+      }
+    }, 0);
     return;
   }
   
