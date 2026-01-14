@@ -568,57 +568,35 @@ function updateProgress() {
     navContainer.classList.remove('intro-nav');
   }
   
-  // Color palette for buttons
-  const buttonColors = ['#00A8FF', '#32CD32', '#FF9500', '#9D4EDD', '#FFD700'];
-  
   // Show/hide back and reset buttons
   // Always show reset button after intro, always show back button after intro
-  const btnBack = document.getElementById('btn-back');
-  const btnReset = document.getElementById('btn-reset');
-  const btnNext = document.getElementById('btn-next');
-  
-  btnBack.style.display = currentStep > 0 ? 'block' : 'none';
-  btnReset.style.display = currentStep > 0 ? 'block' : 'none';
-  
-  // Apply colors to buttons
-  if (currentStep > 0) {
-    const resetColorIndex = 0; // Blue for reset
-    const backColorIndex = 1; // Green for back
-    const nextColorIndex = 2; // Orange for next
-    
-    btnReset.style.border = `2px solid ${buttonColors[resetColorIndex]}`;
-    btnBack.style.border = `2px solid ${buttonColors[backColorIndex]}`;
-    if (btnNext.style.display !== 'none') {
-      btnNext.style.border = `2px solid ${buttonColors[nextColorIndex]}`;
-    }
-  }
+  document.getElementById('btn-back').style.display = currentStep > 0 ? 'block' : 'none';
+  document.getElementById('btn-reset').style.display = currentStep > 0 ? 'block' : 'none';
   
   // Update button text
-  btnBack.textContent = '⬅️ Geri';
+  document.getElementById('btn-back').textContent = '⬅️ Geri';
   
   // Update next/finish button
+  const nextBtn = document.getElementById('btn-next');
   if (currentStep === TOTAL_STEPS - 1) {
-    btnNext.textContent = '📧 Gönder';
-    btnNext.className = 'btn-nav btn-finish';
-    btnNext.style.display = 'block';
-    btnNext.style.border = `2px solid ${buttonColors[3]}`; // Purple for finish
+    nextBtn.textContent = '📧 Gönder';
+    nextBtn.className = 'btn-nav btn-finish';
+    nextBtn.style.display = 'block';
   } else if (currentStep === INTRO_STEP) {
-    btnNext.textContent = 'Başla →';
-    btnNext.className = 'btn-nav btn-next';
-    btnNext.style.display = 'block';
-    btnNext.style.border = `2px solid ${buttonColors[4]}`; // Yellow for start
+    nextBtn.textContent = 'Başla →';
+    nextBtn.className = 'btn-nav btn-next';
+    nextBtn.style.display = 'block';
   } else {
     // Check if current step is a question with auto-advance (single/yesno)
     const question = getCurrentQuestion();
     if (question && (question.type === 'single' || question.type === 'yesno')) {
       // Hide button for auto-advance questions
-      btnNext.style.display = 'none';
+      nextBtn.style.display = 'none';
     } else {
       // Show button for multi, text, and other steps
-      btnNext.textContent = 'İleri ➡️';
-      btnNext.className = 'btn-nav btn-next';
-      btnNext.style.display = 'block';
-      btnNext.style.border = `2px solid ${buttonColors[2]}`; // Orange for next
+      nextBtn.textContent = 'İleri ➡️';
+      nextBtn.className = 'btn-nav btn-next';
+      nextBtn.style.display = 'block';
     }
   }
 }
