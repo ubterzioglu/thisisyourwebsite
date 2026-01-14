@@ -118,28 +118,31 @@ function renderQuestion() {
         <div style="line-height: 1.8; color: #444;">${formatSummaryWithBold(userSummary) || 'Özet bulunamadı'}</div>
       </div>
       ${longText ? `
-        <div style="background: #fff3cd; border-radius: 12px; padding: 2rem; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
-          <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">Sizin ek istekleriniz:</h3>
+        <div style="background: #e3f2fd; border-radius: 12px; padding: 2rem; border-left: 4px solid #00A8FF; margin-bottom: 1.5rem;">
+          <h3 style="margin-bottom: 1rem; color: #333; font-size: 0.9rem; font-weight: 700;">Sizin ek istekleriniz:</h3>
           <div style="white-space: pre-wrap; line-height: 1.8; color: #444;">${longText}</div>
         </div>
       ` : `
         <div style="background: #f9f9f9; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;">
-          <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">Ek Notlar:</h3>
+          <h3 style="margin-bottom: 1rem; color: #333; font-size: 0.9rem; font-weight: 700;">Ek Notlar:</h3>
           <div style="color: #999; font-style: italic;">Ek not eklenmedi.</div>
         </div>
       `}
-      <div style="background: #fff3cd; border-radius: 12px; padding: 2rem; border-left: 4px solid #ffc107; margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">📝 3 Revizyon Hakkı</h3>
+      <div style="background: #e6f4ea; border-radius: 12px; padding: 2rem; border-left: 4px solid #32CD32; margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: #333; font-size: 0.9rem; font-weight: 700;">3 Revizyon Hakkı</h3>
         <div style="line-height: 1.8; color: #444;">
           <p style="margin-bottom: 1rem;">
-            Web siteniz hazır olduğunda, size özel bir <strong>revizyon linki</strong> göndereceğiz.
+            Web siteniz hazır olduğunda, aşağıdaki linki kullanarak bize revizyon talebinde bulunabilirsiniz.
           </p>
           <p style="margin-bottom: 1rem;">
-            Bu link üzerinden web sitenizde değişiklik yapmak istediğiniz noktaları belirtebilirsiniz.
+            Web sayfanızda değişiklik yapmak istediğiniz noktaları belirtebilirsiniz.
           </p>
-          <p style="margin: 0; font-weight: 600;">
+          <p style="margin-bottom: 1rem; font-weight: 600;">
             Toplam <strong>3 revizyon hakkınız</strong> bulunmaktadır.
           </p>
+          <a href="revision.html?slug=${publicSlug}" style="display: inline-block; padding: 0.5rem 0.9rem; background: white; color: #333; border: 2px solid #32CD32; border-radius: 10px; font-weight: 600; font-size: 0.85rem; text-decoration: none;">
+            🔗 Revizyon Linki
+          </a>
         </div>
       </div>
     `;
