@@ -46,11 +46,36 @@
       justify-content: flex-start;
     }
     
+    .intro-card {
+      padding: 1.5rem;
+      min-height: auto;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .intro-card {
+        padding: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+    
     .question-title {
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 2rem;
       color: #333;
+    }
+    
+    .intro-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .intro-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+      }
     }
     
     .answer-options {
@@ -113,6 +138,19 @@
       justify-content: space-between;
       gap: 1rem;
       margin-top: 2rem;
+    }
+    
+    .wizard-nav.intro-nav {
+      justify-content: center;
+    }
+    
+    .wizard-nav.intro-nav > div:first-child {
+      display: none;
+    }
+    
+    .wizard-nav.intro-nav #btn-next {
+      width: 100%;
+      max-width: 400px;
     }
     
     .btn-nav {

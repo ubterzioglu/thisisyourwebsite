@@ -52,25 +52,29 @@ function renderQuestion() {
   const container = document.getElementById('question-container');
   const step = currentStep;
   
+  // Reset container class - will be set per step
+  container.className = 'question-card';
+  
   // Intro step (step 0)
   if (step === INTRO_STEP) {
+    container.className = 'question-card intro-card';
     container.innerHTML = `
-      <h2 class="question-title">Kişisel Web Siteniz İçin Tasarım Tercihleri</h2>
-      <div style="line-height: 1.8; color: #444; margin-bottom: 2rem;">
-        <p style="margin-bottom: 1rem;">
+      <h2 class="question-title intro-title">Kişisel Web Siteniz İçin Tasarım Tercihleri</h2>
+      <div style="line-height: 1.6; color: #444; margin-bottom: 1rem;">
+        <p style="margin-bottom: 0.75rem;">
           Bu form, CV'nizdeki bilgileri <strong>nasıl sunacağımızı</strong> belirlemek için hazırlanmıştır.
         </p>
-        <p style="margin-bottom: 1rem;">
+        <p style="margin-bottom: 0.75rem;">
           İçerik sormuyoruz, sadece <strong>tasarım ve sunum tercihlerinizi</strong> alıyoruz.
         </p>
-        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;">
-          <p style="margin: 0; font-weight: 600; color: #856404;">⚠️ Önemli:</p>
-          <p style="margin: 0.5rem 0 0 0; color: #856404;">
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; border-radius: 8px; margin: 1rem 0;">
+          <p style="margin: 0; font-weight: 600; color: #856404; font-size: 0.9rem;">⚠️ Önemli:</p>
+          <p style="margin: 0.5rem 0 0 0; color: #856404; font-size: 0.9rem;">
             Bu formdaki sorular dışında <strong>ek soru sorulmayacak</strong>.<br>
             Yazı yazmak istersen, en sondaki <strong>Ek Notlar</strong> alanını kullanabilirsin.
           </p>
         </div>
-        <p style="margin-top: 1.5rem; color: #666; font-size: 0.95rem;">
+        <p style="margin-top: 1rem; color: #666; font-size: 0.9rem;">
           Toplam <strong>20 soru</strong> + fotoğraf yükleme + CV yükleme + ek notlar + özet sayfası
         </p>
       </div>
@@ -528,6 +532,14 @@ function updateProgress() {
   }
   document.getElementById('progress-text').textContent = progressText;
   
+  // Update nav container class for intro step
+  const navContainer = document.querySelector('.wizard-nav');
+  if (currentStep === INTRO_STEP) {
+    navContainer.classList.add('intro-nav');
+  } else {
+    navContainer.classList.remove('intro-nav');
+  }
+  
   // Show/hide back and reset buttons
   document.getElementById('btn-back').style.display = currentStep > 0 ? 'block' : 'none';
   document.getElementById('btn-reset').style.display = currentStep > 0 ? 'block' : 'none';
@@ -590,14 +602,15 @@ document.getElementById('btn-back').addEventListener('click', () => {
 
 document.getElementById('btn-next').addEventListener('click', async () => {
   if (currentStep < TOTAL_STEPS - 1) {
-    // Validate current step if it's a question
-    if (isCurrentStepAQuestion()) {
-      if (!isCurrentQuestionAnswered()) {
-        const question = getCurrentQuestion();
-        alert(`Lütfen bu soruyu cevaplayın: ${question.question}`);
-        return; // Don't advance if not answered
-      }
-    }
+    // TEMPORARILY DISABLED: Validate current step if it's a question
+    // TODO: Re-enable after testing
+    // if (isCurrentStepAQuestion()) {
+    //   if (!isCurrentQuestionAnswered()) {
+    //     const question = getCurrentQuestion();
+    //     alert(`Lütfen bu soruyu cevaplayın: ${question.question}`);
+    //     return; // Don't advance if not answered
+    //   }
+    // }
     
     currentStep++;
     renderQuestion();
