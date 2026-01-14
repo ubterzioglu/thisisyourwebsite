@@ -94,7 +94,7 @@ function renderQuestion() {
           İletmek istediğin notlar için en sondaki "Ek Notlar" alanını kullanabilirsiniz.
         </p>
         <p style="margin-top: 1rem; color: #666; font-weight: normal;">
-          Toplam 20 soru + Fotoğraf ve CV Yükleme + Sizden Ek Notlar
+          Toplam ${QUESTIONS.length} soru + Fotoğraf ve CV Yükleme + Sizden Ek Notlar
         </p>
       </div>
     `;
@@ -600,10 +600,17 @@ function updateProgress() {
     nextBtn.textContent = '📧 Gönder';
     nextBtn.className = 'btn-nav btn-finish';
     nextBtn.style.display = 'block';
+    nextBtn.disabled = false;
+    nextBtn.style.opacity = '1';
+    nextBtn.style.cursor = 'pointer';
   } else if (currentStep === INTRO_STEP) {
+    // Başla butonu - always active, separate from other buttons
     nextBtn.textContent = 'Başla →';
-    nextBtn.className = 'btn-nav btn-next';
+    nextBtn.className = 'btn-nav btn-next btn-start';
     nextBtn.style.display = 'block';
+    nextBtn.disabled = false;
+    nextBtn.style.opacity = '1';
+    nextBtn.style.cursor = 'pointer';
   } else {
     // Check if current step is a question with auto-advance (single/yesno)
     const question = getCurrentQuestion();

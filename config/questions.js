@@ -198,8 +198,38 @@ export const QUESTIONS = [
     options: ['Klasik', 'Modern', 'Deneysel', 'Güvenli tarafta'],
     summaryTemplate: (answer) => `Genel yaklaşım: ${answer}`,
     promptTemplate: (answer) => `General approach: ${answer}`
-  }
+  },
   
+  // Q21: İletişim kanalları
+  {
+    id: 'q21',
+    type: 'multi',
+    question: 'Aşağıdaki kanallardan hangileriyle size ulaşabiliriz?',
+    options: ['WhatsApp (Hızlı)', 'LinkedIn (Normal)', 'Mail (Yavaş)', 'Duman (Çok Yavaş)'],
+    summaryTemplate: (answer) => `İletişim kanalları: ${Array.isArray(answer) ? answer.join(', ') : answer}`,
+    promptTemplate: (answer) => `Contact channels: ${Array.isArray(answer) ? answer.join(', ') : answer}`
+  },
+  
+  // Q22: Portfolyo izni
+  {
+    id: 'q22',
+    type: 'yesno',
+    question: 'Sayfanızı bitirdikten sonra portfolyomuza ekleyebilir miyiz?',
+    options: ['Evet', 'Hayır'],
+    summaryTemplate: (answer) => `Portfolyoya ekleme izni: ${answer === 'true' ? 'Evet' : 'Hayır'}`,
+    promptTemplate: (answer) => `Portfolio permission: ${answer === 'true' ? 'Yes' : 'No'}`
+  },
+  
+  // Q23: Tavsiye etme
+  {
+    id: 'q23',
+    type: 'yesno',
+    question: 'Sayfanızı beğendiğiniz takdirde bizi arkadaşlarınıza tavsiye eder misiniz?',
+    options: ['Evet', 'Hayır'],
+    summaryTemplate: (answer) => `Tavsiye etme: ${answer === 'true' ? 'Evet' : 'Hayır'}`,
+    promptTemplate: (answer) => `Recommendation: ${answer === 'true' ? 'Yes' : 'No'}`
+  }
+
   // Fotoğraf ve CV yükleme adımları wizard.js'de ayrı adımlar olarak zaten var
 ];
 
