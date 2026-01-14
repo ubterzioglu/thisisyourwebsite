@@ -19,6 +19,13 @@ let photoFile = null;
 let cvFile = null;
 const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB per file
 const MAX_TOTAL_FILE_SIZE_BYTES = 3 * 1024 * 1024; // 3MB total
+const INTRO_STEP = 0;
+const LONG_TEXT_STEP = QUESTIONS.length + 1;
+const PHOTO_STEP = QUESTIONS.length + 2;
+const CV_STEP = QUESTIONS.length + 3;
+const SUMMARY_STEP = QUESTIONS.length + 4;
+const REVISION_STEP = QUESTIONS.length + 5;
+const TOTAL_STEPS = QUESTIONS.length + 6;
 
 // Get slug from URL or generate new one
 function getSlug() {
@@ -43,11 +50,10 @@ function initWizard() {
 // Render current question
 function renderQuestion() {
   const container = document.getElementById('question-container');
-  const totalSteps = QUESTIONS.length + 6; // 1 intro + 20 questions + 1 long text + 1 photo + 1 CV + 1 summary + 1 revision info
   const step = currentStep;
   
   // Intro step (step 0)
-  if (step === 0) {
+  if (step === INTRO_STEP) {
     container.innerHTML = `
       <h2 class="question-title">Kişisel Web Siteniz İçin Tasarım Tercihleri</h2>
       <div style="line-height: 1.8; color: #444; margin-bottom: 2rem;">
@@ -73,7 +79,7 @@ function renderQuestion() {
   }
   
   // Revision info step (after summary, before submit)
-  if (step === QUESTIONS.length + 4) {
+  if (step === REVISION_STEP) {
     container.innerHTML = `
       <h2 class="question-title">Revizyon Hakkınız</h2>
       <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem;">
@@ -112,7 +118,7 @@ function renderQuestion() {
   }
   
   // Summary step
-  if (step === QUESTIONS.length + 3) {
+  if (step === SUMMARY_STEP) {
     const userSummary = buildUserSummary(answers);
     container.innerHTML = `
       <h2 class="question-title">Özet</h2>
@@ -138,7 +144,7 @@ function renderQuestion() {
   }
   
   // CV upload step
-  if (step === QUESTIONS.length + 2) {
+  if (step === CV_STEP) {
     const fileSizeInfo = cvFile ? ` (${(cvFile.size / 1024 / 1024).toFixed(2)}MB)` : '';
     container.innerHTML = `
       <h2 class="question-title">CV Yükleme</h2>
@@ -160,7 +166,7 @@ function renderQuestion() {
   }
   
   // Photo upload step
-  if (step === QUESTIONS.length + 1) {
+  if (step === PHOTO_STEP) {
     const fileSizeInfo = photoFile ? ` (${(photoFile.size / 1024 / 1024).toFixed(2)}MB)` : '';
     container.innerHTML = `
       <h2 class="question-title">Fotoğraf Yükleme</h2>
@@ -182,7 +188,7 @@ function renderQuestion() {
   }
   
   // Long text step
-  if (step === QUESTIONS.length) {
+  if (step === LONG_TEXT_STEP) {
     container.innerHTML = `
       <h2 class="question-title">Ek Notlarınız</h2>
       <p style="margin-bottom: 1.5rem; color: #666;">
@@ -271,22 +277,22 @@ function attachEventListeners() {
   const step = currentStep;
   
   // Intro step - no input needed
-  if (step === 0) {
+  if (step === INTRO_STEP) {
     return;
   }
   
   // Revision info step - no input needed
-  if (step === QUESTIONS.length + 4) {
+  if (step === REVISION_STEP) {
     return;
   }
   
   // Summary step - no input needed
-  if (step === QUESTIONS.length + 3) {
+  if (step === SUMMARY_STEP) {
     return;
   }
   
   // CV upload step
-  if (step === QUESTIONS.length + 2) {
+  if (step === CV_STEP) {
     const input = document.getElementById('cv-input');
     if (input) {
       input.addEventListener('change', (e) => {
@@ -315,7 +321,7 @@ function attachEventListeners() {
   }
   
   // Photo upload step
-  if (step === QUESTIONS.length + 1) {
+  if (step === PHOTO_STEP) {
     const input = document.getElementById('photo-input');
     if (input) {
       input.addEventListener('change', (e) => {
@@ -343,7 +349,7 @@ function attachEventListeners() {
     return;
   }
   
-  if (step === QUESTIONS.length) {
+  if (step === LONG_TEXT_STEP) {
     // Long text step
     const input = document.getElementById('long-text-input');
     if (input) {
@@ -372,8 +378,7 @@ function attachEventListeners() {
         answers[question.id] = btn.dataset.value;
         
         // Otomatik olarak bir sonraki soruya geç (kısa delay ile)
-        const totalSteps = QUESTIONS.length + 6;
-        if (currentStep < totalSteps - 1) {
+        if (currentStep < TOTAL_STEPS - 1) {
           setTimeout(() => {
             currentStep++;
             renderQuestion();
@@ -404,22 +409,21 @@ function attachEventListeners() {
 }
 
 function updateProgress() {
-  const totalSteps = QUESTIONS.length + 6; // 1 intro + 20 questions + 1 long text + 1 photo + 1 CV + 1 summary + 1 revision info
-  const progress = ((currentStep + 1) / totalSteps) * 100;
+  const progress = ((currentStep + 1) / TOTAL_STEPS) * 100;
   document.getElementById('progress-fill').style.width = `${progress}%`;
   
   let progressText = '';
-  if (currentStep === 0) {
+  if (currentStep === INTRO_STEP) {
     progressText = 'Başlangıç';
-  } else if (currentStep === QUESTIONS.length) {
+  } else if (currentStep === LONG_TEXT_STEP) {
     progressText = 'Ek Notlar';
-  } else if (currentStep === QUESTIONS.length + 1) {
+  } else if (currentStep === PHOTO_STEP) {
     progressText = 'Fotoğraf Yükleme';
-  } else if (currentStep === QUESTIONS.length + 2) {
+  } else if (currentStep === CV_STEP) {
     progressText = 'CV Yükleme';
-  } else if (currentStep === QUESTIONS.length + 3) {
+  } else if (currentStep === SUMMARY_STEP) {
     progressText = 'Özet';
-  } else if (currentStep === QUESTIONS.length + 4) {
+  } else if (currentStep === REVISION_STEP) {
     progressText = 'Revizyon Bilgisi';
   } else {
     progressText = `Soru ${currentStep} / ${QUESTIONS.length}`;
@@ -432,10 +436,10 @@ function updateProgress() {
   
   // Update next/finish button
   const nextBtn = document.getElementById('btn-next');
-  if (currentStep === totalSteps - 1) {
+  if (currentStep === TOTAL_STEPS - 1) {
     nextBtn.textContent = '📧 Gönder';
     nextBtn.className = 'btn-nav btn-finish';
-  } else if (currentStep === 0) {
+  } else if (currentStep === INTRO_STEP) {
     nextBtn.textContent = 'Başla →';
     nextBtn.className = 'btn-nav btn-next';
   } else {
@@ -476,9 +480,7 @@ document.getElementById('btn-back').addEventListener('click', () => {
 });
 
 document.getElementById('btn-next').addEventListener('click', async () => {
-  const totalSteps = QUESTIONS.length + 6; // 1 intro + 20 questions + 1 long text + 1 photo + 1 CV + 1 summary + 1 revision info
-  
-  if (currentStep < totalSteps - 1) {
+  if (currentStep < TOTAL_STEPS - 1) {
     // Validate current step (optional - allow skipping)
     currentStep++;
     renderQuestion();
