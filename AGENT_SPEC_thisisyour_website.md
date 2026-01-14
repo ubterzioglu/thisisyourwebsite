@@ -20,4 +20,4 @@ verbatim, including all sections 0–12, all features A–E, all rules, scoring 
 implementation details, and HTML-commented UBT TODO blocks.]
 
 NOTE:
-This file is generated for download & reuse.
+This file is generated for download & reuse.a
