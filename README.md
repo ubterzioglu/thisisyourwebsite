@@ -91,6 +91,8 @@ turso db shell thisisyourwebsite < turso-schema.sql
    - `TURSO_DATABASE_URL` ✅
    - `TURSO_AUTH_TOKEN` ✅
    - `ADMIN_PASSWORD`
+   - `ZOHO_SMTP_HOST`, `ZOHO_SMTP_PORT`, `ZOHO_SMTP_USER`, `ZOHO_SMTP_PASS`
+   - `MAIL_FROM`, `MAIL_TO`
 4. Deploy!
 
 ---
@@ -397,7 +399,13 @@ GoatCounter analytics tüm HTML sayfalarında aktif:
      - `TURSO_DATABASE_URL` (zaten eklendi ✅)
      - `TURSO_AUTH_TOKEN` (zaten eklendi ✅)
      - `ADMIN_PASSWORD`
-   - **Neden**: Uygulamanın çalışması için gerekli
+     - `ZOHO_SMTP_HOST` (örn: `smtp.zoho.eu`)
+     - `ZOHO_SMTP_PORT` (örn: `465`)
+     - `ZOHO_SMTP_USER` (Zoho email adresiniz)
+     - `ZOHO_SMTP_PASS` (Zoho app password)
+     - `MAIL_FROM` (Gönderen email adresi)
+     - `MAIL_TO` (Form gönderimlerinin iletileceği email)
+   - **Neden**: Uygulamanın çalışması ve email bildirimleri için gerekli
 
 ### Orta Öncelik (Önerilen)
 

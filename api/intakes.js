@@ -72,6 +72,23 @@ export default async function handler(req, res) {
         ]
       });
       
+      // Email gönder (sadece status 'submitted' ise)
+      if (status === 'submitted') {
+        try {
+          const { sendIntakeEmail } = await import('../lib/email.js');
+          const intakeData = {
+            public_slug: slug,
+            user_summary,
+            long_text,
+            answers
+          };
+          await sendIntakeEmail(intakeData);
+        } catch (emailError) {
+          // Email hatası kritik değil, logla ama devam et
+          console.error('Email send error (non-critical):', emailError);
+        }
+      }
+      
       return res.status(200).json({ success: true });
     } catch (error) {
       console.error('Error updating intake:', error);
