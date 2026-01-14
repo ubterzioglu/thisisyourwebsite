@@ -822,8 +822,13 @@ async function submitWizard() {
     // Email başarıyla gönderildi
     alert('Formunuz başarıyla gönderildi! Teşekkürler.');
     
-    // Redirect to result page (veya ana sayfaya)
-    window.location.href = `result.html?slug=${publicSlug}`;
+    // Redirect to result page with longText as URL parameter
+    const params = new URLSearchParams();
+    params.set('slug', publicSlug);
+    if (longText && longText.trim()) {
+      params.set('longText', encodeURIComponent(longText));
+    }
+    window.location.href = `result.html?${params.toString()}`;
   } catch (error) {
     console.error('Submit error:', error);
     alert('Bir hata oluştu: ' + error.message + '\nLütfen tekrar deneyin.');
