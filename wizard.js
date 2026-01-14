@@ -612,7 +612,7 @@ function updateProgress() {
     nextBtn.style.cursor = 'pointer';
   } else if (currentStep === INTRO_STEP) {
     // Başla butonu - always active, separate from other buttons
-    nextBtn.textContent = 'Başla →';
+    nextBtn.textContent = 'Başla ➡️';
     nextBtn.className = 'btn-nav btn-next btn-start';
     nextBtn.style.display = 'block';
     nextBtn.disabled = false;
