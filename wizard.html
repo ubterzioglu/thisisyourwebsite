@@ -154,7 +154,7 @@
     }
     
     .wizard-nav.intro-nav {
-      justify-content: center;
+      justify-content: space-between;
     }
     
     .wizard-nav.intro-nav #btn-reset,
@@ -168,10 +168,23 @@
     }
     
     .wizard-nav.intro-nav #btn-next {
-      width: 100%;
-      max-width: 400px;
       position: static;
       transform: none;
+    }
+
+    .btn-home {
+      background: white;
+      color: #333;
+      border: 2px solid #e0e0e0;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-home:hover {
+      background: #f5f7fa;
+      border-color: #667eea;
     }
     
     .btn-nav {
@@ -296,6 +309,7 @@
     </div>
     
     <div class="wizard-nav">
+      <a id="btn-home" class="btn-nav btn-home" href="index.html" style="display: none;">🏠 Ana Sayfa</a>
       <button id="btn-reset" class="btn-nav btn-reset" style="display: none;">🔄 Sıfırla</button>
       <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Geri</button>
       <button id="btn-next" class="btn-nav btn-next">İleri →</button>

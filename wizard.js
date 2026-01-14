@@ -570,10 +570,13 @@ function updateProgress() {
   
   // Update nav container class for intro step
   const navContainer = document.querySelector('.wizard-nav');
+  const homeBtn = document.getElementById('btn-home');
   if (currentStep === INTRO_STEP) {
     navContainer.classList.add('intro-nav');
+    if (homeBtn) homeBtn.style.display = 'inline-flex';
   } else {
     navContainer.classList.remove('intro-nav');
+    if (homeBtn) homeBtn.style.display = 'none';
   }
   
   // Show/hide back and reset buttons
