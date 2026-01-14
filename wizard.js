@@ -163,13 +163,18 @@ function renderQuestion() {
       <p style="margin-bottom: 1.5rem; color: #ff9800; font-weight: 600; font-size: 0.9rem;">
         ⚠️ Maksimum dosya boyutu: 2MB (toplam 3MB)
       </p>
-      <input 
-        type="file" 
-        id="cv-input" 
-        accept=".pdf,.docx,.doc"
-        style="width: 100%; padding: 1rem; border: 2px solid ${cvBorderColor}; border-radius: 12px; font-size: 0.9rem;"
-      />
-      ${cvFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${cvFile.name}${fileSizeInfo}</p>` : ''}
+      <div class="file-upload">
+        <input 
+          type="file" 
+          id="cv-input" 
+          class="file-input-hidden"
+          accept=".pdf,.docx,.doc"
+        />
+        <label for="cv-input" class="file-button" style="border-color: ${cvBorderColor};">
+          📎 Dosya Seç
+        </label>
+        <span class="file-name">${cvFile ? `${cvFile.name}${fileSizeInfo}` : 'Dosya seçilmedi'}</span>
+      </div>
     `;
     // Attach event listener immediately after rendering
     setTimeout(() => {
@@ -217,13 +222,18 @@ function renderQuestion() {
       <p style="margin-bottom: 1.5rem; color: #ff9800; font-weight: 600; font-size: 0.9rem;">
         ⚠️ Maksimum dosya boyutu: 2MB (toplam 3MB)
       </p>
-      <input 
-        type="file" 
-        id="photo-input" 
-        accept="image/jpeg,image/png,image/webp"
-        style="width: 100%; padding: 1rem; border: 2px solid ${photoBorderColor}; border-radius: 12px; font-size: 0.9rem;"
-      />
-      ${photoFile ? `<p style="margin-top: 1rem; color: #32cd32; font-weight: 600;">✅ ${photoFile.name}${fileSizeInfo}</p>` : ''}
+      <div class="file-upload">
+        <input 
+          type="file" 
+          id="photo-input" 
+          class="file-input-hidden"
+          accept="image/jpeg,image/png,image/webp"
+        />
+        <label for="photo-input" class="file-button" style="border-color: ${photoBorderColor};">
+          📎 Dosya Seç
+        </label>
+        <span class="file-name">${photoFile ? `${photoFile.name}${fileSizeInfo}` : 'Dosya seçilmedi'}</span>
+      </div>
     `;
     // Attach event listener immediately after rendering
     setTimeout(() => {
@@ -316,14 +326,18 @@ function renderQuestion() {
       />
     `;
   } else if (question.type === 'yesno') {
+    const yesBorderColor = colors[colorIndex];
+    const noBorderColor = colors[(colorIndex + 1) % colors.length];
     html += `
       <div class="answer-options">
         <button class="option-button ${answers[question.id] === 'true' ? 'selected' : ''}" 
-                data-value="true">
+                data-value="true"
+                style="border-color: ${yesBorderColor};">
           Evet
         </button>
         <button class="option-button ${answers[question.id] === 'false' ? 'selected' : ''}" 
-                data-value="false">
+                data-value="false"
+                style="border-color: ${noBorderColor};">
           Hayır
         </button>
       </div>
@@ -765,16 +779,16 @@ async function submitWizard() {
     console.log('=== END DEBUG ===');
     
     // Send email (wizard verilerini email olarak gönder)
-    let emailBody = `Yeni Wizard Gönderimi\n\nSlug: ${publicSlug}\n\n`;
+    let emailBody = `Yeni Sayfa Detayı\n\nSlug: ${publicSlug}\n\n`;
     if (photoFile) emailBody += `✅ Fotoğraf yüklendi: ${photoFile.name}\n`;
     if (cvFile) emailBody += `✅ CV yüklendi: ${cvFile.name}\n`;
     emailBody += `\n20 Soru Özeti:\n${userSummary || 'Özet bulunamadı'}\n\n`;
     const emailMessage = longText ? `${emailBody}Sizin ek istekleriniz:\n${longText}` : emailBody;
     
     const requestBody = {
-      name: 'Wizard Form',
+      name: 'Sayfa Detayı',
       email: 'wizard@thisisyour.website',
-      subject: `Yeni Wizard Gönderimi - ${publicSlug}`,
+      subject: `Yeni Sayfa Detayı - ${publicSlug}`,
       message: emailMessage,
       attachments: attachments
     };

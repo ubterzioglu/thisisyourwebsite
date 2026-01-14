@@ -6,96 +6,105 @@
   <title>Gözden Geçirme | thisisyour.website</title>
   <link rel="stylesheet" href="assets/styles.css" />
   <style>
-    .revision-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    
     .revision-card {
       background: white;
       border-radius: 16px;
       padding: 2.5rem;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       margin-bottom: 2rem;
+      border: 3px solid #9D4EDD;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-size: 0.9rem;
     }
-    
+
     .revision-card h1 {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 800;
       margin-bottom: 1rem;
       color: #333;
     }
-    
+
     .revision-card p {
-      color: #666;
-      margin-bottom: 2rem;
+      color: #444;
+      margin-bottom: 1.5rem;
       line-height: 1.6;
     }
-    
+
     .textarea-input {
       width: 100%;
-      min-height: 300px;
+      min-height: 260px;
       padding: 1rem;
-      border: 2px solid #e0e0e0;
+      border: 2px solid #00A8FF;
       border-radius: 12px;
-      font-size: 1rem;
-      font-family: inherit;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
       resize: vertical;
+      background-color: white;
+      color: #333;
     }
-    
+
+    .textarea-input::placeholder {
+      color: #888;
+    }
+
     .textarea-input:focus {
       outline: none;
       border-color: #667eea;
     }
-    
+
     .btn-submit {
       width: 100%;
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
       border-radius: 12px;
-      font-size: 1.125rem;
-      font-weight: 600;
+      font-size: 0.9rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 1.5rem;
+      transition: all 0.2s;
+      margin-top: 1.25rem;
     }
-    
+
     .btn-submit:hover {
-      opacity: 0.9;
+      background: #f5f7fa;
     }
-    
+
     .btn-submit:disabled {
-      opacity: 0.5;
+      opacity: 0.6;
       cursor: not-allowed;
     }
-    
-    .message {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      display: none;
-      text-align: center;
-    }
-    
-    .message.success {
-      background: #d4edda;
+
+    .success-box {
+      background: #e6f4ea;
+      border-left: 4px solid #32CD32;
+      border-radius: 12px;
+      padding: 1.5rem;
       color: #155724;
-      border: 1px solid #c3e6cb;
+      line-height: 1.7;
     }
-    
-    .message.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
+
+    .btn-home {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      margin-top: 1.25rem;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      background: #f5f7fa;
     }
   </style>
 </head>
 <body class="theme-light">
-  <div class="revision-container">
-    <div class="revision-card">
+  <div class="container">
+    <div class="revision-card" id="revision-card">
       <h1>Gözden Geçirme</h1>
       <p>
         Eklemek veya düzenlemek istediğiniz notlarınızı aşağıya yazabilirsiniz.
@@ -108,25 +117,24 @@
       ></textarea>
       
       <button id="submit-btn" class="btn-submit">Gönder</button>
-      
-      <div id="message-div" class="message"></div>
     </div>
   </div>
   
   <script type="module">
     const submitBtn = document.getElementById('submit-btn');
     const longTextInput = document.getElementById('long-text-input');
-    const messageDiv = document.getElementById('message-div');
+    const cardEl = document.getElementById('revision-card');
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug') || '';
     
     submitBtn.addEventListener('click', async () => {
       const longText = longTextInput.value.trim();
       
       submitBtn.disabled = true;
       submitBtn.textContent = 'Gönderiliyor...';
-      messageDiv.style.display = 'none';
       
       try {
-        const emailBody = `Yeni Revision Gönderimi\n\nEk Notlar:\n${longText || 'Not eklenmemiş'}\n\n`;
+        const emailBody = `Revizyon İsteği\n\nSlug: ${slug || 'yok'}\n\nEk Notlar:\n${longText || 'Not eklenmemiş'}\n\n`;
         
         const response = await fetch('/api/send', {
           method: 'POST',
@@ -136,6 +144,7 @@
           body: JSON.stringify({
             name: 'Revision Form',
             email: 'revision@thisisyour.website',
+            subject: `Revizyon İsteği${slug ? ` - ${slug}` : ''}`,
             message: emailBody
           })
         });
@@ -145,20 +154,26 @@
           throw new Error(errorData.error || 'Email gönderilemedi');
         }
         
-        // Başarı
-        messageDiv.className = 'message success';
-        messageDiv.textContent = 'Notlarınız başarıyla gönderildi! Teşekkürler.';
-        messageDiv.style.display = 'block';
-        
-        longTextInput.value = '';
+        // Başarı ekranı (detayları gizle)
+        if (cardEl) {
+          cardEl.innerHTML = `
+            <h1>Başarıyla Gönderildi</h1>
+            <div class="success-box">
+              Revizyon notlarınız bize ulaştı. Teşekkürler! Kısa süre içinde inceleyip size dönüş yapacağız.
+            </div>
+            <div style="text-align: center;">
+              <a class="btn-home" href="index.html">🏠 Başa Dön</a>
+            </div>
+          `;
+        }
       } catch (error) {
         console.error('Submit error:', error);
-        messageDiv.className = 'message error';
-        messageDiv.textContent = 'Bir hata oluştu: ' + error.message;
-        messageDiv.style.display = 'block';
+        alert('Bir hata oluştu: ' + error.message);
       } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Gönder';
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Gönder';
+        }
       }
     });
   </script>

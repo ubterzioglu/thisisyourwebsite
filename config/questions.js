@@ -228,6 +228,16 @@ export const QUESTIONS = [
     options: ['Evet', 'Hayır'],
     summaryTemplate: (answer) => `Tavsiye etme: ${answer === 'true' ? 'Evet' : 'Hayır'}`,
     promptTemplate: (answer) => `Recommendation: ${answer === 'true' ? 'Yes' : 'No'}`
+  },
+
+  // Q24: Ad Soyad
+  {
+    id: 'q24',
+    type: 'text',
+    question: 'Adınız Soyadınız',
+    options: [],
+    summaryTemplate: (answer) => `Ad Soyad: ${answer}`,
+    promptTemplate: (answer) => `Full name: ${answer}`
   }
 
   // Fotoğraf ve CV yükleme adımları wizard.js'de ayrı adımlar olarak zaten var
