@@ -578,7 +578,8 @@ Bu dokümantasyon dosyası oluşturuldu.
 - ✅ Karanlık/Açık tema toggle
 
 #### Düzeltmeler
-- ✅ Vercel deployment hatası düzeltildi: `vercel.json` dosyasındaki runtime formatı `@vercel/node` olarak güncellendi
+- ✅ Vercel deployment hatası düzeltildi: `vercel.json` dosyası oluşturuldu (outputDirectory root olarak ayarlandı)
+- ✅ Build başarıyla çalışıyor: npm deprecation uyarıları normal (bağımlılık alt paketlerinden geliyor, kritik değil)
 
 #### Temizlik
 - ✅ Proje temizliği yapıldı: Vercel config klasörü, build çıktıları ve gereksiz dosyalar temizlendi
