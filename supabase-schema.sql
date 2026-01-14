@@ -47,3 +47,25 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_queue_items_updated_at BEFORE UPDATE
     ON queue_items FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+-- Intakes Table (for wizard submissions)
+CREATE TABLE intakes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  public_slug TEXT UNIQUE NOT NULL,
+  answers JSONB NOT NULL DEFAULT '{}',
+  long_text TEXT,
+  user_summary TEXT,
+  ai_prompt TEXT,
+  status TEXT DEFAULT 'submitted',
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Index for intakes
+CREATE INDEX idx_intakes_slug ON intakes(public_slug);
+CREATE INDEX idx_intakes_status ON intakes(status);
+
+-- Trigger to update updated_at for intakes
+CREATE TRIGGER update_intakes_updated_at BEFORE UPDATE
+    ON intakes FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();

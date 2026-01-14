@@ -45,10 +45,11 @@ Bu dosya projenin tüm dokümantasyonunu içerir: spesifikasyonlar, kurulum rehb
 ### 1. Supabase Kurulumu
 
 1. [Supabase](https://supabase.com) üzerinde yeni bir proje oluşturun
-2. SQL Editor'a gidin ve `supabase-schema.sql` dosyasındaki SQL'i çalıştırın
+2. SQL Editor'a gidin ve `supabase-schema.sql` dosyasındaki SQL'i çalıştırın (bu `intakes` tablosunu da oluşturur)
 3. Project Settings > API bölümünden şunları not edin:
    - Project URL (SUPABASE_URL)
    - Service Role Key (SUPABASE_SERVICE_ROLE_KEY)
+   - Anon/Public Key (SUPABASE_ANON_KEY) - Wizard için gerekli
 
 ### 2. Vercel Kurulumu
 
@@ -60,6 +61,7 @@ Bu dosya projenin tüm dokümantasyonunu içerir: spesifikasyonlar, kurulum rehb
      ```
      SUPABASE_URL=your_supabase_project_url
      SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+     SUPABASE_ANON_KEY=your_supabase_anon_key
      ADMIN_PASSWORD=your_secure_password
      ```
    - Deploy!
@@ -109,6 +111,38 @@ vercel dev
    - "Teslimat Bilgilerini Kaydet" butonuna tıklayın
    - Durum otomatik olarak "Teslim Edildi" olarak güncellenir
    - Site showcase'de görünür hale gelir
+
+#### 20 Soru Wizard Sistemi
+
+1. **Wizard'a Erişim**:
+   - Ana sayfada "Yorum Yaptım Bile!" butonuna tıklayın
+   - `wizard.html` sayfası açılır
+   - Otomatik olarak benzersiz bir slug oluşturulur ve URL'ye eklenir
+
+2. **Soruları Doldurma**:
+   - 20 soru adım adım sorulur
+   - Her soru için uygun cevap formatı (tek seçim, çoklu seçim, metin, evet/hayır)
+   - İleri/Geri butonları ile navigasyon
+   - Son adım: Ek notlar (uzun metin)
+
+3. **Sonuç Sayfası**:
+   - Form tamamlandığında `result.html?slug=XXXX` sayfasına yönlendirilir
+   - İki kart gösterilir:
+     - **20 Soru Özeti**: Kullanıcı dostu Türkçe özet
+     - **Ek Notlarınız**: Kullanıcının yazdığı uzun metin (aynen gösterilir)
+   - AI prompt string arka planda oluşturulur (veritabanında saklanır, kullanıcıya gösterilmez)
+
+4. **Veritabanı**:
+   - `intakes` tablosunda saklanır
+   - `public_slug` ile erişim sağlanır
+   - `user_summary`: Kullanıcı gösterimi için özet
+   - `ai_prompt`: AI için yapılandırılmış prompt (admin panelinde görülebilir)
+
+**Not**: Browser'da Supabase kullanmak için `config.js` dosyasını düzenleyin:
+```javascript
+window.SUPABASE_URL = 'your_supabase_url';
+window.SUPABASE_ANON_KEY = 'your_anon_key';
+```
 
 #### Günlük İşlem Akışı
 
@@ -584,11 +618,19 @@ Bu dokümantasyon dosyası oluşturuldu.
 
 #### Yeni Özellikler
 - ✅ Dev branch oluşturuldu: Mevcut kod dev branch'ine taşındı
-- ✅ Main branch landing page: Tek kartlı, minimal landing page oluşturuldu
-- ✅ Renk paleti uygulandı: Verilen renk paleti ile gradient ve accent renkler kullanıldı
-- ✅ LinkedIn CTA: "LinkedIn Postuna Yorum Yap" butonu eklendi
-- ✅ Sıraya gir mesajı: "Sıraya gir! Seninle hemen iletişime geçeceğiz!" metni eklendi
+- ✅ Main branch landing page: Ultra minimal tek kartlı landing page oluşturuldu
+- ✅ Renk paleti uygulandı: Verilen renk paleti ile üst çizgi ve gradient buton kullanıldı
+- ✅ Minimal tasarım: Sadece başlık "Ücretsiz Kişisel Web Siteniz için :" ve LinkedIn butonu
+- ✅ İkinci buton eklendi: "Yorum Yaptım Bile!" butonu eklendi (yeşil gradient)
+- ✅ Başlık düzenlendi: "Ücretsiz Kişisel Web Siteniz için :" başlığı tek satır, buton yazı boyutu ile aynı
+- ✅ Form sayfası oluşturuldu: `form.html` - 20 soru + 1 uzun metin içeren parametre formu
 - ✅ Mobil uyumlu: Responsive tasarım ile tüm cihazlarda mükemmel görünüm
+- ✅ 20 Soru Wizard Sistemi: `wizard.html` - Adım adım 20 soru + uzun metin formu
+- ✅ Wizard Özet Sayfası: `result.html` - Kullanıcı özeti ve ek notlar gösterimi
+- ✅ Supabase `intakes` tablosu: Wizard gönderimleri için yeni tablo eklendi
+- ✅ Otomatik özet üretimi: `buildUserSummary()` ve `buildAiPrompt()` fonksiyonları
+- ✅ Slug tabanlı erişim: Her wizard gönderimi için benzersiz slug
+- ✅ Browser Supabase entegrasyonu: CDN üzerinden Supabase client kullanımı
 
 #### Temizlik
 - ✅ Proje temizliği yapıldı: Vercel config klasörü, build çıktıları ve gereksiz dosyalar temizlendi

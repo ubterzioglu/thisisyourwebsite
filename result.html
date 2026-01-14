@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Sitenizin Özeti | thisisyour.website</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .result-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .result-card h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #333;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 1rem;
+    }
+    
+    .summary-content {
+      white-space: pre-line;
+      line-height: 1.8;
+      color: #444;
+      font-size: 1.05rem;
+    }
+    
+    .long-text-content {
+      white-space: pre-wrap;
+      line-height: 1.8;
+      color: #444;
+      font-size: 1.05rem;
+      padding: 1.5rem;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .btn-home {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-top: 1rem;
+      transition: opacity 0.2s;
+    }
+    
+    .btn-home:hover {
+      opacity: 0.9;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+    
+    .error {
+      text-align: center;
+      padding: 3rem;
+      color: #d32f2f;
+    }
+    
+    .error a {
+      color: #667eea;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="result-container">
+    <div id="loading" class="loading">Yükleniyor...</div>
+    <div id="error" class="error" style="display: none;"></div>
+    <div id="result-content" style="display: none;">
+      <div class="result-card">
+        <h2>20 Soru Özeti</h2>
+        <div id="summary-content" class="summary-content"></div>
+      </div>
+      
+      <div class="result-card">
+        <h2>Ek Notlarınız</h2>
+        <div id="long-text-content" class="long-text-content"></div>
+      </div>
+      
+      <div style="text-align: center;">
+        <a href="index.html" class="btn-home">🏠 Başa Dön</a>
+      </div>
+    </div>
+  </div>
+  
+  <script src="config.js"></script>
+  <script type="module" src="result.js"></script>
+</body>
+</html>

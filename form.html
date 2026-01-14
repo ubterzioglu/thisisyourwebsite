@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Sitesi Parametreleri | thisisyour.website</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="theme-light">
+  <div class="container">
+    <header class="header">
+      <h1>Web Sitenizin Parametrelerini Belirleyin</h1>
+    </header>
+
+    <main>
+      <form id="params-form">
+        <p style="margin-bottom: 2rem; color: #666; text-align: center;">
+          Lütfen aşağıdaki soruları cevaplayın. Bu bilgiler web sitenizin oluşturulması için kullanılacaktır.
+        </p>
+        
+        <div id="form-fields"></div>
+        
+        <button type="submit" class="btn primary" style="width: 100%; margin-top: 2rem;">
+          Parametreleri Kaydet
+        </button>
+      </form>
+      
+      <div id="success-message" style="display: none; text-align: center; padding: 3rem; background: #e6f4ea; border-radius: 12px; margin-top: 2rem;">
+        <h2 style="color: #137333; margin-bottom: 1rem;">✅ Başarılı!</h2>
+        <p style="color: #137333; font-size: 1.1rem;">Parametreleriniz kaydedildi. En kısa sürede sizinle iletişime geçeceğiz.</p>
+      </div>
+    </main>
+
+    <footer style="margin-top: 4rem; text-align: center; color: #888;">
+      <p>© 2026 thisisyour.website</p>
+    </footer>
+  </div>
+
+  <script>
+    // Form configuration - 20 questions
+    const getFormConfig = () => ({
+      questions: [
+        // Yes/No Questions (5)
+        { id: 'q1', type: 'boolean', label: 'Profesyonel bir fotoğrafınız var mı?' },
+        { id: 'q2', type: 'boolean', label: 'İletişim formu istiyor musunuz?' },
+        { id: 'q3', type: 'boolean', label: 'Sosyal medya bağlantıları eklenmeli mi?' },
+        { id: 'q4', type: 'boolean', label: 'Portföyünüz var mı?' },
+        { id: 'q5', type: 'boolean', label: 'Referanslar eklenmeli mi?' },
+        
+        // Single Choice (5)
+        { id: 'q6', type: 'single', label: 'Ana sektör', options: [
+          { value: 'tech', label: 'Teknoloji' },
+          { value: 'design', label: 'Tasarım' },
+          { value: 'marketing', label: 'Pazarlama' },
+          { value: 'education', label: 'Eğitim' },
+          { value: 'other', label: 'Diğer' }
+        ]},
+        { id: 'q7', type: 'single', label: 'Tercih edilen renk paleti', options: [
+          { value: 'minimal', label: 'Minimal (Siyah/Beyaz)' },
+          { value: 'vibrant', label: 'Canlı' },
+          { value: 'pastel', label: 'Pastel' }
+        ]},
+        { id: 'q8', type: 'single', label: 'İçerik odağı', options: [
+          { value: 'services', label: 'Hizmetler' },
+          { value: 'portfolio', label: 'Portföy' },
+          { value: 'about', label: 'Hakkımda' }
+        ]},
+        { id: 'q9', type: 'single', label: 'Üslup', options: [
+          { value: 'professional', label: 'Profesyonel' },
+          { value: 'friendly', label: 'Samimi' },
+          { value: 'creative', label: 'Yaratıcı' }
+        ]},
+        { id: 'q10', type: 'single', label: 'Çağrı tipi', options: [
+          { value: 'contact', label: 'İletişime Geçin' },
+          { value: 'view', label: 'Portföyü Görüntüle' },
+          { value: 'hire', label: 'Beni İşe Alın' }
+        ]},
+        
+        // Multi Choice (4)
+        { id: 'q11', type: 'multi', label: 'Öne çıkarılacak beceriler', options: [
+          { value: 'coding', label: 'Kodlama' },
+          { value: 'design', label: 'UI/UX Tasarımı' },
+          { value: 'writing', label: 'İçerik Yazımı' },
+          { value: 'strategy', label: 'Strateji' },
+          { value: 'leadership', label: 'Liderlik' }
+        ]},
+        { id: 'q12', type: 'multi', label: 'Sosyal platformlar', options: [
+          { value: 'linkedin', label: 'LinkedIn' },
+          { value: 'twitter', label: 'Twitter/X' },
+          { value: 'instagram', label: 'Instagram' },
+          { value: 'github', label: 'GitHub' }
+        ]},
+        { id: 'q13', type: 'multi', label: 'İçerik bölümleri', options: [
+          { value: 'about', label: 'Hakkımda' },
+          { value: 'experience', label: 'Deneyim' },
+          { value: 'projects', label: 'Projeler' },
+          { value: 'contact', label: 'İletişim' }
+        ]},
+        { id: 'q14', type: 'multi', label: 'Diller (web sitesi için)', options: [
+          { value: 'tr', label: 'Türkçe' },
+          { value: 'en', label: 'İngilizce' }
+        ]},
+        
+        // Short Text (5)
+        { id: 'q15', type: 'text', label: 'Ad Soyad' },
+        { id: 'q16', type: 'text', label: 'Profesyonel Unvan' },
+        { id: 'q17', type: 'text', label: 'E-posta' },
+        { id: 'q18', type: 'text', label: 'Konum' },
+        { id: 'q19', type: 'text', label: 'Şu Anki Şirket (varsa)' },
+        
+        // Long Text (1)
+        { id: 'q20', type: 'textarea', label: 'Profesyonel Özet ve Hakkınızda' }
+      ]
+    });
+
+    // Generate form HTML
+    function generateFormHTML(config) {
+      return config.questions.map(q => {
+        switch(q.type) {
+          case 'boolean':
+            return `
+              <div class="form-group">
+                <label>${q.label}</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="${q.id}" value="true" required> Evet</label>
+                  <label><input type="radio" name="${q.id}" value="false" required> Hayır</label>
+                </div>
+              </div>
+            `;
+            
+          case 'single':
+            const singleOptions = q.options.map(opt => 
+              `<option value="${opt.value}">${opt.label}</option>`
+            ).join('');
+            return `
+              <div class="form-group">
+                <label>${q.label}</label>
+                <select name="${q.id}" required>
+                  <option value="">Seçiniz...</option>
+                  ${singleOptions}
+                </select>
+              </div>
+            `;
+            
+          case 'multi':
+            const multiOptions = q.options.map(opt => 
+              `<label><input type="checkbox" name="${q.id}" value="${opt.value}"> ${opt.label}</label>`
+            ).join('');
+            return `
+              <div class="form-group">
+                <label>${q.label}</label>
+                <div class="checkbox-group">
+                  ${multiOptions}
+                </div>
+              </div>
+            `;
+            
+          case 'text':
+            return `
+              <div class="form-group">
+                <label>${q.label}</label>
+                <input type="${q.id === 'q17' ? 'email' : 'text'}" name="${q.id}" required />
+              </div>
+            `;
+            
+          case 'textarea':
+            return `
+              <div class="form-group">
+                <label>${q.label}</label>
+                <textarea name="${q.id}" required placeholder="Kendinizi, kariyerinizi, deneyimlerinizi ve hedeflerinizi kısaca anlatın..."></textarea>
+              </div>
+            `;
+            
+          default:
+            return '';
+        }
+      }).join('');
+    }
+
+    // Initialize form
+    document.addEventListener('DOMContentLoaded', () => {
+      const formConfig = getFormConfig();
+      document.getElementById('form-fields').innerHTML = generateFormHTML(formConfig);
+      
+      // Form submission
+      document.getElementById('params-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const answers = {};
+        
+        // Process form data
+        for (let [key, value] of formData.entries()) {
+          if (answers[key]) {
+            if (Array.isArray(answers[key])) {
+              answers[key].push(value);
+            } else {
+              answers[key] = [answers[key], value];
+            }
+          } else {
+            answers[key] = value;
+          }
+        }
+        
+        // TODO: API endpoint'e gönderilecek
+        console.log('Form answers:', answers);
+        
+        // Show success message
+        document.getElementById('params-form').style.display = 'none';
+        document.getElementById('success-message').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

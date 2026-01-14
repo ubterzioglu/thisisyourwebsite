@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Sitenizin Parametreleri | thisisyour.website</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .wizard-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+    
+    .progress-text {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #666;
+      font-weight: 600;
+    }
+    
+    .question-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .question-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #333;
+    }
+    
+    .answer-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .option-button {
+      padding: 1rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    
+    .option-button:hover {
+      border-color: #667eea;
+      background: #f5f7fa;
+    }
+    
+    .option-button.selected {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+    
+    .option-checkbox {
+      padding: 1rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.2s;
+    }
+    
+    .option-checkbox:hover {
+      border-color: #667eea;
+    }
+    
+    .option-checkbox.selected {
+      border-color: #667eea;
+      background: #f5f7fa;
+    }
+    
+    .option-checkbox input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .wizard-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .btn-nav {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .btn-back {
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    .btn-back:hover {
+      background: #e0e0e0;
+    }
+    
+    .btn-next {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-next:hover {
+      opacity: 0.9;
+    }
+    
+    .btn-finish {
+      background: linear-gradient(135deg, #32cd32 0%, #228b22 100%);
+      color: white;
+    }
+    
+    .text-input, .textarea-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    
+    .textarea-input {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .text-input:focus, .textarea-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="wizard-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 5%;"></div>
+    </div>
+    <div class="progress-text" id="progress-text">Soru 1 / 21</div>
+    
+    <div id="question-container" class="question-card">
+      <div class="loading">Yükleniyor...</div>
+    </div>
+    
+    <div class="wizard-nav">
+      <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Geri</button>
+      <button id="btn-next" class="btn-nav btn-next">İleri →</button>
+    </div>
+  </div>
+  
+  <script src="config.js"></script>
+  <script type="module" src="wizard.js"></script>
+</body>
+</html>
