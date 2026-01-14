@@ -156,7 +156,6 @@ function renderQuestion() {
         ${cvFile ? '<div style="padding: 0.75rem 1.5rem; background: #d4edda; color: #155724; border-radius: 8px; font-weight: 600;">✅ CV yüklendi!</div>' : ''}
       </div>
       <div style="background: #f9f9f9; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 1rem; color: #333; font-size: 1.25rem;">20 Soru Özeti:</h3>
         <div style="line-height: 1.8; color: #444;">${formatSummaryWithBold(userSummary) || 'Özet bulunamadı'}</div>
       </div>
       ${longText ? `
@@ -609,13 +608,21 @@ function updateProgress() {
     // Check if current step is a question with auto-advance (single/yesno)
     const question = getCurrentQuestion();
     if (question && (question.type === 'single' || question.type === 'yesno')) {
-      // Hide button for auto-advance questions
-      nextBtn.style.display = 'none';
+      // Show button but greyed out for auto-advance questions
+      nextBtn.textContent = 'İleri ➡️';
+      nextBtn.className = 'btn-nav btn-next btn-disabled';
+      nextBtn.style.display = 'block';
+      nextBtn.disabled = true;
+      nextBtn.style.opacity = '0.5';
+      nextBtn.style.cursor = 'not-allowed';
     } else {
       // Show button for multi, text, and other steps
       nextBtn.textContent = 'İleri ➡️';
       nextBtn.className = 'btn-nav btn-next';
       nextBtn.style.display = 'block';
+      nextBtn.disabled = false;
+      nextBtn.style.opacity = '1';
+      nextBtn.style.cursor = 'pointer';
     }
   }
 }
@@ -652,6 +659,12 @@ document.getElementById('btn-back').addEventListener('click', () => {
 });
 
 document.getElementById('btn-next').addEventListener('click', async () => {
+  // Don't proceed if button is disabled
+  const nextBtn = document.getElementById('btn-next');
+  if (nextBtn.disabled) {
+    return;
+  }
+  
   if (currentStep < TOTAL_STEPS - 1) {
     // TEMPORARILY DISABLED: Validate current step if it's a question
     // TODO: Re-enable after testing
