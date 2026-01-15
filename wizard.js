@@ -782,25 +782,8 @@ async function submitWizard() {
     console.log('=== END DEBUG ===');
     
     // Best-effort: persist answers to Turso (do not block email flow)
+    // NOTE: CV/Photo storage is intentionally "parked" for now (DB won't receive attachments metadata).
     try {
-      const attachmentsMeta = [];
-      if (photoFile && photoFile instanceof File) {
-        attachmentsMeta.push({
-          kind: 'photo',
-          filename: photoFile.name,
-          size: photoFile.size,
-          contentType: photoFile.type || getContentTypeFromFilename(photoFile.name)
-        });
-      }
-      if (cvFile && cvFile instanceof File) {
-        attachmentsMeta.push({
-          kind: 'cv',
-          filename: cvFile.name,
-          size: cvFile.size,
-          contentType: cvFile.type || getContentTypeFromFilename(cvFile.name)
-        });
-      }
-
       await fetch('/api/wizard-store', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -808,8 +791,7 @@ async function submitWizard() {
           public_slug: publicSlug,
           full_name: fullName || null,
           answers,
-          long_text: longText || null,
-          attachments_meta: attachmentsMeta
+          long_text: longText || null
         })
       });
     } catch (e) {

@@ -1,6 +1,7 @@
 let isAdmin = false;
 let queueItems = [];
 let statusRows = [];
+let wizardRows = [];
 
 // Check admin status
 async function checkAdminStatus() {
@@ -14,6 +15,7 @@ async function checkAdminStatus() {
       // Queue endpoints may be optional; keep best-effort
       loadQueue();
       loadStatus();
+      loadWizardSubmissions();
     }
   } catch (error) {
     console.log('Giriş yapılmamış');
@@ -35,6 +37,7 @@ async function login(password) {
       showAdminDashboard();
       loadQueue();
       loadStatus();
+      loadWizardSubmissions();
     } else {
       const errorEl = document.getElementById('login-error');
       errorEl.textContent = 'Geçersiz şifre';
@@ -97,6 +100,90 @@ async function loadStatus() {
     if (tbody) {
       tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Status yüklenemedi.</td></tr>';
     }
+  }
+}
+
+async function loadWizardSubmissions() {
+  try {
+    const response = await fetch('/api/admin/wizard-submissions', { credentials: 'include' });
+    if (!response.ok) throw new Error('Wizard listesi alınamadı');
+    const data = await response.json();
+    wizardRows = data?.rows || [];
+    renderWizardTable();
+  } catch (e) {
+    console.error('Wizard load error:', e);
+    const tbody = document.getElementById('wizard-table-body');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Wizard kayıtları yüklenemedi.</td></tr>';
+    }
+  }
+}
+
+function renderWizardTable() {
+  const tbody = document.getElementById('wizard-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!wizardRows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kayıt yok.</td></tr>';
+    return;
+  }
+
+  wizardRows.forEach((r) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.id}</td>
+      <td><code style="font-weight:800;">${r.public_slug || ''}</code></td>
+      <td>${r.full_name || '-'}</td>
+      <td>${r.updated_at ? new Date(r.updated_at).toLocaleString('tr-TR') : '-'}</td>
+      <td>
+        <button class="btn secondary wizard-detail-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Detay</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.wizard-detail-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.id);
+      await viewWizardSubmission(id);
+    });
+  });
+}
+
+async function viewWizardSubmission(id) {
+  const modal = document.getElementById('item-modal');
+  const titleEl = document.getElementById('modal-title');
+  const contentEl = document.getElementById('modal-content');
+  if (!modal || !titleEl || !contentEl) return;
+
+  titleEl.textContent = 'Wizard Detayı';
+  contentEl.innerHTML = `<div class="loading">Yükleniyor...</div>`;
+  modal.style.display = 'block';
+
+  try {
+    const res = await fetch(`/api/admin/wizard-submission?id=${encodeURIComponent(String(id))}`, { credentials: 'include' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Detay alınamadı');
+    const row = data.row || {};
+
+    let answersObj = null;
+    try { answersObj = row.answers_json ? JSON.parse(row.answers_json) : null; } catch {}
+
+    const longText = row.long_text || '';
+
+    contentEl.innerHTML = `
+      <div style="display:grid; grid-template-columns: 1fr; gap: 0.75rem;">
+        <div><strong>ID:</strong> ${row.id}</div>
+        <div><strong>Slug:</strong> <code>${row.public_slug || ''}</code></div>
+        <div><strong>Ad Soyad:</strong> ${row.full_name || '-'}</div>
+        <div><strong>Created:</strong> ${row.created_at ? new Date(row.created_at).toLocaleString('tr-TR') : '-'}</div>
+        <div><strong>Updated:</strong> ${row.updated_at ? new Date(row.updated_at).toLocaleString('tr-TR') : '-'}</div>
+        <div><strong>Ek Notlar:</strong> <pre style="white-space: pre-wrap; background:#000; color:#fff; padding:1rem; border-radius:12px; overflow:auto;">${longText || 'yok'}</pre></div>
+        <div><strong>Answers JSON:</strong> <pre style="white-space: pre-wrap; background:#000; color:#fff; padding:1rem; border-radius:12px; overflow:auto;">${answersObj ? JSON.stringify(answersObj, null, 2) : 'yok'}</pre></div>
+      </div>
+    `;
+  } catch (e) {
+    contentEl.innerHTML = `<div class="status error" style="display:block;">Hata: ${e.message}</div>`;
   }
 }
 
@@ -489,6 +576,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusClearBtn = document.getElementById('status-clear-btn');
   if (statusSaveBtn) statusSaveBtn.addEventListener('click', upsertStatus);
   if (statusClearBtn) statusClearBtn.addEventListener('click', clearStatusForm);
+
+  // Wizard backfill (paste old email content -> store)
+  const backfillBtn = document.getElementById('wizard-backfill-btn');
+  const backfillClear = document.getElementById('wizard-backfill-clear');
+  const backfillInput = document.getElementById('wizard-backfill-input');
+  if (backfillClear && backfillInput) {
+    backfillClear.addEventListener('click', () => {
+      backfillInput.value = '';
+    });
+  }
+  if (backfillBtn && backfillInput) {
+    backfillBtn.addEventListener('click', async () => {
+      const rawText = (backfillInput.value || '').trim();
+      if (!rawText) {
+        alert('Mail içeriğini yapıştır.');
+        return;
+      }
+      backfillBtn.disabled = true;
+      const oldText = backfillBtn.textContent;
+      backfillBtn.textContent = 'Kaydediliyor...';
+      try {
+        const res = await fetch('/api/admin/wizard-backfill', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ raw_text: rawText })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Kaydetme başarısız');
+        backfillInput.value = '';
+        await loadWizardSubmissions();
+        alert(`Kaydedildi: ${data.slug || 'ok'}`);
+      } catch (e) {
+        alert('Hata: ' + e.message);
+      } finally {
+        backfillBtn.disabled = false;
+        backfillBtn.textContent = oldText || 'Mail’den Kaydet';
+      }
+    });
+  }
   
   // Close modal
   document.getElementById('close-modal').addEventListener('click', () => {

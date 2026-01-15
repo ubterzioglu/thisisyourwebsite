@@ -45,7 +45,7 @@
 
     <main>
       <!-- Login Form -->
-      <div id="login-section">
+      <div id="login-section" class="admin-surface">
         <h2>Giriş Yap</h2>
         <input type="password" id="admin-password" placeholder="Admin şifresi" />
         <button id="login-btn" class="btn primary">Giriş Yap</button>
@@ -54,73 +54,107 @@
 
       <!-- Admin Dashboard -->
       <div id="admin-dashboard" style="display:none;">
-        <div class="dashboard-header">
-          <h2>Sıra Yönetimi</h2>
-          <button id="create-item-btn" class="btn secondary">+ Yeni Öğe</button>
-        </div>
-
-        <table class="queue-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>İsim</th>
-              <th>Rol</th>
-              <th>Durum</th>
-              <th>Showcase</th>
-              <th>İşlemler</th>
-            </tr>
-          </thead>
-          <tbody id="queue-table-body">
-            <!-- Rows populated dynamically -->
-          </tbody>
-        </table>
-
-        <div style="height: 2rem;"></div>
-
-        <!-- Status Management -->
-        <div class="dashboard-header">
-          <h2>Status Yönetimi</h2>
-        </div>
-
-        <div style="background: var(--card-bg-light); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
-            <input type="hidden" id="status-id" value="" />
-            <input type="text" id="status-full-name" placeholder="Ad Soyad" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid var(--border-light); min-width: 240px;" />
-            <select id="status-value" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid var(--border-light);">
-              <option value="0">0 - Sıradasın! Yakında seninle iletişime geçeceğiz!</option>
-              <option value="1">1 - Yorum yapıldı sıra bizde! Mesaj atacağız!</option>
-              <option value="2">2 - Mesaj atıldı formu doldurman gerekiyor!</option>
-              <option value="3">3 - Formu doldurdun siteni oluşturuyoruz!</option>
-              <option value="4">4 - Siten hazır. Revizyon isteği bekleniyor.</option>
-              <option value="5">5 - Her şey tamamlandı! Hayırlı olsun!</option>
-            </select>
-            <button id="status-save-btn" class="btn primary">Kaydet</button>
-            <button id="status-clear-btn" class="btn secondary">Temizle</button>
+        <div class="admin-surface">
+          <div class="dashboard-header">
+            <h2>Sıra Yönetimi</h2>
+            <button id="create-item-btn" class="btn secondary">+ Yeni Öğe</button>
           </div>
-          <p style="margin-top: 0.75rem; color: #666; font-size: 0.9rem;">
-            Not: Bu alan sadece admin içindir. Kullanıcılar `status.html` üzerinden maskeli şekilde arama yapar.
-          </p>
+
+          <table class="queue-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>İsim</th>
+                <th>Rol</th>
+                <th>Durum</th>
+                <th>Showcase</th>
+                <th>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="queue-table-body">
+              <!-- Rows populated dynamically -->
+            </tbody>
+          </table>
         </div>
 
-        <table class="queue-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Ad Soyad</th>
-              <th>Status</th>
-              <th>Güncelleme</th>
-              <th>İşlem</th>
-            </tr>
-          </thead>
-          <tbody id="status-table-body">
-            <tr><td colspan="5" style="text-align:center;">Yükleniyor...</td></tr>
-          </tbody>
-        </table>
+        <div class="admin-surface">
+          <div class="dashboard-header">
+            <h2>Status Yönetimi</h2>
+          </div>
+
+          <div style="padding: 1rem; border-radius: 16px; border: 1px solid rgba(255,149,0,0.25); background: rgba(0,0,0,0.25); margin-bottom: 1rem;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+              <input type="hidden" id="status-id" value="" />
+              <input type="text" id="status-full-name" placeholder="Ad Soyad" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35); min-width: 240px;" />
+              <select id="status-value" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);">
+                <option value="0">0 - Sıradasın! Yakında seninle iletişime geçeceğiz!</option>
+                <option value="1">1 - Yorum yapıldı sıra bizde! Mesaj atacağız!</option>
+                <option value="2">2 - Mesaj atıldı formu doldurman gerekiyor!</option>
+                <option value="3">3 - Formu doldurdun siteni oluşturuyoruz!</option>
+                <option value="4">4 - Siten hazır. Revizyon isteği bekleniyor.</option>
+                <option value="5">5 - Her şey tamamlandı! Hayırlı olsun!</option>
+              </select>
+              <button id="status-save-btn" class="btn primary">Kaydet</button>
+              <button id="status-clear-btn" class="btn secondary">Temizle</button>
+            </div>
+            <p class="admin-note" style="margin-top: 0.75rem; font-size: 0.9rem;">
+              Not: Bu alan sadece admin içindir. Kullanıcılar `status.html` üzerinden maskeli şekilde arama yapar.
+            </p>
+          </div>
+
+          <table class="queue-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ad Soyad</th>
+                <th>Status</th>
+                <th>Güncelleme</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="status-table-body">
+              <tr><td colspan="5" style="text-align:center;">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="admin-surface">
+          <div class="dashboard-header">
+            <h2>Sayfa Dizayn Formu (Wizard) Kayıtları</h2>
+          </div>
+
+          <table class="queue-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Slug</th>
+                <th>Ad Soyad</th>
+                <th>Güncelleme</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="wizard-table-body">
+              <tr><td colspan="5" style="text-align:center;">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+
+          <div style="height: 1rem;"></div>
+          <div style="padding: 1rem; border-radius: 16px; border: 1px solid rgba(255,149,0,0.25); background: rgba(0,0,0,0.25);">
+            <p class="admin-note" style="margin-bottom: 0.75rem; font-size: 0.9rem;">
+              Eski gönderimler (DB yazımı eklenmeden önce gelen mailler) için: mail içeriğini buraya yapıştır → Kaydet.
+            </p>
+            <textarea id="wizard-backfill-input" placeholder="Mail içeriğini buraya yapıştır..." style="width: 100%; min-height: 140px; padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35); background: rgba(0,0,0,0.65); color: #fff;"></textarea>
+            <div style="display:flex; gap: 0.75rem; margin-top: 0.75rem; flex-wrap: wrap;">
+              <button id="wizard-backfill-btn" class="btn primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Mail’den Kaydet</button>
+              <button id="wizard-backfill-clear" class="btn secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Temizle</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Modal for item details -->
-      <div id="item-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
-        <div style="max-width: 800px; margin: 2rem auto; background: var(--bg-light); padding: 2rem; border-radius: 12px;">
+      <div id="item-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.72); z-index: 1000; overflow-y: auto;">
+        <div class="admin-surface" style="max-width: 900px; margin: 2rem auto;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h2 id="modal-title">Öğe Detayları</h2>
             <button id="close-modal" class="btn secondary">Kapat</button>

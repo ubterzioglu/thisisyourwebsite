@@ -26,7 +26,6 @@ export default async function handler(req, res) {
   const answers = body.answers ?? null;
   const fullName = String(body.full_name || '').trim() || null;
   const longText = typeof body.long_text === 'string' ? body.long_text : null;
-  const attachmentsMeta = body.attachments_meta ?? null;
 
   if (!publicSlug) {
     return res.status(400).json({ error: 'public_slug is required' });
@@ -39,7 +38,7 @@ export default async function handler(req, res) {
     await ensureWizardTable();
 
     const answersJson = JSON.stringify(answers);
-    const attachmentsJson = attachmentsMeta ? JSON.stringify(attachmentsMeta) : null;
+    const attachmentsJson = null; // parked for now
 
     await turso.execute({
       sql: `
