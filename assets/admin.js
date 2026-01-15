@@ -137,6 +137,7 @@ function renderWizardTable() {
       <td>${r.updated_at ? new Date(r.updated_at).toLocaleString('tr-TR') : '-'}</td>
       <td>
         <button class="btn secondary wizard-detail-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Detay</button>
+        <button class="btn secondary wizard-delete-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin-left: 0.5rem;">Sil</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -146,6 +147,28 @@ function renderWizardTable() {
     btn.addEventListener('click', async () => {
       const id = Number(btn.dataset.id);
       await viewWizardSubmission(id);
+    });
+  });
+
+  document.querySelectorAll('.wizard-delete-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.id);
+      const row = wizardRows.find(x => Number(x.id) === id);
+      const label = row?.full_name ? `${row.full_name} (${row.public_slug || ''})` : (row?.public_slug || `ID ${id}`);
+      if (!confirm(`Bu wizard kaydını silmek istiyor musun?\n\n${label}`)) return;
+      try {
+        const res = await fetch('/api/admin/wizard-delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Silme başarısız');
+        await loadWizardSubmissions();
+      } catch (e) {
+        alert('Silme başarısız: ' + e.message);
+      }
     });
   });
 }
@@ -205,6 +228,7 @@ function renderStatusTable() {
       <td>${r.updated_at ? new Date(r.updated_at).toLocaleString('tr-TR') : '-'}</td>
       <td>
         <button class="btn secondary status-edit-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Düzenle</button>
+        <button class="btn secondary status-delete-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin-left: 0.5rem;">Sil</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -219,6 +243,28 @@ function renderStatusTable() {
       document.getElementById('status-full-name').value = row.full_name || '';
       document.getElementById('status-value').value = String(row.status ?? 0);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.status-delete-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.id);
+      const row = statusRows.find(x => Number(x.id) === id);
+      const label = row?.full_name ? `${row.full_name} (ID ${id})` : `ID ${id}`;
+      if (!confirm(`Bu status kaydını silmek istiyor musun?\n\n${label}`)) return;
+      try {
+        const res = await fetch('/api/admin/status-delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Silme başarısız');
+        await loadStatus();
+      } catch (e) {
+        alert('Silme başarısız: ' + e.message);
+      }
     });
   });
 }
