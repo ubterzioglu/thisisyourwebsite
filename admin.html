@@ -59,6 +59,47 @@
             <!-- Rows populated dynamically -->
           </tbody>
         </table>
+
+        <div style="height: 2rem;"></div>
+
+        <!-- Status Management -->
+        <div class="dashboard-header">
+          <h2>Status Yönetimi</h2>
+        </div>
+
+        <div style="background: var(--card-bg-light); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <input type="hidden" id="status-id" value="" />
+            <input type="text" id="status-full-name" placeholder="Ad Soyad" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid var(--border-light); min-width: 240px;" />
+            <select id="status-value" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid var(--border-light);">
+              <option value="1">1 - Yorum yapıldı sıra bizde! Mesaj atacağız!</option>
+              <option value="2">2 - Mesaj atıldı formu doldurman gerekiyor!</option>
+              <option value="3">3 - Formu doldurdun siteni oluşturuyoruz!</option>
+              <option value="4">4 - Siten hazır. Revizyon isteği bekleniyor.</option>
+              <option value="5">5 - Her şey tamamlandı! Hayırlı olsun!</option>
+            </select>
+            <button id="status-save-btn" class="btn primary">Kaydet</button>
+            <button id="status-clear-btn" class="btn secondary">Temizle</button>
+          </div>
+          <p style="margin-top: 0.75rem; color: #666; font-size: 0.9rem;">
+            Not: Bu alan sadece admin içindir. Kullanıcılar `status.html` üzerinden maskeli şekilde arama yapar.
+          </p>
+        </div>
+
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Ad Soyad</th>
+              <th>Status</th>
+              <th>Güncelleme</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody id="status-table-body">
+            <tr><td colspan="5" style="text-align:center;">Yükleniyor...</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Modal for item details -->

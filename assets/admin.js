@@ -1,16 +1,19 @@
 let isAdmin = false;
 let queueItems = [];
+let statusRows = [];
 
 // Check admin status
 async function checkAdminStatus() {
   try {
-    const response = await fetch('/api/admin/queue?admin=1', {
+    const response = await fetch('/api/admin/ping', {
       credentials: 'include'
     });
     if (response.ok) {
       isAdmin = true;
       showAdminDashboard();
+      // Queue endpoints may be optional; keep best-effort
       loadQueue();
+      loadStatus();
     }
   } catch (error) {
     console.log('Giriş yapılmamış');
@@ -31,6 +34,7 @@ async function login(password) {
       isAdmin = true;
       showAdminDashboard();
       loadQueue();
+      loadStatus();
     } else {
       const errorEl = document.getElementById('login-error');
       errorEl.textContent = 'Geçersiz şifre';
@@ -65,6 +69,103 @@ function showAdminDashboard() {
   document.getElementById('login-section').style.display = 'none';
   document.getElementById('admin-dashboard').style.display = 'block';
   document.getElementById('logout-btn').style.display = 'block';
+}
+
+function getStatusTextV2(n) {
+  const v = Number(n);
+  switch (v) {
+    case 1: return '1 - Yorum yapıldı sıra bizde! Mesaj atacağız!';
+    case 2: return '2 - Mesaj atıldı formu doldurman gerekiyor!';
+    case 3: return '3 - Formu doldurdun siteni oluşturuyoruz!';
+    case 4: return '4 - Siten hazır. Revizyon isteği bekleniyor.';
+    case 5: return '5 - Her şey tamamlandı! Hayırlı olsun!';
+    default: return String(n ?? '');
+  }
+}
+
+async function loadStatus() {
+  try {
+    const response = await fetch('/api/admin/status', { credentials: 'include' });
+    if (!response.ok) throw new Error('Status listesi alınamadı');
+    const data = await response.json();
+    statusRows = data?.rows || [];
+    renderStatusTable();
+  } catch (e) {
+    console.error('Status load error:', e);
+    const tbody = document.getElementById('status-table-body');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Status yüklenemedi.</td></tr>';
+    }
+  }
+}
+
+function renderStatusTable() {
+  const tbody = document.getElementById('status-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!statusRows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kayıt yok.</td></tr>';
+    return;
+  }
+
+  statusRows.forEach((r) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.id}</td>
+      <td>${r.full_name}</td>
+      <td>${getStatusTextV2(r.status)}</td>
+      <td>${r.updated_at ? new Date(r.updated_at).toLocaleString('tr-TR') : '-'}</td>
+      <td>
+        <button class="btn secondary status-edit-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Düzenle</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.status-edit-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      const row = statusRows.find(x => Number(x.id) === id);
+      if (!row) return;
+      document.getElementById('status-id').value = row.id;
+      document.getElementById('status-full-name').value = row.full_name || '';
+      document.getElementById('status-value').value = String(row.status || 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+async function upsertStatus() {
+  const id = document.getElementById('status-id').value || null;
+  const fullName = (document.getElementById('status-full-name').value || '').trim();
+  const statusVal = Number(document.getElementById('status-value').value || 1);
+  if (!fullName) {
+    alert('Ad Soyad gerekli');
+    return;
+  }
+  try {
+    const response = await fetch('/api/admin/status-upsert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ id, full_name: fullName, status: statusVal })
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || 'Kaydetme başarısız');
+    }
+    clearStatusForm();
+    await loadStatus();
+  } catch (e) {
+    console.error('Status upsert error:', e);
+    alert('Kaydetme başarısız: ' + e.message);
+  }
+}
+
+function clearStatusForm() {
+  document.getElementById('status-id').value = '';
+  document.getElementById('status-full-name').value = '';
+  document.getElementById('status-value').value = '1';
 }
 
 // Load queue items
@@ -374,6 +475,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Create item button
   document.getElementById('create-item-btn').addEventListener('click', createQueueItem);
+
+  // Status buttons
+  const statusSaveBtn = document.getElementById('status-save-btn');
+  const statusClearBtn = document.getElementById('status-clear-btn');
+  if (statusSaveBtn) statusSaveBtn.addEventListener('click', upsertStatus);
+  if (statusClearBtn) statusClearBtn.addEventListener('click', clearStatusForm);
   
   // Close modal
   document.getElementById('close-modal').addEventListener('click', () => {
