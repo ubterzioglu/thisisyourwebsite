@@ -11,3 +11,15 @@ CREATE TABLE IF NOT EXISTS status (
 
 CREATE INDEX IF NOT EXISTS idx_status_full_name ON status(full_name);
 
+-- Placeholder data (10 rows)
+INSERT INTO status (full_name, status) VALUES ('Ahmet Yılmaz', 1);
+INSERT INTO status (full_name, status) VALUES ('Elif Kaya', 2);
+INSERT INTO status (full_name, status) VALUES ('Mehmet Demir', 3);
+INSERT INTO status (full_name, status) VALUES ('Zeynep Şahin', 4);
+INSERT INTO status (full_name, status) VALUES ('Mert Çelik', 5);
+INSERT INTO status (full_name, status) VALUES ('Ayşe Arslan', 1);
+INSERT INTO status (full_name, status) VALUES ('Can Öztürk', 2);
+INSERT INTO status (full_name, status) VALUES ('Deniz Koç', 3);
+INSERT INTO status (full_name, status) VALUES ('Ece Aydın', 4);
+INSERT INTO status (full_name, status) VALUES ('Burak Kılıç', 5);
+
