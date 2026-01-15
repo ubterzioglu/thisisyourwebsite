@@ -7,6 +7,7 @@ Disallow: /apply.html
 Disallow: /form.html
 Disallow: /result.html
 Disallow: /send-form-example.html
+Disallow: /status.html
 Disallow: /api/
 
 Sitemap: https://thisisyour.website/sitemap.xml

@@ -666,15 +666,14 @@ document.getElementById('btn-next').addEventListener('click', async () => {
   }
   
   if (currentStep < TOTAL_STEPS - 1) {
-    // TEMPORARILY DISABLED: Validate current step if it's a question
-    // TODO: Re-enable after testing
-    // if (isCurrentStepAQuestion()) {
-    //   if (!isCurrentQuestionAnswered()) {
-    //     const question = getCurrentQuestion();
-    //     alert(`Lütfen bu soruyu cevaplayın: ${question.question}`);
-    //     return; // Don't advance if not answered
-    //   }
-    // }
+    // Validate current step if it's a question (required)
+    if (isCurrentStepAQuestion()) {
+      if (!isCurrentQuestionAnswered()) {
+        const question = getCurrentQuestion();
+        alert(`Lütfen bu soruyu cevaplayın: ${question.question}`);
+        return; // Don't advance if not answered
+      }
+    }
     
     currentStep++;
     renderQuestion();
