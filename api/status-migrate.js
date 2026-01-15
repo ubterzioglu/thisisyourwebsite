@@ -7,6 +7,9 @@ export default async function handler(req, res) {
   const provided =
     (req.headers['x-migrate-secret'] || req.headers['x-migration-secret'] || '').toString() ||
     (req.query?.secret || '').toString();
+  const replace =
+    String(req.query?.replace || '').toLowerCase() === '1' ||
+    String(req.query?.replace || '').toLowerCase() === 'true';
 
   if (!secretEnv) {
     return res.status(500).json({ error: 'STATUS_MIGRATE_SECRET is missing' });
@@ -22,7 +25,7 @@ export default async function handler(req, res) {
       CREATE TABLE IF NOT EXISTS status (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         full_name TEXT NOT NULL,
-        status INTEGER NOT NULL CHECK (status BETWEEN 1 AND 5),
+        status INTEGER NOT NULL CHECK (status BETWEEN 0 AND 5),
         created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
         updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
       );
@@ -35,20 +38,37 @@ export default async function handler(req, res) {
     // Seed only if empty
     const countRs = await turso.execute(`SELECT COUNT(1) AS c FROM status;`);
     const c = Number(countRs.rows?.[0]?.c ?? 0);
-    if (c === 0) {
-      const seeds = [
-        ['Ahmet Yılmaz', 1],
-        ['Elif Kaya', 2],
-        ['Mehmet Demir', 3],
-        ['Zeynep Şahin', 4],
-        ['Mert Çelik', 5],
-        ['Ayşe Arslan', 1],
-        ['Can Öztürk', 2],
-        ['Deniz Koç', 3],
-        ['Ece Aydın', 4],
-        ['Burak Kılıç', 5]
-      ];
+    const seeds = [
+      ['Akın Özkan', 0],
+      ['Aydın Serhat Onay', 0],
+      ['Ahmet Şengül', 0],
+      ['Duygu Yılmaz Hancılar', 0],
+      ['Habil Kaynak', 0],
+      ['Serdar Güven', 0],
+      ['Ömer Sakarya', 0],
+      ['Halil İbrahim Bayezit', 0],
+      ['Begüm Kodalak Bilik', 0],
+      ['Kasım Hanik', 0],
+      ['Evrim Eriş', 0],
+      ['Yusuf Yalçınkaya', 0],
+      ['Yusuf Altan', 0],
+      ['Uğur Aşcı', 0],
+      ['Mehmet Coşkun', 0],
+      ['Fatih Uslu', 0],
+      ['Veysel Cenk Karakuz', 0],
+      ['Alpaslan Arınç', 0],
+      ['Oğuzhan Dirice', 0],
+      ['Nazli Kocak', 0]
+    ];
 
+    let replaced = false;
+    if (replace) {
+      await turso.execute(`DELETE FROM status;`);
+      replaced = true;
+    }
+
+    const shouldSeed = replaced || c === 0;
+    if (shouldSeed) {
       for (const [fullName, status] of seeds) {
         await turso.execute({
           sql: `INSERT INTO status (full_name, status) VALUES (?, ?);`,
@@ -59,8 +79,10 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       ok: true,
-      seeded: c === 0,
-      existing_rows_before: c
+      seeded: (replace || c === 0),
+      replaced,
+      existing_rows_before: c,
+      inserted_rows: (replace || c === 0) ? seeds.length : 0
     });
   } catch (err) {
     console.error('Status migrate error:', err);
