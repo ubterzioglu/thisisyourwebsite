@@ -131,7 +131,7 @@ ZOHO_SMTP_PASS=APP_PASSWORD
 **Wizard form sistemi tamamen çalışır durumda!**
 
 Kullanıcılar:
-1. Landing page'den "Yorum Yaptım Bile!" butonuna tıklıyor
+1. Landing page'den "Yorum yaptıysan buraya tıkla!" butonuna tıklıyor
 2. Açıklama sayfasını okuyor ve "Başla" diyor
 3. 20 soruyu yanıtlıyor (otomatik ilerleme ile)
 4. Ek notlarını yazıyor (opsiyonel)

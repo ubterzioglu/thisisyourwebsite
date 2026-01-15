@@ -136,7 +136,7 @@ python -m http.server 8000
 **Özellikler**:
 - Minimal tek kartlı tasarım
 - LinkedIn post linki (external)
-- "Yorum Yaptım Bile!" butonu → `yes.html`'e yönlendirir
+- "Yorum yaptıysan buraya tıkla!" butonu → `yes.html`'e yönlendirir
 - GoatCounter analytics
 
 **Kullanım**:
@@ -458,7 +458,7 @@ GoatCounter analytics tüm HTML sayfalarında aktif:
 #### Landing Page Güncellemeleri
 
 - ✅ Minimal tek kartlı tasarım
-- ✅ "Yorum Yaptım Bile!" butonu → `yes.html`'e yönlendirme
+- ✅ "Yorum yaptıysan buraya tıkla!" butonu → `yes.html`'e yönlendirme
 - ✅ LinkedIn post linki entegrasyonu
 
 #### Dokümantasyon
