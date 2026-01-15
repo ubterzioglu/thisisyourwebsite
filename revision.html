@@ -135,6 +135,64 @@
       text-decoration: underline;
     }
 
+    .results {
+      margin-top: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .row {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1rem;
+      border-left: 4px solid #00A8FF;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .row:hover {
+      background: #f5f7fa;
+    }
+
+    .row.selected {
+      outline: 2px solid #667eea;
+      background: #eef2ff;
+    }
+
+    .name {
+      font-weight: 800;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .status-text {
+      color: #444;
+      line-height: 1.6;
+      margin-left: auto;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .name {
+        white-space: normal;
+      }
+      .status-text {
+        margin-left: 0;
+        text-align: left;
+      }
+    }
+
     .file-button {
       display: inline-block;
       background: white;
@@ -226,12 +284,15 @@
       </div>
 
       <input
-        id="revision-full-name"
+        id="revision-person-q"
         class="text-input"
-        placeholder="Ad Soyad (zorunlu)"
-        autocomplete="name"
-        required
+        placeholder="Ad Soyad ara (en az 2 karakter) — listeden seç"
+        autocomplete="off"
       />
+      <div class="help-text">
+        İsmini listeden seçmelisin. Bulamazsan: <a href="progress.html" style="font-weight:800; color:#333;">😅 İsmimi bulamadım</a>
+      </div>
+      <div id="revision-person-results" class="results"></div>
       
       <textarea 
         id="long-text-input" 
@@ -259,12 +320,16 @@
   <script type="module">
     const submitBtn = document.getElementById('submit-btn');
     const longTextInput = document.getElementById('long-text-input');
-    const fullNameInput = document.getElementById('revision-full-name');
+    const personQEl = document.getElementById('revision-person-q');
+    const personResultsEl = document.getElementById('revision-person-results');
     const cardEl = document.getElementById('revision-card');
     const photosInput = document.getElementById('revision-photos');
     const photosLabel = document.getElementById('revision-photos-label');
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug') || '';
+
+    let allPeopleCache = null;
+    let selectedPerson = null; // { id, masked_name, status }
 
     const MAX_FILES = 3;
     const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
@@ -337,13 +402,75 @@
         validatePhotos();
       });
     }
+
+    function renderPeople(results) {
+      if (!personResultsEl) return;
+      const list = Array.isArray(results) ? results : [];
+      if (!list.length) {
+        personResultsEl.innerHTML = '';
+        return;
+      }
+      personResultsEl.innerHTML = list.map(r => `
+        <div class="row ${selectedPerson && String(selectedPerson.id) === String(r.id) ? 'selected' : ''}" data-id="${r.id}">
+          <div class="name">${r.masked_name || ''}</div>
+          <div class="status-text">${r.status || ''}</div>
+        </div>
+      `).join('');
+
+      personResultsEl.querySelectorAll('.row').forEach((el) => {
+        el.addEventListener('click', () => {
+          const id = el.getAttribute('data-id');
+          const found = list.find(x => String(x.id) === String(id));
+          if (!found) return;
+          selectedPerson = { id: found.id, masked_name: found.masked_name, status: found.status };
+          renderPeople(list);
+        });
+      });
+    }
+
+    async function loadAllPeople() {
+      if (allPeopleCache) return allPeopleCache;
+      const res = await fetch('/api/status-list');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Liste alınamadı');
+      allPeopleCache = data.results || [];
+      return allPeopleCache;
+    }
+
+    let tt = null;
+    async function refreshPeople() {
+      const q = (personQEl?.value || '').trim();
+      if (!q || q.length < 2) {
+        const all = await loadAllPeople();
+        renderPeople(all);
+        return;
+      }
+      const res = await fetch(`/api/status-search?q=${encodeURIComponent(q)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Arama başarısız');
+      renderPeople(data.results || []);
+    }
+
+    if (personQEl) {
+      personQEl.addEventListener('input', () => {
+        clearTimeout(tt);
+        tt = setTimeout(() => {
+          refreshPeople().catch((e) => {
+            if (personResultsEl) personResultsEl.innerHTML = '';
+            alert('Bir hata oluştu: ' + e.message);
+          });
+        }, 250);
+      });
+    }
+
+    // Initial list
+    refreshPeople().catch(() => {});
     
     submitBtn.addEventListener('click', async () => {
-      const fullName = (fullNameInput?.value || '').trim();
       const longText = longTextInput.value.trim();
-      if (!fullName) {
-        alert('Ad Soyad zorunlu.');
-        fullNameInput?.focus();
+      if (!selectedPerson?.id) {
+        alert('Lütfen listeden ismini seç.');
+        personQEl?.focus();
         return;
       }
       if (!validatePhotos()) return;
@@ -352,7 +479,7 @@
       submitBtn.textContent = 'Gönderiliyor...';
       
       try {
-        const emailBody = `Revizyon İsteği\n\nAd Soyad: ${fullName}\nSlug: ${slug || 'yok'}\n\nEk Notlar:\n${longText || 'Not eklenmemiş'}\n\n`;
+        const emailBody = `Revizyon İsteği\n\nKişi ID: ${selectedPerson.id}\nİsim (maskeli): ${selectedPerson.masked_name || 'yok'}\nDurum: ${selectedPerson.status || 'yok'}\nSlug: ${slug || 'yok'}\n\nEk Notlar:\n${longText || 'Not eklenmemiş'}\n\n`;
 
         // Prepare attachments (optional photos)
         const files = Array.from((photosInput && photosInput.files) ? photosInput.files : []);
@@ -372,7 +499,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            name: fullName,
+            name: selectedPerson.masked_name || 'Revision',
             email: 'revision@thisisyour.website',
             subject: `Revizyon İsteği${slug ? ` - ${slug}` : ''}`,
             message: emailBody,
