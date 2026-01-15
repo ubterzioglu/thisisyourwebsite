@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Send a revision request. Add notes and optionally upload up to 3 photos." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#667eea" />
+  <link rel="icon" href="../favicon.png" type="image/png" />
+
+  <link rel="canonical" href="https://thisisyour.website/en/revision.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Revision | thisisyour.website" />
+  <meta property="og:description" content="Send a revision request. Add notes and optionally upload up to 3 photos." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thisisyour.website/en/revision.html" />
+  <meta property="og:site_name" content="thisisyour.website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:secure_url" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:type" content="image/png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Revision | thisisyour.website" />
+  <meta name="twitter:description" content="Send a revision request. Add notes and optionally upload up to 3 photos." />
+  <meta name="twitter:image" content="https://thisisyour.website/favicon.png" />
+  <meta name="twitter:image:alt" content="thisisyour.website" />
+
+  <title>Revision | thisisyour.website</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .revision-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      border: 3px solid #9D4EDD;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-size: 0.9rem;
+    }
+    .revision-card h1 { font-size: 0.9rem; font-weight: 800; margin-bottom: 1rem; color: #333; }
+    .revision-card p { color: #444; margin-bottom: 1.5rem; line-height: 1.6; }
+    .textarea-input {
+      width: 100%;
+      min-height: 260px;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      resize: vertical;
+      background-color: white;
+      color: #333;
+    }
+    .textarea-input::placeholder { color: #888; }
+    .textarea-input:focus { outline: none; border-color: #667eea; }
+    .text-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background-color: white;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    .text-input::placeholder { color: #888; }
+    .text-input:focus { outline: none; border-color: #667eea; }
+    .file-upload { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .file-input-hidden { display: none; }
+    .file-button {
+      display: inline-block;
+      background: white;
+      color: #333;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .file-button:hover { background: #f5f7fa; }
+    .file-name { color: #444; font-size: 0.9rem; }
+    .help-text { color: #666; font-size: 0.85rem; margin-top: 0.5rem; }
+    .btn-submit {
+      width: auto;
+      padding: 0.6rem 1.25rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0;
+    }
+    .btn-submit:hover { background: #f5f7fa; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .success-box {
+      background: #e6f4ea;
+      border-left: 4px solid #32CD32;
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #155724;
+      line-height: 1.7;
+    }
+    .btn-home {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      margin-top: 1.25rem;
+      transition: all 0.2s;
+    }
+    .btn-home:hover { background: #f5f7fa; }
+    .info-box {
+      background: #f5f7fa;
+      border-left: 4px solid #00A8FF;
+      border-radius: 12px;
+      padding: 1rem;
+      color: #333;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+    .info-box a { color: #333; font-weight: 800; text-decoration: none; }
+    .info-box a:hover { text-decoration: underline; }
+    .results { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .row {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1rem;
+      border-left: 4px solid #00A8FF;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .row:hover { background: #f5f7fa; }
+    .row.selected { outline: 2px solid #667eea; background: #eef2ff; }
+    .name { font-weight: 800; color: #333; white-space: nowrap; }
+    .status-text { color: #444; line-height: 1.6; margin-left: auto; text-align: right; font-size: 0.85rem; }
+    @media (max-width: 768px) {
+      .row { flex-direction: column; align-items: flex-start; }
+      .name { white-space: normal; }
+      .status-text { margin-left: 0; text-align: left; }
+    }
+    .revision-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+      width: 100%;
+    }
+    .btn-secondary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.25rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .btn-secondary-link:hover { background: #f5f7fa; }
+    .push-right { margin-left: auto; }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="container">
+    <div class="revision-card" id="revision-card">
+      <h1>Revision</h1>
+      <p>Write the notes you want to add or change below.</p>
+
+      <div class="info-box">
+        Before sending a revision, please fill out the <a href="yes.html">✅ Page Design Form</a>.
+      </div>
+
+      <input
+        id="revision-person-q"
+        class="text-input"
+        placeholder="Search full name (min 2 characters) — pick from the list"
+        autocomplete="off"
+      />
+      <div id="revision-person-hint" class="help-text" style="margin-top: -0.25rem;">
+        Type at least 2 characters to search.
+      </div>
+      <div id="revision-person-results" class="results"></div>
+
+      <textarea
+        id="long-text-input"
+        class="textarea-input"
+        placeholder="Write your revision notes here..."
+      ></textarea>
+
+      <p class="help-text">Optional: you can attach up to 3 photos (3MB total, max 2MB per file).</p>
+      <div class="file-upload">
+        <input
+          type="file"
+          id="revision-photos"
+          class="file-input-hidden"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+        />
+        <label for="revision-photos" class="file-button">📎 Choose Photos</label>
+        <span id="revision-photos-label" class="file-name">No file selected</span>
+      </div>
+
+      <div class="revision-actions">
+        <button id="submit-btn" class="btn-submit">Send</button>
+        <a class="btn-secondary-link push-right" href="progress.html">😅 I can’t find my name</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const submitBtn = document.getElementById('submit-btn');
+    const longTextInput = document.getElementById('long-text-input');
+    const personQEl = document.getElementById('revision-person-q');
+    const personResultsEl = document.getElementById('revision-person-results');
+    const cardEl = document.getElementById('revision-card');
+    const photosInput = document.getElementById('revision-photos');
+    const photosLabel = document.getElementById('revision-photos-label');
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug') || '';
+
+    const MAX_FILES = 3;
+    const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
+    const MAX_TOTAL_SIZE_BYTES = 3 * 1024 * 1024; // 3MB (matches API limit)
+
+    let selectedPerson = null; // { id, masked_name, status }
+    const personHintEl = document.getElementById('revision-person-hint');
+
+    function getContentTypeFromFilename(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const contentTypes = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+      return contentTypes[ext] || 'application/octet-stream';
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = String(reader.result).split(',')[1];
+          resolve(base64String);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updatePhotoLabel() {
+      if (!photosInput || !photosLabel) return;
+      const files = Array.from(photosInput.files || []);
+      if (files.length === 0) {
+        photosLabel.textContent = 'No file selected';
+        return;
+      }
+      photosLabel.textContent = files.map(f => f.name).join(', ');
+    }
+
+    function validatePhotos() {
+      if (!photosInput) return true;
+      const files = Array.from(photosInput.files || []);
+      if (files.length > MAX_FILES) {
+        alert(`You can select up to ${MAX_FILES} photos.`);
+        photosInput.value = '';
+        updatePhotoLabel();
+        return false;
+      }
+      let total = 0;
+      for (const f of files) {
+        if (f.size > MAX_FILE_SIZE_BYTES) {
+          alert(`Photo is too large. Max: 2MB\\nSelected: ${f.name} (${(f.size / 1024 / 1024).toFixed(2)}MB)`);
+          photosInput.value = '';
+          updatePhotoLabel();
+          return false;
+        }
+        total += f.size;
+      }
+      if (total > MAX_TOTAL_SIZE_BYTES) {
+        alert(`Total size exceeds 3MB. Total: ${(total / 1024 / 1024).toFixed(2)}MB`);
+        photosInput.value = '';
+        updatePhotoLabel();
+        return false;
+      }
+      return true;
+    }
+
+    if (photosInput) {
+      photosInput.addEventListener('change', () => {
+        updatePhotoLabel();
+        validatePhotos();
+      });
+    }
+
+    function renderPeople(results) {
+      if (!personResultsEl) return;
+      const list = Array.isArray(results) ? results : [];
+      if (!list.length) {
+        personResultsEl.innerHTML = '';
+        return;
+      }
+      personResultsEl.innerHTML = list.map(r => `
+        <div class="row ${selectedPerson && String(selectedPerson.id) === String(r.id) ? 'selected' : ''}" data-id="${r.id}">
+          <div class="name">${r.masked_name || ''}</div>
+          <div class="status-text">${r.status || ''}</div>
+        </div>
+      `).join('');
+
+      personResultsEl.querySelectorAll('.row').forEach((el) => {
+        el.addEventListener('click', () => {
+          const id = el.getAttribute('data-id');
+          const found = list.find(x => String(x.id) === String(id));
+          if (!found) return;
+          selectedPerson = { id: found.id, masked_name: found.masked_name, status: found.status };
+          renderPeople(list);
+        });
+      });
+    }
+
+    let tt = null;
+    async function refreshPeople() {
+      const q = (personQEl?.value || '').trim();
+      if (!q || q.length < 2) {
+        if (personHintEl) personHintEl.textContent = 'Type at least 2 characters to search.';
+        renderPeople([]);
+        return;
+      }
+      const res = await fetch(`/api/status-search?q=${encodeURIComponent(q)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Search failed');
+      if (personHintEl) personHintEl.textContent = (data.results || []).length ? 'Pick from the list.' : 'No results.';
+      renderPeople(data.results || []);
+    }
+
+    if (personQEl) {
+      personQEl.addEventListener('input', () => {
+        clearTimeout(tt);
+        tt = setTimeout(() => {
+          refreshPeople().catch((e) => {
+            if (personResultsEl) personResultsEl.innerHTML = '';
+            alert('Error: ' + e.message);
+          });
+        }, 250);
+      });
+    }
+
+    renderPeople([]);
+
+    submitBtn.addEventListener('click', async () => {
+      const longText = longTextInput.value.trim();
+      if (!selectedPerson?.id) {
+        alert('Please select your name from the list.');
+        personQEl?.focus();
+        return;
+      }
+      if (!validatePhotos()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const emailBody = `Revision Request\\n\\nPerson ID: ${selectedPerson.id}\\nName (masked): ${selectedPerson.masked_name || 'n/a'}\\nStatus: ${selectedPerson.status || 'n/a'}\\nSlug: ${slug || 'n/a'}\\n\\nNotes:\\n${longText || 'No notes'}\\n\\n`;
+
+        const files = Array.from((photosInput && photosInput.files) ? photosInput.files : []);
+        const attachments = [];
+        for (const f of files) {
+          const base64 = await fileToBase64(f);
+          attachments.push({
+            filename: f.name,
+            content: base64,
+            contentType: f.type || getContentTypeFromFilename(f.name)
+          });
+        }
+
+        const response = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: selectedPerson.masked_name || 'Revision',
+            email: 'revision@thisisyour.website',
+            subject: `Revision Request${slug ? ` - ${slug}` : ''}`,
+            message: emailBody,
+            attachments
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Email failed');
+        }
+
+        if (cardEl) {
+          cardEl.innerHTML = `
+            <h1>Sent successfully</h1>
+            <div class="success-box">
+              Your revision notes reached us. Thank you! We’ll review and get back to you shortly.
+            </div>
+            <div style="text-align: center;">
+              <a class="btn-home" href="index.html">🏠 Back to Home</a>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Submit error:', error);
+        alert('Error: ' + error.message);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send';
+        }
+      }
+    });
+  </script>
+
+  <footer class="site-footer">© 2026 thisisyour.website</footer>
+  <script data-goatcounter="https://thisisyourwebsite.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
+

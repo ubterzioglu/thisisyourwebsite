@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Check your place in the queue by name (masked display)." />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#667eea" />
+  <link rel="icon" href="../favicon.png" type="image/png" />
+
+  <link rel="canonical" href="https://thisisyour.website/en/status.html" />
+  <meta property="og:title" content="Check Status | thisisyour.website" />
+  <meta property="og:description" content="Check your place in the queue by name (masked display)." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thisisyour.website/en/status.html" />
+  <meta property="og:site_name" content="thisisyour.website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:secure_url" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:type" content="image/png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Check Status | thisisyour.website" />
+  <meta name="twitter:description" content="Check your place in the queue by name (masked display)." />
+  <meta name="twitter:image" content="https://thisisyour.website/favicon.png" />
+  <meta name="twitter:image:alt" content="thisisyour.website" />
+
+  <title>Check Status | thisisyour.website</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      border: 3px solid #FF9500;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-size: 0.9rem;
+    }
+    .title { font-size: 0.9rem; font-weight: 800; color: #333; margin-bottom: 1rem; }
+    .sub { color: #444; margin-bottom: 1.25rem; line-height: 1.6; }
+    .search {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #FF9500;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      background: white;
+      color: #333;
+      outline: none;
+    }
+    .search::placeholder { color: #888; }
+    .hint { margin-top: 0.75rem; color: #666; font-size: 0.85rem; }
+    .results { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .row {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1rem;
+      border-left: 4px solid #00A8FF;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+    .name { font-weight: 800; color: #333; white-space: nowrap; }
+    .status-text { color: #444; line-height: 1.6; margin-left: auto; text-align: right; }
+    @media (max-width: 768px) {
+      .row { flex-direction: column; align-items: flex-start; }
+      .name { white-space: normal; }
+      .status-text { margin-left: 0; text-align: left; }
+    }
+    .btn-row { margin-top: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; }
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-link:hover { background: #f5f7fa; }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="container">
+    <div class="card">
+      <div class="title">Check Status</div>
+      <div class="sub">Search by full name. Displayed names are masked (e.g. <strong>A***** B*****</strong>), but the search runs on the real name.</div>
+      <input id="q" class="search" placeholder="Type your full name (min 2 characters)..." autocomplete="off" />
+      <div id="hint" class="hint"></div>
+      <div id="results" class="results"></div>
+
+      <div class="btn-row">
+        <a class="btn-link" href="index.html">🏠 Home</a>
+        <a class="btn-link" href="progress.html">😅 I can’t find my name</a>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">© 2026 thisisyour.website</footer>
+
+  <script>
+    const qEl = document.getElementById('q');
+    const hintEl = document.getElementById('hint');
+    const resultsEl = document.getElementById('results');
+
+    let t = null;
+    let allResultsCache = null;
+
+    function renderResults(results) {
+      resultsEl.innerHTML = (results || []).map(r => `
+        <div class="row">
+          <div class="name">${r.masked_name || ''}</div>
+          <div class="status-text">${r.status || ''}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadAll() {
+      if (allResultsCache) return allResultsCache;
+      const res = await fetch('/api/status-list');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to load list');
+      allResultsCache = data.results || [];
+      return allResultsCache;
+    }
+
+    async function runSearchOrList() {
+      const q = (qEl.value || '').trim();
+      hintEl.textContent = '';
+
+      try {
+        if (q.length === 0) {
+          hintEl.textContent = 'Showing all records.';
+          const all = await loadAll();
+          renderResults(all);
+          return;
+        }
+
+        if (q.length < 2) {
+          hintEl.textContent = 'Type at least 2 characters to filter. (Showing all for now.)';
+          const all = await loadAll();
+          renderResults(all);
+          return;
+        }
+
+        hintEl.textContent = 'Searching...';
+        const res = await fetch(`/api/status-search?q=${encodeURIComponent(q)}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Search failed');
+
+        const results = data.results || [];
+        hintEl.textContent = results.length ? `${results.length} result(s) found.` : 'No results.';
+        renderResults(results);
+      } catch (e) {
+        hintEl.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    qEl.addEventListener('input', () => {
+      clearTimeout(t);
+      t = setTimeout(runSearchOrList, 250);
+    });
+
+    runSearchOrList();
+  </script>
+  <script data-goatcounter="https://thisisyourwebsite.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
+

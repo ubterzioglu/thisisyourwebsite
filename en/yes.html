@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Page design form: answer 24 questions and submit your preferences." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#667eea" />
+  <link rel="icon" href="../favicon.png" type="image/png" />
+
+  <link rel="canonical" href="https://thisisyour.website/en/yes.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Page Design Form | thisisyour.website" />
+  <meta property="og:description" content="Answer 24 questions to define your personal website preferences. Submit with notes and optional photo/CV." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thisisyour.website/en/yes.html" />
+  <meta property="og:site_name" content="thisisyour.website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:secure_url" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:type" content="image/png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Page Design Form | thisisyour.website" />
+  <meta name="twitter:description" content="Answer 24 questions to define your personal website preferences." />
+  <meta name="twitter:image" content="https://thisisyour.website/favicon.png" />
+  <meta name="twitter:image:alt" content="thisisyour.website" />
+
+  <title>Page Design Form | thisisyour.website</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    /* same layout as TR yes.html */
+    .wizard-container { max-width: 700px; margin: 0 auto; padding: 1rem 2rem; }
+    .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 2rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: width 0.3s ease; }
+    .progress-text { text-align: center; margin-bottom: 1rem; color: white; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+    .question-card {
+      background: white; border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 1rem; margin-top: 0.5rem; min-height: 500px; display: flex; flex-direction: column; justify-content: flex-start;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; font-size: 0.9rem;
+    }
+    .intro-card { padding: 1.5rem; min-height: auto; margin-bottom: 1rem; }
+    @media (max-width: 768px) { .intro-card { padding: 1.25rem; margin-bottom: 0.5rem; } }
+    .question-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 2rem; color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; }
+    .intro-title { font-size: 0.9rem; margin-bottom: 1rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; }
+    .answer-options { display: flex; flex-direction: column; gap: 1rem; }
+    .option-button {
+      padding: 1rem 1.5rem; border: 2px solid #e0e0e0; border-radius: 12px; background: white; cursor: pointer;
+      font-size: 0.9rem; text-align: left; transition: all 0.2s; color: #333; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    }
+    .option-button:hover { border-color: #667eea; background: #f5f7fa; color: #333; }
+    .option-button.selected { border-color: #667eea; background: #667eea; color: white; }
+    .option-checkbox {
+      padding: 1rem 1.5rem; border: 2px solid #e0e0e0; border-radius: 12px; background: white; cursor: pointer;
+      display: flex; align-items: center; gap: 0.75rem; transition: all 0.2s; color: #333; font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    }
+    .option-checkbox:hover { border-color: #667eea; }
+    .option-checkbox.selected { border-color: #667eea; background: #f5f7fa; }
+    .option-checkbox input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
+    .wizard-nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 0.5rem; position: relative; }
+    .wizard-nav #btn-back { position: absolute; left: 50%; transform: translateX(-50%); }
+    .wizard-nav.intro-nav { justify-content: space-between; }
+    .wizard-nav.intro-nav #btn-reset, .wizard-nav.intro-nav #btn-back { display: none !important; }
+    .wizard-nav.intro-nav #btn-back { position: static; transform: none; }
+    .wizard-nav.intro-nav #btn-next { position: static; transform: none; }
+    .btn-home { background: white; color: #333; border: 2px solid #e0e0e0; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-home:hover { background: #f5f7fa; border-color: #667eea; }
+    .btn-nav { padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-back { background: white; color: #333; border: 2px solid #e0e0e0; }
+    .btn-back:hover { background: #f5f7fa; border-color: #667eea; }
+    .btn-next { background: white; color: #333; border: 2px solid #667eea; }
+    .btn-next:hover { background: #f5f7fa; }
+    .btn-finish { background: linear-gradient(135deg, #32cd32 0%, #228b22 100%); color: white; }
+    .btn-reset { background: white; color: #333; margin-right: auto; padding: 0.75rem 1.5rem; border: 2px solid #e0e0e0; }
+    .btn-reset:hover { background: #f5f7fa; border-color: #667eea; }
+    .text-input, .textarea-input {
+      width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; color: #333; background-color: white;
+    }
+    .textarea-input { min-height: 150px; resize: vertical; }
+    .text-input:focus, .textarea-input:focus { outline: none; border-color: #667eea; }
+    .loading { text-align: center; padding: 3rem; color: #666; }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="wizard-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 5%;"></div>
+    </div>
+    <div class="progress-text" id="progress-text">Step 1 / 21</div>
+
+    <div id="question-container" class="question-card">
+      <div class="loading">Loading...</div>
+    </div>
+
+    <div class="wizard-nav">
+      <a id="btn-home" class="btn-nav btn-home" href="index.html" style="display: none;">🏠 Home</a>
+      <button id="btn-reset" class="btn-nav btn-reset" style="display: none;">🔄 Reset</button>
+      <button id="btn-back" class="btn-nav btn-back" style="display: none;">← Back</button>
+      <button id="btn-next" class="btn-nav btn-next">Next →</button>
+    </div>
+  </div>
+  <footer class="site-footer">© 2026 thisisyour.website</footer>
+
+  <!-- Reuse same JS + same DB/backends. (Text is not fully translated yet; we’ll iterate.) -->
+  <script type="module" src="../wizard.js"></script>
+  <script data-goatcounter="https://thisisyourwebsite.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
+

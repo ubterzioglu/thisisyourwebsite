@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Contact and feedback: thisisyour.website" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#667eea" />
+  <link rel="icon" href="../favicon.png" type="image/png" />
+
+  <link rel="canonical" href="https://thisisyour.website/en/contact.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Contact | thisisyour.website" />
+  <meta property="og:description" content="Contact and feedback: thisisyour.website" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thisisyour.website/en/contact.html" />
+  <meta property="og:site_name" content="thisisyour.website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:secure_url" content="https://thisisyour.website/favicon.png" />
+  <meta property="og:image:type" content="image/png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact | thisisyour.website" />
+  <meta name="twitter:description" content="Contact and feedback: thisisyour.website" />
+  <meta name="twitter:image" content="https://thisisyour.website/favicon.png" />
+  <meta name="twitter:image:alt" content="thisisyour.website" />
+
+  <title>Contact | thisisyour.website</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .contact-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      border: 3px solid #FFD700;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-size: 0.9rem;
+    }
+    .contact-card h1 { font-size: 0.9rem; font-weight: 800; margin-bottom: 1rem; color: #333; }
+    .contact-card p { color: #444; margin-bottom: 1.25rem; line-height: 1.6; }
+    .links { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .link-row {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1rem;
+      border-left: 4px solid #00A8FF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .link-row .label { font-weight: 800; color: #333; }
+    .link-row a { color: #333; text-decoration: none; font-weight: 700; }
+    .link-row a:hover { text-decoration: underline; }
+    .textarea-input {
+      width: 100%;
+      min-height: 220px;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      resize: vertical;
+      background-color: white;
+      color: #333;
+    }
+    .textarea-input::placeholder { color: #888; }
+    .textarea-input:focus { outline: none; border-color: #667eea; }
+    .text-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background-color: white;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    .text-input::placeholder { color: #888; }
+    .text-input:focus { outline: none; border-color: #667eea; }
+    .help-text { color: #666; font-size: 0.85rem; margin-top: 0.25rem; margin-bottom: 0.75rem; }
+    .btn-submit {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 1rem;
+    }
+    .btn-submit:hover { background: #f5f7fa; }
+    .btn-row { margin-top: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-link:hover { background: #f5f7fa; }
+    .success-box {
+      background: #e6f4ea;
+      border-left: 4px solid #32CD32;
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #155724;
+      line-height: 1.7;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="container">
+    <div class="contact-card" id="contact-card">
+      <h1>Contact</h1>
+      <p>You can reach us via the channels below. You can also leave quick feedback at the bottom.</p>
+
+      <div class="links">
+        <div class="link-row">
+          <div class="label">WhatsApp</div>
+          <a href="https://wa.me/905302404995" target="_blank" rel="noopener noreferrer">+90 530 240 49 95</a>
+        </div>
+        <div class="link-row">
+          <div class="label">Email</div>
+          <a href="mailto:yes@thisisyour.website">yes@thisisyour.website</a>
+        </div>
+        <div class="link-row">
+          <div class="label">LinkedIn</div>
+          <a href="https://www.linkedin.com/in/ubterzioglu" target="_blank" rel="noopener noreferrer">linkedin.com/in/ubterzioglu</a>
+        </div>
+        <div class="link-row">
+          <div class="label">Web</div>
+          <a href="https://ubterzioglu.de" target="_blank" rel="noopener noreferrer">ubterzioglu.de</a>
+        </div>
+      </div>
+
+      <h1>Feedback</h1>
+      <p>Write your suggestion/complaint and we’ll receive it by email. (Optional)</p>
+      <input id="feedback-full-name" class="text-input" placeholder="Full name (optional)" />
+      <p class="help-text">If you don’t include your name, we may not know who you are. (Optional)</p>
+      <textarea id="feedback-input" class="textarea-input" placeholder="Write your feedback..."></textarea>
+      <button id="submit-btn" class="btn-submit">Send</button>
+
+      <div class="btn-row">
+        <a class="btn-link" href="index.html">🏠 Home</a>
+        <a class="btn-link" href="progress.html">✅ I want a free personal website</a>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">© 2026 thisisyour.website</footer>
+
+  <script type="module">
+    const submitBtn = document.getElementById('submit-btn');
+    const feedbackInput = document.getElementById('feedback-input');
+    const feedbackFullNameInput = document.getElementById('feedback-full-name');
+    const cardEl = document.getElementById('contact-card');
+
+    submitBtn.addEventListener('click', async () => {
+      const feedback = (feedbackInput.value || '').trim();
+      const fullName = (feedbackFullNameInput?.value || '').trim();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const emailBody = `Feedback\\n\\nName:\\n${fullName || 'Not provided (we may not know who you are)'}\\n\\nMessage:\\n${feedback || 'Empty'}\\n`;
+
+        const response = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: fullName || 'Feedback',
+            email: 'yes@thisisyour.website',
+            subject: fullName ? `Feedback - ${fullName}` : 'Feedback',
+            message: emailBody
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Email failed');
+        }
+
+        if (cardEl) {
+          cardEl.innerHTML = `
+            <h1>Sent successfully</h1>
+            <div class="success-box">
+              Thanks! Your feedback reached us. We’ll review it soon.
+            </div>
+            <div class="btn-row">
+              <a class="btn-link" href="index.html">🏠 Home</a>
+              <a class="btn-link" href="yes.html">✅ Start ➡️</a>
+            </div>
+          `;
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send';
+      }
+    });
+  </script>
+
+  <script data-goatcounter="https://thisisyourwebsite.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
+
