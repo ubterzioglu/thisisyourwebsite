@@ -20,6 +20,12 @@ export default async function handler(req, res) {
   }
 
   try {
+    // If replace=1, drop and recreate the table to ensure CHECK constraint supports 0..5
+    // (SQLite cannot alter CHECK constraints in-place reliably).
+    if (replace) {
+      await turso.execute(`DROP TABLE IF EXISTS status;`);
+    }
+
     // Create table + index
     await turso.execute(`
       CREATE TABLE IF NOT EXISTS status (
@@ -62,10 +68,7 @@ export default async function handler(req, res) {
     ];
 
     let replaced = false;
-    if (replace) {
-      await turso.execute(`DELETE FROM status;`);
-      replaced = true;
-    }
+    if (replace) replaced = true;
 
     const shouldSeed = replaced || c === 0;
     if (shouldSeed) {
