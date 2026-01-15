@@ -222,17 +222,17 @@
     }
 
     .btn-submit {
-      width: 100%;
-      padding: 0.75rem 1.5rem;
+      width: auto;
+      padding: 0.6rem 1.25rem;
       background: white;
       color: #333;
       border: 2px solid #667eea;
       border-radius: 12px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
-      margin-top: 1.25rem;
+      margin-top: 0;
     }
 
     .btn-submit:hover {
@@ -269,6 +269,34 @@
     .btn-home:hover {
       background: #f5f7fa;
     }
+
+    .revision-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+
+    .btn-secondary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.25rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary-link:hover {
+      background: #f5f7fa;
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -289,8 +317,8 @@
         placeholder="Ad Soyad ara (en az 2 karakter) — listeden seç"
         autocomplete="off"
       />
-      <div class="help-text">
-        İsmini listeden seçmelisin. Bulamazsan: <a href="progress.html" style="font-weight:800; color:#333;">😅 İsmimi bulamadım</a>
+      <div id="revision-person-hint" class="help-text" style="margin-top: -0.25rem;">
+        Arama için en az 2 karakter yaz.
       </div>
       <div id="revision-person-results" class="results"></div>
       
@@ -313,7 +341,10 @@
         <span id="revision-photos-label" class="file-name">Dosya seçilmedi</span>
       </div>
       
-      <button id="submit-btn" class="btn-submit">Gönder</button>
+      <div class="revision-actions">
+        <button id="submit-btn" class="btn-submit">Gönder</button>
+        <a class="btn-secondary-link" href="progress.html">😅 İsmimi bulamadım</a>
+      </div>
     </div>
   </div>
   
@@ -328,7 +359,6 @@
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug') || '';
 
-    let allPeopleCache = null;
     let selectedPerson = null; // { id, masked_name, status }
 
     const MAX_FILES = 3;
@@ -428,26 +458,20 @@
       });
     }
 
-    async function loadAllPeople() {
-      if (allPeopleCache) return allPeopleCache;
-      const res = await fetch('/api/status-list');
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Liste alınamadı');
-      allPeopleCache = data.results || [];
-      return allPeopleCache;
-    }
+    const personHintEl = document.getElementById('revision-person-hint');
 
     let tt = null;
     async function refreshPeople() {
       const q = (personQEl?.value || '').trim();
       if (!q || q.length < 2) {
-        const all = await loadAllPeople();
-        renderPeople(all);
+        if (personHintEl) personHintEl.textContent = 'Arama için en az 2 karakter yaz.';
+        renderPeople([]);
         return;
       }
       const res = await fetch(`/api/status-search?q=${encodeURIComponent(q)}`);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Arama başarısız');
+      if (personHintEl) personHintEl.textContent = (data.results || []).length ? 'Listeden seç.' : 'Sonuç bulunamadı.';
       renderPeople(data.results || []);
     }
 
@@ -463,8 +487,8 @@
       });
     }
 
-    // Initial list
-    refreshPeople().catch(() => {});
+    // Initial: no list until user searches
+    renderPeople([]);
     
     submitBtn.addEventListener('click', async () => {
       const longText = longTextInput.value.trim();

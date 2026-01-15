@@ -36,6 +36,65 @@ body {
   color: var(--text-dark);
 }
 
+.admin-orange {
+  /* Admin theme: black background, orange cards, white text */
+  background: #000000 !important;
+  color: #ffffff;
+  --bg-light: #000000;
+  --text-light: #ffffff;
+  --border-light: rgba(0, 0, 0, 0.55);
+  --card-bg-light: #FF9500;
+  --accent: #000000;
+}
+
+.admin-orange .container {
+  background: #FF9500;
+  color: #ffffff;
+}
+
+.admin-orange .header h1,
+.admin-orange h2,
+.admin-orange p,
+.admin-orange label,
+.admin-orange th,
+.admin-orange td {
+  color: #ffffff;
+}
+
+.admin-orange .queue-table th,
+.admin-orange .queue-table td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.admin-orange #login-section input,
+.admin-orange input,
+.admin-orange select,
+.admin-orange textarea {
+  background: #000000;
+  color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.55);
+}
+
+.admin-orange .btn.primary {
+  background: #000000;
+  color: #ffffff;
+}
+
+.admin-orange .btn.secondary {
+  border-color: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+}
+
+.admin-orange .theme-btn {
+  background: #000000;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.admin-orange .site-footer {
+  color: rgba(255, 255, 255, 0.92);
+}
+
 .container {
   max-width: 960px;
   margin: 2rem auto;

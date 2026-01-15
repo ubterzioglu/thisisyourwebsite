@@ -450,18 +450,25 @@ function showLogin() {
 document.addEventListener('DOMContentLoaded', () => {
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  document.body.className = `theme-${savedTheme}`;
-  themeToggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+  const ADMIN_CLASS = 'admin-orange';
+  const savedTheme = localStorage.getItem('admin_theme') || 'dark';
+
+  const applyTheme = (theme) => {
+    document.body.classList.remove('theme-light', 'theme-dark');
+    document.body.classList.add(`theme-${theme}`);
+    document.body.classList.add(ADMIN_CLASS);
+    themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+  };
   
   let currentTheme = savedTheme;
   themeToggle.addEventListener('click', () => {
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.body.className = `theme-${newTheme}`;
-    localStorage.setItem('theme', newTheme);
-    themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+    applyTheme(newTheme);
+    localStorage.setItem('admin_theme', newTheme);
     currentTheme = newTheme;
   });
+
+  applyTheme(savedTheme);
   
   // Login button
   document.getElementById('login-btn').addEventListener('click', () => {
