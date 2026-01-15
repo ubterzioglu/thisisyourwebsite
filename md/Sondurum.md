@@ -61,7 +61,7 @@ thisisyourwebsite/
 │   ├── questions.md
 │   ├── Sondurum.md          # Bu dosya
 │   └── TURSO_SETUP.md
-├── wizard.html              # Wizard form sayfası
+├── yes.html                 # Wizard form sayfası
 ├── wizard.js                # Wizard mantığı (20 soru + dosya yükleme)
 ├── result.html              # Özet sayfası
 ├── result.js                # Özet sayfası mantığı

@@ -20,8 +20,8 @@ export default async function handler(req, res) {
   if (!fullName) {
     return res.status(400).json({ error: 'full_name is required' });
   }
-  if (!Number.isInteger(s) || s < 1 || s > 5) {
-    return res.status(400).json({ error: 'status must be 1..5' });
+  if (!Number.isInteger(s) || s < 0 || s > 5) {
+    return res.status(400).json({ error: 'status must be 0..5' });
   }
 
   try {

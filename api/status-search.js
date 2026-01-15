@@ -15,6 +15,8 @@ function maskName(displayName) {
 function statusLabel(status) {
   const n = Number(status);
   switch (n) {
+    case 0:
+      return 'Sıradasın! Yakında seninle iletişime geçeceğiz!';
     case 1:
       return 'Yorum yapıldı sıra bizde! Mesaj atacağız!';
     case 2:

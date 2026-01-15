@@ -74,6 +74,7 @@ function showAdminDashboard() {
 function getStatusTextV2(n) {
   const v = Number(n);
   switch (v) {
+    case 0: return '0 - Sıradasın! Yakında seninle iletişime geçeceğiz!';
     case 1: return '1 - Yorum yapıldı sıra bizde! Mesaj atacağız!';
     case 2: return '2 - Mesaj atıldı formu doldurman gerekiyor!';
     case 3: return '3 - Formu doldurdun siteni oluşturuyoruz!';
@@ -129,7 +130,7 @@ function renderStatusTable() {
       if (!row) return;
       document.getElementById('status-id').value = row.id;
       document.getElementById('status-full-name').value = row.full_name || '';
-      document.getElementById('status-value').value = String(row.status || 1);
+      document.getElementById('status-value').value = String(row.status ?? 0);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
@@ -165,7 +166,7 @@ async function upsertStatus() {
 function clearStatusForm() {
   document.getElementById('status-id').value = '';
   document.getElementById('status-full-name').value = '';
-  document.getElementById('status-value').value = '1';
+  document.getElementById('status-value').value = '0';
 }
 
 // Load queue items

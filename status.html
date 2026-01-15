@@ -80,16 +80,34 @@
       padding: 1rem;
       border-left: 4px solid #00A8FF;
       display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
     }
     .name {
       font-weight: 800;
       color: #333;
+      white-space: nowrap;
     }
     .status-text {
       color: #444;
       line-height: 1.6;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      .row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .name {
+        white-space: normal;
+      }
+      .status-text {
+        margin-left: 0;
+        text-align: left;
+      }
     }
     .btn-row {
       margin-top: 1.5rem;
@@ -124,7 +142,7 @@
 
       <div class="btn-row">
         <a class="btn-link" href="index.html">🏠 Ana Sayfa</a>
-        <a class="btn-link" href="wizard.html">✅ Başla ➡️</a>
+        <a class="btn-link" href="yes.html">✅ Başla ➡️</a>
       </div>
     </div>
   </div>

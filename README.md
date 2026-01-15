@@ -136,16 +136,16 @@ python -m http.server 8000
 **Özellikler**:
 - Minimal tek kartlı tasarım
 - LinkedIn post linki (external)
-- "Yorum Yaptım Bile!" butonu → `wizard.html`'e yönlendirir
+- "Yorum Yaptım Bile!" butonu → `yes.html`'e yönlendirir
 - GoatCounter analytics
 
 **Kullanım**:
 - Kullanıcılar buradan wizard'a başlar
 - LinkedIn çekilişi için giriş noktası
 
-### 2. Wizard Sayfası (`wizard.html`)
+### 2. Wizard Sayfası (`yes.html`)
 
-**URL**: `/wizard.html` (slug otomatik oluşturulur: `?slug=XXXX`)
+**URL**: `/yes.html` (slug otomatik oluşturulur: `?slug=XXXX`)
 
 **Özellikler**:
 - 20 soru adım adım gösterim
@@ -210,7 +210,7 @@ python -m http.server 8000
 
 ### 6. Form Sayfası (`form.html`)
 
-**Not**: Eski form sayfası. Artık `wizard.html` kullanılıyor.
+**Not**: Eski form sayfası. Artık `yes.html` kullanılıyor.
 
 ---
 
@@ -257,7 +257,7 @@ Token bazlı gönderimler için.
 ```
 thisisyourwebsite/
 ├── index.html              # Landing page
-├── wizard.html             # 20 soru wizard
+├── yes.html                # 20 soru wizard
 ├── wizard.js               # Wizard mantığı
 ├── result.html             # Sonuç sayfası
 ├── result.js               # Result mantığı
@@ -410,7 +410,7 @@ GoatCounter analytics tüm HTML sayfalarında aktif:
 ### Orta Öncelik (Önerilen)
 
 4. **Test ve Doğrulama**
-   - Wizard akışını test edin: `wizard.html` → formu doldurun → `result.html` kontrolü
+   - Wizard akışını test edin: `yes.html` → formu doldurun → `result.html` kontrolü
    - API endpoint'lerinin çalıştığını doğrulayın
    - **Neden**: Sistemin düzgün çalıştığından emin olmak için
 
@@ -446,7 +446,7 @@ GoatCounter analytics tüm HTML sayfalarında aktif:
 
 #### Yeni Özellikler
 
-- ✅ **Wizard Sistemi**: 20 soruluk adım adım form sistemi (`wizard.html`, `wizard.js`)
+- ✅ **Wizard Sistemi**: 20 soruluk adım adım form sistemi (`yes.html`, `wizard.js`)
 - ✅ **Result Sayfası**: Gönderim özeti görüntüleme (`result.html`, `result.js`)
 - ✅ **Supabase `intakes` Tablosu**: Wizard gönderimleri için yeni tablo
 - ✅ **Otomatik Özet Üretimi**: `buildUserSummary()` ve `buildAiPrompt()` fonksiyonları
@@ -458,7 +458,7 @@ GoatCounter analytics tüm HTML sayfalarında aktif:
 #### Landing Page Güncellemeleri
 
 - ✅ Minimal tek kartlı tasarım
-- ✅ "Yorum Yaptım Bile!" butonu → `wizard.html`'e yönlendirme
+- ✅ "Yorum Yaptım Bile!" butonu → `yes.html`'e yönlendirme
 - ✅ LinkedIn post linki entegrasyonu
 
 #### Dokümantasyon
