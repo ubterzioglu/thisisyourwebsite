@@ -72,7 +72,7 @@
       font-weight: 800;
       color: #333;
     }
-    .status {
+    .status-text {
       color: #444;
       line-height: 1.6;
     }
@@ -140,7 +140,7 @@
         resultsEl.innerHTML = results.map(r => `
           <div class="row">
             <div class="name">${r.masked_name || ''}</div>
-            <div class="status">${r.status || ''}</div>
+            <div class="status-text">${r.status || ''}</div>
           </div>
         `).join('');
       } catch (e) {
