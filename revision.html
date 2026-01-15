@@ -82,6 +82,27 @@
       border-color: #667eea;
     }
 
+    .text-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background-color: white;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .text-input::placeholder {
+      color: #888;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
     .file-upload {
       display: flex;
       align-items: center;
@@ -92,6 +113,26 @@
 
     .file-input-hidden {
       display: none;
+    }
+
+    .info-box {
+      background: #f5f7fa;
+      border-left: 4px solid #00A8FF;
+      border-radius: 12px;
+      padding: 1rem;
+      color: #333;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .info-box a {
+      color: #333;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .info-box a:hover {
+      text-decoration: underline;
     }
 
     .file-button {
@@ -179,6 +220,18 @@
       <p>
         Eklemek veya düzenlemek istediğiniz notlarınızı aşağıya yazabilirsiniz.
       </p>
+
+      <div class="info-box">
+        Revizyon göndermeden önce lütfen <a href="yes.html">✅ yes.html</a> formunu doldurun.
+      </div>
+
+      <input
+        id="revision-full-name"
+        class="text-input"
+        placeholder="Ad Soyad (zorunlu)"
+        autocomplete="name"
+        required
+      />
       
       <textarea 
         id="long-text-input" 
@@ -206,6 +259,7 @@
   <script type="module">
     const submitBtn = document.getElementById('submit-btn');
     const longTextInput = document.getElementById('long-text-input');
+    const fullNameInput = document.getElementById('revision-full-name');
     const cardEl = document.getElementById('revision-card');
     const photosInput = document.getElementById('revision-photos');
     const photosLabel = document.getElementById('revision-photos-label');
@@ -285,14 +339,20 @@
     }
     
     submitBtn.addEventListener('click', async () => {
+      const fullName = (fullNameInput?.value || '').trim();
       const longText = longTextInput.value.trim();
+      if (!fullName) {
+        alert('Ad Soyad zorunlu.');
+        fullNameInput?.focus();
+        return;
+      }
       if (!validatePhotos()) return;
       
       submitBtn.disabled = true;
       submitBtn.textContent = 'Gönderiliyor...';
       
       try {
-        const emailBody = `Revizyon İsteği\n\nSlug: ${slug || 'yok'}\n\nEk Notlar:\n${longText || 'Not eklenmemiş'}\n\n`;
+        const emailBody = `Revizyon İsteği\n\nAd Soyad: ${fullName}\nSlug: ${slug || 'yok'}\n\nEk Notlar:\n${longText || 'Not eklenmemiş'}\n\n`;
 
         // Prepare attachments (optional photos)
         const files = Array.from((photosInput && photosInput.files) ? photosInput.files : []);
@@ -312,7 +372,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            name: 'Revision Form',
+            name: fullName,
             email: 'revision@thisisyour.website',
             subject: `Revizyon İsteği${slug ? ` - ${slug}` : ''}`,
             message: emailBody,

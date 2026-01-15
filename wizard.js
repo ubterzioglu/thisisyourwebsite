@@ -728,6 +728,7 @@ async function submitWizard() {
     
     // Build summary
     const userSummary = buildUserSummary(answers);
+    const fullName = String(answers?.q24 || '').trim();
     
     // Prepare attachments
     const attachments = [];
@@ -781,16 +782,16 @@ async function submitWizard() {
     console.log('=== END DEBUG ===');
     
     // Send email (wizard verilerini email olarak gönder)
-    let emailBody = `Yeni Sayfa Detayı\n\nSlug: ${publicSlug}\n\n`;
+    let emailBody = `Yeni Sayfa Detayı\n\nAd Soyad: ${fullName || 'Yazılmadı'}\nSlug: ${publicSlug}\n\n`;
     if (photoFile) emailBody += `✅ Fotoğraf yüklendi: ${photoFile.name}\n`;
     if (cvFile) emailBody += `✅ CV yüklendi: ${cvFile.name}\n`;
     emailBody += `\n20 Soru Özeti:\n${userSummary || 'Özet bulunamadı'}\n\n`;
     const emailMessage = longText ? `${emailBody}Sizin ek istekleriniz:\n${longText}` : emailBody;
     
     const requestBody = {
-      name: 'Sayfa Detayı',
+      name: fullName || 'Sayfa Detayı',
       email: 'wizard@thisisyour.website',
-      subject: `Yeni Sayfa Detayı - ${publicSlug}`,
+      subject: fullName ? `Yeni Sayfa Detayı - ${fullName}` : `Yeni Sayfa Detayı - ${publicSlug}`,
       message: emailMessage,
       attachments: attachments
     };

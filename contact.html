@@ -111,6 +111,28 @@
     .textarea-input::placeholder { color: #888; }
     .textarea-input:focus { outline: none; border-color: #667eea; }
 
+    .text-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background-color: white;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .text-input::placeholder { color: #888; }
+    .text-input:focus { outline: none; border-color: #667eea; }
+
+    .help-text {
+      color: #666;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
     .btn-submit {
       width: 100%;
       padding: 0.75rem 1.5rem;
@@ -189,6 +211,8 @@
 
       <h1>Feedback</h1>
       <p>Bu sayfa veya süreçle ilgili önerini/şikayetini yaz, bize mail olarak gelsin. (Opsiyonel)</p>
+      <input id="feedback-full-name" class="text-input" placeholder="Ad Soyad (opsiyonel)" />
+      <p class="help-text">İsmini yazmazsan kim olduğunu bilemeyebiliriz. (Opsiyonel)</p>
       <textarea id="feedback-input" class="textarea-input" placeholder="Geri bildiriminizi buraya yazın..."></textarea>
       <button id="submit-btn" class="btn-submit">Gönder</button>
 
@@ -203,24 +227,26 @@
   <script type="module">
     const submitBtn = document.getElementById('submit-btn');
     const feedbackInput = document.getElementById('feedback-input');
+    const feedbackFullNameInput = document.getElementById('feedback-full-name');
     const cardEl = document.getElementById('contact-card');
 
     submitBtn.addEventListener('click', async () => {
       const feedback = (feedbackInput.value || '').trim();
+      const fullName = (feedbackFullNameInput?.value || '').trim();
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Gönderiliyor...';
 
       try {
-        const emailBody = `Feedback\n\nMesaj:\n${feedback || 'Boş'}\n`;
+        const emailBody = `Feedback\n\nİsim:\n${fullName || 'Yazılmadı (kim olduğunu bilemeyebiliriz)'}\n\nMesaj:\n${feedback || 'Boş'}\n`;
 
         const response = await fetch('/api/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: 'Feedback',
+            name: fullName || 'Feedback',
             email: 'yes@thisisyour.website',
-            subject: 'Feedback',
+            subject: fullName ? `Feedback - ${fullName}` : 'Feedback',
             message: emailBody
           })
         });
