@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="İletişim ve geri bildirim: thisisyour.website" />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#667eea" />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+
+  <!-- Geo (legacy SEO meta) -->
+  <meta name="geo.region" content="TR" />
+  <meta name="geo.placename" content="Istanbul" />
+  <meta name="geo.position" content="41.0082;28.9784" />
+  <meta name="ICBM" content="41.0082, 28.9784" />
+
+  <link rel="canonical" href="https://thisisyour.website/contact.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="İletişim | thisisyour.website" />
+  <meta property="og:description" content="İletişim ve geri bildirim: thisisyour.website" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thisisyour.website/contact.html" />
+  <meta property="og:site_name" content="thisisyour.website" />
+  <meta property="og:locale" content="tr_TR" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="İletişim | thisisyour.website" />
+  <meta name="twitter:description" content="İletişim ve geri bildirim: thisisyour.website" />
+
+  <title>İletişim | thisisyour.website</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .contact-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      border: 3px solid #FFD700;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .contact-card h1 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .contact-card p {
+      color: #444;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .links {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .link-row {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1rem;
+      border-left: 4px solid #00A8FF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .link-row .label {
+      font-weight: 800;
+      color: #333;
+    }
+
+    .link-row a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .link-row a:hover {
+      text-decoration: underline;
+    }
+
+    .textarea-input {
+      width: 100%;
+      min-height: 220px;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      resize: vertical;
+      background-color: white;
+      color: #333;
+    }
+
+    .textarea-input::placeholder { color: #888; }
+    .textarea-input:focus { outline: none; border-color: #667eea; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 1.25rem;
+    }
+
+    .btn-submit:hover { background: #f5f7fa; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .success-box {
+      background: #e6f4ea;
+      border-left: 4px solid #32CD32;
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #155724;
+      line-height: 1.7;
+    }
+
+    .btn-row {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #333;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .btn-link:hover { background: #f5f7fa; }
+  </style>
+</head>
+<body class="theme-light">
+  <div class="container">
+    <div class="contact-card" id="contact-card">
+      <h1>İletişim</h1>
+      <p>Aşağıdaki kanallardan bize ulaşabilirsiniz. Ayrıca alttan hızlıca geri bildirim bırakabilirsiniz.</p>
+
+      <div class="links">
+        <div class="link-row">
+          <div class="label">WhatsApp</div>
+          <a href="https://wa.me/905302404995" target="_blank" rel="noopener noreferrer">+90 530 240 49 95</a>
+        </div>
+        <div class="link-row">
+          <div class="label">Mail</div>
+          <a href="mailto:yes@thisisyour.website">yes@thisisyour.website</a>
+        </div>
+        <div class="link-row">
+          <div class="label">LinkedIn</div>
+          <a href="https://www.linkedin.com/in/ubterzioglu" target="_blank" rel="noopener noreferrer">linkedin.com/in/ubterzioglu</a>
+        </div>
+        <div class="link-row">
+          <div class="label">Web</div>
+          <a href="https://ubterzioglu.de" target="_blank" rel="noopener noreferrer">ubterzioglu.de</a>
+        </div>
+      </div>
+
+      <h1>Feedback</h1>
+      <p>Bu sayfa veya süreçle ilgili önerini/şikayetini yaz, bize mail olarak gelsin. (Opsiyonel)</p>
+      <textarea id="feedback-input" class="textarea-input" placeholder="Geri bildiriminizi buraya yazın..."></textarea>
+      <button id="submit-btn" class="btn-submit">Gönder</button>
+
+      <div class="btn-row">
+        <a class="btn-link" href="index.html">🏠 Ana Sayfa</a>
+        <a class="btn-link" href="wizard.html">✅ Başla ➡️</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    const submitBtn = document.getElementById('submit-btn');
+    const feedbackInput = document.getElementById('feedback-input');
+    const cardEl = document.getElementById('contact-card');
+
+    submitBtn.addEventListener('click', async () => {
+      const feedback = (feedbackInput.value || '').trim();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Gönderiliyor...';
+
+      try {
+        const emailBody = `Feedback\n\nMesaj:\n${feedback || 'Boş'}\n`;
+
+        const response = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Feedback',
+            email: 'yes@thisisyour.website',
+            subject: 'Feedback',
+            message: emailBody
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Email gönderilemedi');
+        }
+
+        if (cardEl) {
+          cardEl.innerHTML = `
+            <h1>Başarıyla Gönderildi</h1>
+            <div class="success-box">
+              Teşekkürler! Geri bildirimin bize ulaştı. En kısa sürede inceleyeceğiz.
+            </div>
+            <div class="btn-row">
+              <a class="btn-link" href="index.html">🏠 Ana Sayfa</a>
+              <a class="btn-link" href="wizard.html">✅ Başla ➡️</a>
+            </div>
+          `;
+        }
+      } catch (e) {
+        alert('Bir hata oluştu: ' + e.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Gönder';
+      }
+    });
+  </script>
+
+  <script data-goatcounter="https://thisisyourwebsite.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
+
