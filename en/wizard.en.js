@@ -541,16 +541,16 @@ async function submitWizard() {
       });
     } catch {}
 
-    let emailBody = `Yeni Sayfa Detayı\n\nAd Soyad: ${fullName || 'Not provided'}\nSlug: ${publicSlug}\n\n`;
+    let emailBody = `New Page Details\n\nFull name: ${fullName || 'Not provided'}\nSlug: ${publicSlug}\n\n`;
     if (photoFile) emailBody += `✅ Photo uploaded: ${photoFile.name}\n`;
     if (cvFile) emailBody += `✅ CV uploaded: ${cvFile.name}\n`;
     emailBody += `\nSummary:\n${userSummary || 'No summary'}\n\n`;
     const emailMessage = longText ? `${emailBody}Additional notes:\n${longText}` : emailBody;
 
     const requestBody = {
-      name: fullName || 'Sayfa Detayı',
+      name: fullName || 'Page Details',
       email: 'wizard@thisisyour.website',
-      subject: fullName ? `Yeni Sayfa Detayı - ${fullName}` : `Yeni Sayfa Detayı - ${publicSlug}`,
+      subject: fullName ? `New Page Details - ${fullName}` : `New Page Details - ${publicSlug}`,
       message: emailMessage,
       attachments
     };
@@ -570,7 +570,7 @@ async function submitWizard() {
     const params = new URLSearchParams();
     params.set('slug', publicSlug);
     if (longText && longText.trim()) params.set('longText', encodeURIComponent(longText));
-    window.location.href = `../result.html?${params.toString()}`;
+    window.location.href = `result.html?${params.toString()}`;
   } catch (error) {
     alert('Error: ' + error.message);
     btnNext.disabled = false;
