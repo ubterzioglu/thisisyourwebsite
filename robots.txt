@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Private / internal pages
+Disallow: /admin.html
+Disallow: /apply.html
+Disallow: /form.html
+Disallow: /result.html
+Disallow: /send-form-example.html
+Disallow: /api/
+
+Sitemap: https://thisisyour.website/sitemap.xml
+
