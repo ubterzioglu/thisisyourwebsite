@@ -781,6 +781,41 @@ async function submitWizard() {
     console.log('Total attachments:', attachments.length);
     console.log('=== END DEBUG ===');
     
+    // Best-effort: persist answers to Turso (do not block email flow)
+    try {
+      const attachmentsMeta = [];
+      if (photoFile && photoFile instanceof File) {
+        attachmentsMeta.push({
+          kind: 'photo',
+          filename: photoFile.name,
+          size: photoFile.size,
+          contentType: photoFile.type || getContentTypeFromFilename(photoFile.name)
+        });
+      }
+      if (cvFile && cvFile instanceof File) {
+        attachmentsMeta.push({
+          kind: 'cv',
+          filename: cvFile.name,
+          size: cvFile.size,
+          contentType: cvFile.type || getContentTypeFromFilename(cvFile.name)
+        });
+      }
+
+      await fetch('/api/wizard-store', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          public_slug: publicSlug,
+          full_name: fullName || null,
+          answers,
+          long_text: longText || null,
+          attachments_meta: attachmentsMeta
+        })
+      });
+    } catch (e) {
+      console.warn('Wizard store failed (email will still be sent):', e);
+    }
+    
     // Send email (wizard verilerini email olarak gönder)
     let emailBody = `Yeni Sayfa Detayı\n\nAd Soyad: ${fullName || 'Yazılmadı'}\nSlug: ${publicSlug}\n\n`;
     if (photoFile) emailBody += `✅ Fotoğraf yüklendi: ${photoFile.name}\n`;
