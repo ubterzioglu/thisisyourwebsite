@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       sql: `
         SELECT id, full_name, status, updated_at
         FROM status
-        WHERE lower(full_name) LIKE '%' || lower(?) || '%'
+        WHERE full_name LIKE '%' || ? || '%' COLLATE NOCASE
         ORDER BY updated_at DESC
         LIMIT 10
       `,
