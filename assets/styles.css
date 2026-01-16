@@ -54,9 +54,9 @@ body.with-site-header {
 }
 
 .site-header__brand {
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: -0.2px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #1b1b1b;
   text-decoration: none;
   white-space: nowrap;
@@ -165,13 +165,14 @@ body.with-site-header {
 
 @media (max-width: 420px) {
   .site-header__brand {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   .site-header__menu-btn {
     padding: 0.6rem 1rem;
     border-radius: 12px;
   }
 }
+
 
 .theme-light {
   /* Match landing page background */
