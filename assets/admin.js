@@ -2,6 +2,7 @@ let isAdmin = false;
 let queueItems = [];
 let statusRows = [];
 let wizardRows = [];
+let portfolioRows = [];
 
 // Check admin status
 async function checkAdminStatus() {
@@ -16,6 +17,7 @@ async function checkAdminStatus() {
       loadQueue();
       loadStatus();
       loadWizardSubmissions();
+      loadPortfolio();
     }
   } catch (error) {
     console.log('Giriş yapılmamış');
@@ -38,6 +40,7 @@ async function login(password) {
       loadQueue();
       loadStatus();
       loadWizardSubmissions();
+      loadPortfolio();
     } else {
       const errorEl = document.getElementById('login-error');
       errorEl.textContent = 'Geçersiz şifre';
@@ -48,6 +51,148 @@ async function login(password) {
     errorEl.textContent = 'Giriş başarısız';
     errorEl.style.display = 'block';
   }
+}
+
+async function loadPortfolio() {
+  try {
+    const response = await fetch('/api/admin/portfolio', { credentials: 'include' });
+    if (!response.ok) throw new Error('Portfolio listesi alınamadı');
+    const data = await response.json().catch(() => ({}));
+    portfolioRows = data?.rows || [];
+    renderPortfolioTable();
+  } catch (e) {
+    console.error('Portfolio load error:', e);
+    const tbody = document.getElementById('portfolio-table-body');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Portfolyo yüklenemedi.</td></tr>';
+    }
+  }
+}
+
+function renderPortfolioTable() {
+  const tbody = document.getElementById('portfolio-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!portfolioRows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Kayıt yok.</td></tr>';
+    return;
+  }
+
+  portfolioRows.forEach((r) => {
+    const tr = document.createElement('tr');
+    const isPub = Number(r.is_published) === 1 ? '✅' : '—';
+    tr.innerHTML = `
+      <td>${r.id}</td>
+      <td>${r.title || ''}</td>
+      <td>${isPub}</td>
+      <td>${Number(r.sort_order ?? 0)}</td>
+      <td>${r.updated_at ? new Date(r.updated_at).toLocaleString('tr-TR') : '-'}</td>
+      <td>
+        <button class="btn secondary portfolio-edit-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Düzenle</button>
+        <button class="btn secondary portfolio-delete-btn" data-id="${r.id}" style="padding: 0.5rem 1rem; font-size: 0.9rem; margin-left: 0.5rem;">Sil</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.portfolio-edit-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      const row = portfolioRows.find(x => Number(x.id) === id);
+      if (!row) return;
+      document.getElementById('portfolio-id').value = row.id;
+      document.getElementById('portfolio-title').value = row.title || '';
+      document.getElementById('portfolio-subtitle').value = row.subtitle || '';
+      document.getElementById('portfolio-description').value = row.description || '';
+      document.getElementById('portfolio-image-url').value = row.image_url || '';
+      document.getElementById('portfolio-preview-url').value = row.preview_url || '';
+      document.getElementById('portfolio-tags').value = row.tags || '';
+      document.getElementById('portfolio-sort-order').value = String(Number(row.sort_order ?? 0));
+      document.getElementById('portfolio-published').checked = Number(row.is_published) === 1;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.portfolio-delete-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.id);
+      const row = portfolioRows.find(x => Number(x.id) === id);
+      const label = row?.title ? `${row.title} (ID ${id})` : `ID ${id}`;
+      if (!confirm(`Bu portfolyo kaydını silmek istiyor musun?\n\n${label}`)) return;
+      try {
+        const res = await fetch('/api/admin/portfolio-delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Silme başarısız');
+        await loadPortfolio();
+      } catch (e) {
+        alert('Silme başarısız: ' + e.message);
+      }
+    });
+  });
+}
+
+async function upsertPortfolio() {
+  const id = document.getElementById('portfolio-id').value || null;
+  const title = (document.getElementById('portfolio-title').value || '').trim();
+  const subtitle = (document.getElementById('portfolio-subtitle').value || '').trim();
+  const description = (document.getElementById('portfolio-description').value || '').trim();
+  const image_url = (document.getElementById('portfolio-image-url').value || '').trim();
+  const preview_url = (document.getElementById('portfolio-preview-url').value || '').trim();
+  const tags = (document.getElementById('portfolio-tags').value || '').trim();
+  const sort_order = Number(document.getElementById('portfolio-sort-order').value || 0);
+  const is_published = document.getElementById('portfolio-published').checked ? 1 : 0;
+
+  if (!title) {
+    alert('Başlık gerekli');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/admin/portfolio-upsert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        id,
+        title,
+        subtitle,
+        description,
+        image_url,
+        preview_url,
+        tags,
+        sort_order,
+        is_published
+      })
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || 'Kaydetme başarısız');
+    }
+    clearPortfolioForm();
+    await loadPortfolio();
+  } catch (e) {
+    console.error('Portfolio upsert error:', e);
+    alert('Kaydetme başarısız: ' + e.message);
+  }
+}
+
+function clearPortfolioForm() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  set('portfolio-id', '');
+  set('portfolio-title', '');
+  set('portfolio-subtitle', '');
+  set('portfolio-description', '');
+  set('portfolio-image-url', '');
+  set('portfolio-preview-url', '');
+  set('portfolio-tags', '');
+  set('portfolio-sort-order', '0');
+  const cb = document.getElementById('portfolio-published');
+  if (cb) cb.checked = false;
 }
 
 // Logout
@@ -629,6 +774,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Create item button
   document.getElementById('create-item-btn').addEventListener('click', createQueueItem);
+
+  // Portfolio buttons
+  const portfolioSaveBtn = document.getElementById('portfolio-save-btn');
+  const portfolioClearBtn = document.getElementById('portfolio-clear-btn');
+  if (portfolioSaveBtn) portfolioSaveBtn.addEventListener('click', upsertPortfolio);
+  if (portfolioClearBtn) portfolioClearBtn.addEventListener('click', clearPortfolioForm);
 
   // Status buttons
   const statusSaveBtn = document.getElementById('status-save-btn');

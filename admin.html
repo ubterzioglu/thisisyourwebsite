@@ -77,6 +77,58 @@
           </table>
         </div>
 
+        <div class="admin-surface">
+          <div class="dashboard-header">
+            <h2>Portfolyo Yönetimi</h2>
+          </div>
+
+          <div style="padding: 1rem; border-radius: 16px; border: 1px solid rgba(255,149,0,0.25); background: rgba(0,0,0,0.25); margin-bottom: 1rem;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <input type="hidden" id="portfolio-id" value="" />
+              <input type="text" id="portfolio-title" placeholder="Başlık (zorunlu)" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);" />
+              <input type="text" id="portfolio-subtitle" placeholder="Alt başlık / rol (opsiyonel)" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);" />
+              <input type="text" id="portfolio-preview-url" placeholder="Preview URL (https://...)" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);" />
+              <input type="text" id="portfolio-image-url" placeholder="Görsel URL (https://...)" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);" />
+              <input type="text" id="portfolio-tags" placeholder="Tagler (virgülle) örn: React, CV, Minimal" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);" />
+              <input type="number" id="portfolio-sort-order" placeholder="Sıralama (büyük üstte)" value="0" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);" />
+              <label style="display:flex; align-items:center; gap: 0.5rem; font-weight: 700;">
+                <input type="checkbox" id="portfolio-published" />
+                Yayında
+              </label>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label style="margin-bottom: 0.35rem;">Açıklama (opsiyonel)</label>
+              <textarea id="portfolio-description" placeholder="Kısa açıklama..." style="width: 100%; min-height: 90px; padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);"></textarea>
+            </div>
+
+            <div style="display:flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button id="portfolio-save-btn" class="btn primary">Kaydet</button>
+              <button id="portfolio-clear-btn" class="btn secondary">Temizle</button>
+            </div>
+
+            <p class="admin-note" style="margin-top: 0.75rem; font-size: 0.9rem;">
+              Bu veriler <code>portfolio.html</code> sayfasında kart olarak gösterilir.
+            </p>
+          </div>
+
+          <table class="queue-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Başlık</th>
+                <th>Yayında</th>
+                <th>Sıra</th>
+                <th>Güncelleme</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="portfolio-table-body">
+              <tr><td colspan="6" style="text-align:center;">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <div class="admin-surface admin-status-surface">
           <div class="dashboard-header">
             <h2>Status Yönetimi</h2>

@@ -1,4 +1,9 @@
-import { turso } from '../lib/tursoClient.js';
+import { turso } from '../../lib/tursoClient.js';
+
+function isAuthenticated(req) {
+  const cookies = req.headers.cookie || '';
+  return cookies.includes('admin_session=valid');
+}
 
 async function ensurePortfolioTable() {
   await turso.execute(`
@@ -22,31 +27,28 @@ async function ensurePortfolioTable() {
 }
 
 export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  if (!isAuthenticated(req)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   try {
     await ensurePortfolioTable();
     const rs = await turso.execute({
       sql: `
-        SELECT id, title, subtitle, preview_url, is_published, sort_order
+        SELECT id, title, subtitle, description, image_url, preview_url, repo_url, tags, sort_order, is_published, created_at, updated_at
         FROM portfolio_items
-        WHERE is_published = 1
-        ORDER BY sort_order DESC, updated_at DESC
-        LIMIT 200
+        ORDER BY updated_at DESC
+        LIMIT 500
       `,
       args: []
     });
-
-    // Backwards-compatible shape for older frontend code expecting "showcase" fields
-    const data = (rs.rows || []).map(r => ({
-      id: r.id,
-      display_name: r.title,
-      display_role: r.subtitle,
-      site_url: r.preview_url,
-      consent_showcase: 'PUBLIC'
-    }));
-
-    res.status(200).json(data);
-  } catch (error) {
-    console.error('Error fetching public items:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(200).json({ rows: rs.rows || [] });
+  } catch (err) {
+    console.error('Admin portfolio list error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
+
