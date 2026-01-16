@@ -3,6 +3,41 @@ let queueItems = [];
 let statusRows = [];
 let wizardRows = [];
 let portfolioRows = [];
+let wizardQuestionsCache = null;
+
+async function loadWizardQuestionMap() {
+  if (wizardQuestionsCache) return wizardQuestionsCache;
+  try {
+    const res = await fetch('/config/questions.map.json', { cache: 'no-store' });
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data) throw new Error('Bad response');
+    wizardQuestionsCache = data;
+    return wizardQuestionsCache;
+  } catch (e) {
+    console.warn('Wizard question map load failed:', e);
+    wizardQuestionsCache = { order: [], labels: {} };
+    return wizardQuestionsCache;
+  }
+}
+
+function escapeHtml(s) {
+  return String(s ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function formatAnswerValue(v) {
+  if (Array.isArray(v)) return v.filter(Boolean).join(', ');
+  if (v === true) return 'Evet';
+  if (v === false) return 'Hayır';
+  if (v === 'true') return 'Evet';
+  if (v === 'false') return 'Hayır';
+  if (v === null || v === undefined) return '';
+  return String(v);
+}
 
 // Check admin status
 async function checkAdminStatus() {
@@ -338,6 +373,36 @@ async function viewWizardSubmission(id) {
     try { answersObj = row.answers_json ? JSON.parse(row.answers_json) : null; } catch {}
 
     const longText = row.long_text || '';
+    const qmap = await loadWizardQuestionMap();
+    const labels = qmap?.labels || {};
+    const order = Array.isArray(qmap?.order) ? qmap.order : [];
+
+    const renderAnswersHuman = (answers) => {
+      if (!answers || typeof answers !== 'object') return 'yok';
+      const seen = new Set();
+      const lines = [];
+
+      const pushKey = (k) => {
+        if (!Object.prototype.hasOwnProperty.call(answers, k)) return;
+        seen.add(k);
+        const questionText = labels[k] || k;
+        const val = formatAnswerValue(answers[k]);
+        if (!val) return;
+        lines.push(
+          `<div style="padding:0.6rem 0.75rem; border:1px solid rgba(255,149,0,0.22); border-radius:12px; background: rgba(255,149,0,0.06);">` +
+          `<div style="font-weight:800; margin-bottom:0.25rem;">${escapeHtml(questionText)}</div>` +
+          `<div style="opacity:0.95;">${escapeHtml(val)}</div>` +
+          `</div>`
+        );
+      };
+
+      order.forEach(pushKey);
+      Object.keys(answers).forEach((k) => { if (!seen.has(k)) pushKey(k); });
+
+      return lines.length
+        ? `<div style="display:grid; gap:0.6rem;">${lines.join('')}</div>`
+        : 'yok';
+    };
 
     contentEl.innerHTML = `
       <div style="display:grid; grid-template-columns: 1fr; gap: 0.75rem;">
@@ -347,7 +412,7 @@ async function viewWizardSubmission(id) {
         <div><strong>Created:</strong> ${row.created_at ? new Date(row.created_at).toLocaleString('tr-TR') : '-'}</div>
         <div><strong>Updated:</strong> ${row.updated_at ? new Date(row.updated_at).toLocaleString('tr-TR') : '-'}</div>
         <div><strong>Ek Notlar:</strong> <pre style="white-space: pre-wrap; background:#000; color:#fff; padding:1rem; border-radius:12px; overflow:auto;">${longText || 'yok'}</pre></div>
-        <div><strong>Answers JSON:</strong> <pre style="white-space: pre-wrap; background:#000; color:#fff; padding:1rem; border-radius:12px; overflow:auto;">${answersObj ? JSON.stringify(answersObj, null, 2) : 'yok'}</pre></div>
+        <div><strong>Cevaplar:</strong> ${renderAnswersHuman(answersObj)}</div>
       </div>
     `;
   } catch (e) {
