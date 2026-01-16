@@ -60,21 +60,21 @@
     .option-checkbox:hover { border-color: #667eea; }
     .option-checkbox.selected { border-color: #667eea; background: #f5f7fa; }
     .option-checkbox input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
-    .wizard-nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 0.5rem; position: relative; }
-    .wizard-nav #btn-back { position: absolute; left: 50%; transform: translateX(-50%); }
+    .wizard-nav { display: flex; flex-direction: column; align-items: stretch; gap: 1rem; margin-top: 0.5rem; }
+    .wizard-nav #btn-back { position: static; transform: none; }
     .wizard-nav.intro-nav { justify-content: space-between; }
     .wizard-nav.intro-nav #btn-reset, .wizard-nav.intro-nav #btn-back { display: none !important; }
     .wizard-nav.intro-nav #btn-back { position: static; transform: none; }
     .wizard-nav.intro-nav #btn-next { position: static; transform: none; }
     .btn-home { background: white; color: #333; border: 2px solid #e0e0e0; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
     .btn-home:hover { background: #f5f7fa; border-color: #667eea; }
-    .btn-nav { padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-nav { padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; transition: all 0.2s; width: 100%; }
     .btn-back { background: white; color: #333; border: 2px solid #e0e0e0; }
     .btn-back:hover { background: #f5f7fa; border-color: #667eea; }
     .btn-next { background: white; color: #333; border: 2px solid #667eea; }
     .btn-next:hover { background: #f5f7fa; }
     .btn-finish { background: linear-gradient(135deg, #32cd32 0%, #228b22 100%); color: white; }
-    .btn-reset { background: white; color: #333; margin-right: auto; padding: 0.75rem 1.5rem; border: 2px solid #e0e0e0; }
+    .btn-reset { background: white; color: #333; padding: 0.75rem 1.5rem; border: 2px solid #e0e0e0; }
     .btn-reset:hover { background: #f5f7fa; border-color: #667eea; }
     .text-input, .textarea-input {
       width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 0.9rem;

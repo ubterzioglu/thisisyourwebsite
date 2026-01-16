@@ -170,17 +170,15 @@
     
     .wizard-nav {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      align-items: stretch;
       gap: 1rem;
       margin-top: 0.5rem;
-      position: relative;
     }
     
     .wizard-nav #btn-back {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+      position: static;
+      transform: none;
     }
     
     .wizard-nav.intro-nav {
@@ -225,6 +223,7 @@
       border: none;
       font-size: 0.9rem;
       transition: all 0.2s;
+      width: 100%;
     }
     
     .btn-back {
@@ -256,7 +255,6 @@
     .btn-reset {
       background: white;
       color: #333;
-      margin-right: auto;
       padding: 0.75rem 1.5rem;
       border: 2px solid #e0e0e0;
     }
