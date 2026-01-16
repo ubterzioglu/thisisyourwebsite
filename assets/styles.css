@@ -322,6 +322,31 @@ body {
 }
 
 /* Portfolio cards */
+.portfolio-shell {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.portfolio-page {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.portfolio-page .header h1 {
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 8px 26px rgba(0,0,0,0.35);
+}
+
+.portfolio-page .btn.secondary {
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.portfolio-page .btn.secondary:hover {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
 .portfolio-page .header {
   margin-bottom: 1.75rem;
 }
