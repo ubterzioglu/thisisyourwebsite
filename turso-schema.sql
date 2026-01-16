@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS status (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   full_name TEXT NOT NULL,
+  site_url TEXT,
   status INTEGER NOT NULL CHECK (status BETWEEN 0 AND 5),
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
   updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))

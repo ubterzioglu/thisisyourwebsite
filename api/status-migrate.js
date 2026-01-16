@@ -31,11 +31,23 @@ export default async function handler(req, res) {
       CREATE TABLE IF NOT EXISTS status (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         full_name TEXT NOT NULL,
+        site_url TEXT,
         status INTEGER NOT NULL CHECK (status BETWEEN 0 AND 5),
         created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
         updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
       );
     `);
+
+    // If table existed before this change, add the column safely (SQLite supports ADD COLUMN).
+    try {
+      const cols = await turso.execute(`PRAGMA table_info(status);`);
+      const hasSiteUrl = (cols.rows || []).some((r) => String(r.name) === 'site_url');
+      if (!hasSiteUrl) {
+        await turso.execute(`ALTER TABLE status ADD COLUMN site_url TEXT;`);
+      }
+    } catch (e) {
+      console.warn('status migrate: site_url ensure failed (non-fatal):', e);
+    }
 
     await turso.execute(`
       CREATE INDEX IF NOT EXISTS idx_status_full_name ON status(full_name);

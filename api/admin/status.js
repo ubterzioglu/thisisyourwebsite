@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   try {
     const rs = await turso.execute({
       sql: `
-        SELECT id, full_name, status, created_at, updated_at
+        SELECT id, full_name, site_url, status, created_at, updated_at
         FROM status
         ORDER BY updated_at DESC
         LIMIT 200

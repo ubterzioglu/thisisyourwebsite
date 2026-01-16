@@ -13,9 +13,11 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { id, full_name, status } = req.body || {};
+  const { id, full_name, status, site_url } = req.body || {};
   const fullName = String(full_name || '').trim();
   const s = Number(status);
+  const rawUrl = typeof site_url === 'string' ? site_url.trim() : '';
+  const siteUrl = rawUrl && /^https?:\/\//i.test(rawUrl) ? rawUrl : null;
 
   if (!fullName) {
     return res.status(400).json({ error: 'full_name is required' });
@@ -27,15 +29,15 @@ export default async function handler(req, res) {
   try {
     if (id) {
       await turso.execute({
-        sql: `UPDATE status SET full_name = ?, status = ?, updated_at = (strftime('%Y-%m-%dT%H:%M:%fZ','now')) WHERE id = ?;`,
-        args: [fullName, s, Number(id)]
+        sql: `UPDATE status SET full_name = ?, site_url = ?, status = ?, updated_at = (strftime('%Y-%m-%dT%H:%M:%fZ','now')) WHERE id = ?;`,
+        args: [fullName, siteUrl, s, Number(id)]
       });
       return res.status(200).json({ ok: true, updated: true });
     }
 
     await turso.execute({
-      sql: `INSERT INTO status (full_name, status) VALUES (?, ?);`,
-      args: [fullName, s]
+      sql: `INSERT INTO status (full_name, site_url, status) VALUES (?, ?, ?);`,
+      args: [fullName, siteUrl, s]
     });
     return res.status(200).json({ ok: true, created: true });
   } catch (err) {

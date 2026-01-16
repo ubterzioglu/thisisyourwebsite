@@ -32,6 +32,12 @@ function statusLabel(status) {
   }
 }
 
+function safeHttpUrl(url) {
+  const raw = String(url || '').trim();
+  if (!raw) return null;
+  return /^https?:\/\//i.test(raw) ? raw : null;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -40,7 +46,7 @@ export default async function handler(req, res) {
   try {
     const rs = await turso.execute({
       sql: `
-        SELECT id, full_name, status, updated_at
+        SELECT id, full_name, site_url, status, updated_at
         FROM status
         ORDER BY updated_at DESC
         LIMIT 200
@@ -52,6 +58,7 @@ export default async function handler(req, res) {
       id: row.id,
       masked_name: maskName(row.full_name),
       status: statusLabel(row.status),
+      site_url: safeHttpUrl(row.site_url),
       updated_at: row.updated_at || null
     }));
 
