@@ -52,6 +52,7 @@ body {
   color: #ffffff;
   box-shadow: none;
   border-radius: 0;
+  max-width: 1200px;
 }
 
 .admin-orange .header h1,
@@ -79,6 +80,19 @@ body {
   padding: 1.5rem;
   box-shadow: 0 16px 40px rgba(0,0,0,0.45);
   backdrop-filter: blur(6px);
+}
+
+.admin-orange .admin-status-surface {
+  overflow-x: auto;
+}
+
+.admin-orange .admin-status-table {
+  min-width: 980px;
+}
+
+.admin-orange .admin-status-table th,
+.admin-orange .admin-status-table td {
+  white-space: nowrap;
 }
 
 .admin-orange .admin-surface + .admin-surface {
