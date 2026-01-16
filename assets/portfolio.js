@@ -4,6 +4,24 @@ async function loadPortfolio() {
 
   grid.innerHTML = '<div class="loading">Yükleniyor...</div>';
 
+  const borderPalette = [
+    '#00A8FF', // blue
+    '#32CD32', // green
+    '#FF9500', // orange
+    '#9D4EDD', // purple
+    '#FFD700', // yellow
+    '#ff4d6d', // pink-red
+    '#00c2a8'  // teal
+  ];
+
+  const pickBorderColor = (seed) => {
+    const s = String(seed ?? '');
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i);
+    const idx = Math.abs(h) % borderPalette.length;
+    return borderPalette[idx];
+  };
+
   try {
     const res = await fetch('/api/portfolio');
     const data = await res.json().catch(() => ({}));
@@ -19,6 +37,7 @@ async function loadPortfolio() {
     items.forEach((item) => {
       const card = document.createElement('div');
       card.className = 'card portfolio-card';
+      card.style.borderColor = pickBorderColor(item.id || item.title);
 
       const title = item.title || '';
       const subtitle = item.subtitle || '';
@@ -39,13 +58,13 @@ async function loadPortfolio() {
         : '';
 
       const linkHtml = url
-        ? `<a class="portfolio-link" href="${url}" target="_blank" rel="noopener noreferrer">Preview →</a>`
-        : `<span class="portfolio-link disabled">Preview yok</span>`;
+        ? `<a class="portfolio-link" href="${url}" target="_blank" rel="noopener noreferrer">Sayfaya Git →</a>`
+        : `<span class="portfolio-link disabled">Link yok</span>`;
 
       card.innerHTML = `
         ${imageHtml}
         <div class="portfolio-body">
-          <h3 class="portfolio-title">${title}</h3>
+          <p class="portfolio-name">${title}</p>
           ${subtitle ? `<p class="portfolio-subtitle">${subtitle}</p>` : ''}
           ${desc ? `<p class="portfolio-desc">${desc}</p>` : ''}
           ${tagsHtml}

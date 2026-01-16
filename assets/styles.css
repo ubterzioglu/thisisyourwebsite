@@ -233,6 +233,7 @@ body {
   transition: opacity 0.2s;
   border: none;
   font-size: 1rem;
+  text-decoration: none;
 }
 
 .btn.primary {
@@ -321,9 +322,26 @@ body {
 }
 
 /* Portfolio cards */
+.portfolio-page .header {
+  margin-bottom: 1.75rem;
+}
+
+.portfolio-page .header h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+.portfolio-page .controls .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .portfolio-card {
   padding: 0;
   overflow: hidden;
+  border: 3px solid var(--border-light);
 }
 
 .portfolio-cover {
@@ -343,12 +361,15 @@ body {
   padding: 1.25rem 1.5rem 1.5rem;
 }
 
-.portfolio-title {
+.portfolio-name,
+.portfolio-subtitle {
+  font-size: 0.95rem;
+  font-weight: 400;
   margin-bottom: 0.35rem;
 }
 
 .portfolio-subtitle {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
   color: #666;
 }
 
@@ -359,6 +380,7 @@ body {
 .portfolio-desc {
   margin-bottom: 0.75rem;
   color: #666;
+  font-size: 0.85rem;
 }
 
 .theme-dark .portfolio-desc {
