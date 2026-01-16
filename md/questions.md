@@ -1,166 +1,195 @@
-# 20 Soru Konfigürasyonu
+# Wizard Soru Listesi (TR)
 
-## Q1: Purpose (Tek Seçim)
-**Soru**: Web sitenizin ana amacı nedir?
-**Tip**: single
-**Seçenekler**: 
-- CV/Özgeçmiş
-- Portföy
-- Link-in-Bio
-- Kişisel Blog
-- İş Profili
+Bu dosya, wizard’ın **aktif olarak kullandığı** soru setini dokümante eder. Kaynak: `config/questions.js` (`QUESTIONS`).
 
-## Q2: Name (Metin)
-**Soru**: Adınız ve Soyadınız?
-**Tip**: text
+## Q1 (single)
+**Soru**: Bu site senin için ne yapsın?
+**Seçenekler**:
+- İş bulmama yardım etsin
+- Bana müşteri getirsin
+- Kişisel markamı güçlendirsin
+- Dijital kartvizitim olsun
+- Hepsinden biraz
 
-## Q3: Headline (Metin)
-**Soru**: Profesyonel başlık/Unvanınız? (örn: Senior Developer, UX Designer)
-**Tip**: text
+## Q2 (single)
+**Soru**: Siteye giren biri seni nasıl algılasın?
+**Seçenekler**:
+- Profesyonel
+- Güven veren
+- Yaratıcı
+- Samimi
+- Güçlü
 
-## Q4: Language (Çoklu Seçim)
-**Soru**: Web sitesi hangi dillerde olsun?
-**Tip**: multi
+## Q3 (single)
+**Soru**: Site en çok kime hitap etsin?
+**Seçenekler**:
+- İşveren / HR
+- Müşteri
+- Teknik insanlar
+- Teknik olmayan insanlar
+- Herkes
+
+## Q4 (single)
+**Soru**: Genel tasarım hissi
+**Seçenekler**:
+- Sade & net
+- Modern & şık
+- Cesur & farklı
+- Kurumsal
+- Kişisel
+
+## Q5 (single)
+**Soru**: Tasarımda ne öne çıksın?
+**Seçenekler**:
+- Metin ağırlıklı
+- Görsel ağırlıklı
+- Dengeli
+- Minimum her şey
+
+## Q6 (single)
+**Soru**: Ziyaretçi siteyi nasıl tüketsin?
+**Seçenekler**:
+- Hızlıca göz atsın
+- Detaylı incelesin
+- Aşağı doğru akıp gitsin
+- Sadece önemli başlıklar
+
+## Q7 (single)
+**Soru**: Sayfa yapısı nasıl olsun?
+**Seçenekler**:
+- Tek sayfa (one-page)
+- Bölümlere ayrılmış
+- Kısa ama vurucu
+- Detaylı ama düzenli
+
+## Q8 (multi)
+**Soru**: Hangi bölümler özellikle öne çıksın?
+**Seçenekler**:
+- Deneyim
+- Projeler
+- Beceriler
+- Eğitim
+- İletişim
+
+## Q9 (single)
+**Soru**: Projeler nasıl sunulsun?
+**Seçenekler**:
+- Kart kart
+- Liste halinde
+- Az ama seçilmiş
+- Hepsi ama sade
+
+## Q10 (single)
+**Soru**: Ana sayfada ilk ne görülsün?
+**Seçenekler**:
+- Güçlü bir giriş alanı
+- Net bir çağrı butonu
+- Görsel ağırlıklı alan
+- Kısa özet + devamı
+
+## Q11 (single)
+**Soru**: Renk yaklaşımı
+**Seçenekler**:
+- Siyah / Beyaz
+- Soğuk tonlar
+- Sıcak tonlar
+- Pastel
+- Sürprize açığım
+
+## Q12 (single)
+**Soru**: Yazı dili hissi
+**Seçenekler**:
+- Resmi
+- Profesyonel ama sıcak
+- Samimi
+- Yaratıcı
+- Minimal
+
+## Q13 (single)
+**Soru**: Site hangi duyguyu versin?
+**Seçenekler**:
+- "Bu kişi işini biliyor"
+- "Bununla çalışılır"
+- "Bu farklı"
+- "Güvenilir biri"
+
+## Q14 (single)
+**Soru**: Ana aksiyon ne olsun?
+**Seçenekler**:
+- İletişime geç
+- CV indir
+- Projeleri gör
+- Sadece incelensin
+
+## Q15 (multi)
+**Soru**: Site dili
 **Seçenekler**:
 - Türkçe
 - İngilizce
 
-## Q5: Sections (Çoklu Seçim)
-**Soru**: Hangi bölümler olsun?
-**Tip**: multi
+## Q16 (single)
+**Soru**: Konum bilgisi
 **Seçenekler**:
-- Hakkımda
-- Deneyim
-- Projeler
-- Eğitim
-- İletişim
-- Blog
+- Gösterilsin
+- Gösterilmesin
 
-## Q6: Contact Methods (Çoklu Seçim)
-**Soru**: Hangi iletişim yöntemleri gösterilsin?
-**Tip**: multi
-**Seçenekler**:
-- E-posta
-- Telefon
-- LinkedIn
-- Twitter/X
-- Instagram
-- GitHub
-
-## Q7: Social Links (Çoklu Seçim)
-**Soru**: Hangi sosyal medya linklerini ekleyelim?
-**Tip**: multi
+## Q17 (multi)
+**Soru**: Sosyal bağlantılar
 **Seçenekler**:
 - LinkedIn
-- Twitter/X
-- Instagram
 - GitHub
+- Instagram
+- X / Twitter
 - YouTube
 - Behance
 
-## Q8: Photo (Evet/Hayır)
-**Soru**: Profesyonel fotoğrafınız var mı?
-**Tip**: yesno
-
-## Q9: Theme Vibe (Tek Seçim)
-**Soru**: Tasarım tarzı?
-**Tip**: single
+## Q18 (single)
+**Soru**: Site karakteri
 **Seçenekler**:
-- Minimal
+- Düz & ciddi
+- Hafif esprili
+- Net & direkt
+- Yumuşak & akıcı
+
+## Q19 (single)
+**Soru**: İçerik yoğunluğu
+**Seçenekler**:
+- Az ama vurucu
+- Dengeli
+- Detaylı
+
+## Q20 (single)
+**Soru**: Genel yaklaşım
+**Seçenekler**:
+- Klasik
 - Modern
-- Kreatif
-- Kurumsal
-- Kişisel
+- Deneysel
+- Güvenli tarafta
 
-## Q10: Primary Color (Tek Seçim)
-**Soru**: Ana renk tercihi?
-**Tip**: single
+## Q21 (multi)
+**Soru**: Aşağıdaki kanallardan hangileriyle size ulaşabiliriz?
 **Seçenekler**:
-- Siyah/Beyaz
-- Mavi
-- Mor
-- Yeşil
-- Turuncu
-- Kırmızı
-- Pastel
+- WhatsApp (Hızlı)
+- LinkedIn (Normal)
+- Mail (Yavaş)
+- Duman (Çok Yavaş)
 
-## Q11: CTA Style (Tek Seçim)
-**Soru**: Ana çağrı butonu stili?
-**Tip**: single
+## Q22 (yesno)
+**Soru**: Sayfanızı bitirdikten sonra portfolyomuza ekleyebilir miyiz?
 **Seçenekler**:
-- İletişime Geçin
-- Portföyü Görüntüle
-- CV İndir
-- Projeleri Keşfet
-- Blogu Oku
+- Evet
+- Hayır
 
-## Q12: Content Tone (Tek Seçim)
-**Soru**: İçerik üslubu?
-**Tip**: single
+## Q23 (yesno)
+**Soru**: Sayfanızı beğendiğiniz takdirde bizi arkadaşlarınıza tavsiye eder misiniz?
 **Seçenekler**:
-- Profesyonel
-- Samimi
-- Yaratıcı
-- Resmi
-- Eğlenceli
+- Evet
+- Hayır
 
-## Q13: Top 3 Highlights (Çoklu Seçim - Max 3)
-**Soru**: Öne çıkarılacak 3 özellik?
-**Tip**: multi
-**Seçenekler**:
-- Deneyim
-- Beceriler
-- Projeler
-- Eğitim
-- Başarılar
-- Teknolojiler
+## Q24 (text)
+**Soru**: Adınız Soyadınız
 
-## Q14: Work Status (Tek Seçim)
-**Soru**: Şu anki çalışma durumunuz?
-**Tip**: single
-**Seçenekler**:
-- Tam Zamanlı Çalışıyorum
-- Freelancer
-- İş Arıyorum
-- Öğrenci
-- Emekli
-- Diğer
-
-## Q15: Location (Evet/Hayır)
-**Soru**: Konum bilgisi gösterilsin mi?
-**Tip**: yesno
-
-## Q16: Testimonials (Evet/Hayır)
-**Soru**: Referanslar/Testimonial eklenmeli mi?
-**Tip**: yesno
-
-## Q17: Projects Count (Tek Seçim)
-**Soru**: Kaç proje gösterilsin?
-**Tip**: single
-**Seçenekler**:
-- 3
-- 5
-- 10
-- Hepsi
-- Yok
-
-## Q18: Blog (Evet/Hayır)
-**Soru**: Blog bölümü olsun mu?
-**Tip**: yesno
-
-## Q19: Download CV (Evet/Hayır)
-**Soru**: CV indirme butonu olsun mu?
-**Tip**: yesno
-
-## Q20: Domain/Username (Tek Seçim)
-**Soru**: Tercih ettiğiniz domain/username?
-**Tip**: single
-**Seçenekler**:
-- Adınız (örn: ahmet-yilmaz)
-- Unvan (örn: senior-developer)
-- İş adı
-- Fikir yok
-
-## Ek Notlar (Uzun Metin)
-**Soru**: Ek notlarınız (opsiyonel)
-**Tip**: longtext
+## Ek adımlar (soru değil)
+- **Fotoğraf yükleme** (opsiyonel)
+- **CV yükleme** (opsiyonel)
+- **Ek notlar** (uzun metin, opsiyonel)
