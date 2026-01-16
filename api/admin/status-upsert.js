@@ -18,7 +18,13 @@ export default async function handler(req, res) {
   const fullName = String(full_name || '').trim();
   const s = Number(status);
   const rawUrl = typeof site_url === 'string' ? site_url.trim() : '';
-  const siteUrl = rawUrl && /^https?:\/\//i.test(rawUrl) ? rawUrl : null;
+  let siteUrl = null;
+  if (rawUrl) {
+    if (/^https?:\/\//i.test(rawUrl)) siteUrl = rawUrl;
+    else if (rawUrl.startsWith('/')) siteUrl = rawUrl;
+    else if (/^[a-z0-9._-]+\.html$/i.test(rawUrl)) siteUrl = rawUrl;
+    else return res.status(400).json({ error: 'site_url must be http(s)://... or a relative .html path' });
+  }
 
   if (!fullName) {
     return res.status(400).json({ error: 'full_name is required' });

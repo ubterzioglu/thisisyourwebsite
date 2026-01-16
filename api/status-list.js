@@ -33,10 +33,13 @@ function statusLabel(status) {
   }
 }
 
-function safeHttpUrl(url) {
+function safeSiteUrl(url) {
   const raw = String(url || '').trim();
   if (!raw) return null;
-  return /^https?:\/\//i.test(raw) ? raw : null;
+  if (/^https?:\/\//i.test(raw)) return raw;
+  if (raw.startsWith('/')) return raw;
+  if (/^[a-z0-9._-]+\.html$/i.test(raw)) return raw;
+  return null;
 }
 
 export default async function handler(req, res) {
@@ -45,10 +48,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    await ensureStatusTable();
+    await ensureStatusTable().catch(() => {});
+
+    let hasSiteUrl = false;
+    try {
+      const cols = await turso.execute(`PRAGMA table_info(status);`);
+      hasSiteUrl = (cols.rows || []).some((r) => String(r.name) === 'site_url');
+    } catch {}
+
     const rs = await turso.execute({
       sql: `
-        SELECT id, full_name, site_url, status, updated_at
+        SELECT id, full_name, ${hasSiteUrl ? 'site_url,' : ''} status, updated_at
         FROM status
         ORDER BY updated_at DESC
         LIMIT 200
@@ -60,7 +70,7 @@ export default async function handler(req, res) {
       id: row.id,
       masked_name: maskName(row.full_name),
       status: statusLabel(row.status),
-      site_url: safeHttpUrl(row.site_url),
+      site_url: safeSiteUrl(hasSiteUrl ? row.site_url : null),
       updated_at: row.updated_at || null
     }));
 

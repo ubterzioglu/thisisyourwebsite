@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#667eea" />
+  <link rel="icon" href="../favicon.png" type="image/png" />
+
+  <title>Answers | thisisyour.website</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+  <style>
+    .answers-shell {
+      max-width: 980px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    .card-lite {
+      background: white;
+      border-radius: 22px;
+      padding: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      border: 3px solid #00A8FF;
+      font-size: 0.95rem;
+    }
+
+    .card-lite + .card-lite {
+      margin-top: 1.25rem;
+    }
+
+    .title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 0.5rem;
+    }
+
+    .sub {
+      color: #444;
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+    }
+
+    .search {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #00A8FF;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: white;
+      color: #333;
+      outline: none;
+    }
+
+    .hint {
+      margin-top: 0.75rem;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .results {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fafafa;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+
+    .result-row:hover {
+      transform: translateY(-1px);
+      background: #f5f7fa;
+    }
+
+    .result-name {
+      font-weight: 800;
+      color: #111;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70%;
+    }
+
+    .result-date {
+      color: #666;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-radius: 16px;
+      background: #f7fbff;
+      border: 1px solid rgba(0,0,0,0.06);
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      margin: 1.25rem 0 0.75rem;
+      color: #111;
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .answer-item {
+      padding: 0.9rem 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: #fafafa;
+    }
+
+    .answer-q {
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 0.35rem;
+      line-height: 1.35;
+    }
+
+    .answer-a {
+      color: #222;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .notes {
+      padding: 1rem;
+      border-radius: 16px;
+      background: #fafafa;
+      color: #222;
+      border: 1px solid rgba(0,0,0,0.08);
+      white-space: pre-wrap;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 768px) {
+      .answers-shell { padding: 1.25rem; }
+      .card-lite { padding: 1.5rem; }
+      .result-name { max-width: 62%; }
+    }
+
+    @media (min-width: 769px) {
+      .answers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body class="theme-light bg-grid-wave">
+  <div class="answers-shell">
+    <div class="card-lite">
+      <div class="title">Answers</div>
+      <div class="sub">Type your full name to find your answers. We don’t show the full list—results appear only via search.</div>
+
+      <input id="q" class="search" placeholder="Type your full name (min 2 characters)..." autocomplete="off" />
+      <div id="hint" class="hint"></div>
+      <div id="results" class="results"></div>
+    </div>
+
+    <div id="detail-card" class="card-lite" style="display:none;">
+      <div class="title">Summary</div>
+      <div class="sub">Hi! Your answers are listed below.</div>
+
+      <div class="meta-grid">
+        <div><strong>Full name:</strong> <span id="d-name">-</span></div>
+        <div><strong>Date:</strong> <span id="d-date">-</span></div>
+      </div>
+
+      <div class="section-title">Answers</div>
+      <div id="answers-grid" class="answers-grid"></div>
+
+      <div class="section-title">Additional notes</div>
+      <div id="notes" class="notes"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">© 2026 thisisyour.website</footer>
+
+  <script type="module" src="../assets/header.js"></script>
+  <script>
+    const qEl = document.getElementById('q');
+    const hintEl = document.getElementById('hint');
+    const resultsEl = document.getElementById('results');
+    const detailCard = document.getElementById('detail-card');
+    const dName = document.getElementById('d-name');
+    const dDate = document.getElementById('d-date');
+    const answersGrid = document.getElementById('answers-grid');
+    const notesEl = document.getElementById('notes');
+
+    let t = null;
+    let qMap = null;
+
+    async function loadQuestionMap() {
+      if (qMap) return qMap;
+      try {
+        const res = await fetch('/config/questions.en.map.json', { cache: 'no-store' });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data) throw new Error('Bad response');
+        qMap = data;
+        return qMap;
+      } catch (e) {
+        console.warn('Question map load failed:', e);
+        qMap = { order: [], labels: {} };
+        return qMap;
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function formatAnswerValue(v) {
+      if (Array.isArray(v)) return v.filter(Boolean).join(', ');
+      if (v === true) return 'Yes';
+      if (v === false) return 'No';
+      if (v === 'true') return 'Yes';
+      if (v === 'false') return 'No';
+      if (v === null || v === undefined) return '';
+      return String(v);
+    }
+
+    function fmtDate(d) {
+      if (!d) return '-';
+      try { return new Date(d).toLocaleString('en-US'); } catch { return String(d); }
+    }
+
+    function renderResults(results) {
+      resultsEl.innerHTML = (results || []).map(r => `
+        <div class="result-row" data-slug="${escapeHtml(r.slug)}">
+          <div class="result-name">${escapeHtml(r.masked_name || '')}</div>
+          <div class="result-date">${escapeHtml(fmtDate(r.updated_at))}</div>
+        </div>
+      `).join('');
+
+      resultsEl.querySelectorAll('.result-row').forEach((row) => {
+        row.addEventListener('click', async () => {
+          const slug = row.dataset.slug;
+          if (!slug) return;
+          await loadDetail(slug);
+        });
+      });
+    }
+
+    async function runSearch() {
+      const q = (qEl.value || '').trim();
+      hintEl.textContent = '';
+      resultsEl.innerHTML = '';
+      detailCard.style.display = 'none';
+
+      if (q.length === 0) {
+        hintEl.textContent = 'Type your full name to search.';
+        return;
+      }
+      if (q.length < 2) {
+        hintEl.textContent = 'Type at least 2 characters.';
+        return;
+      }
+
+      try {
+        hintEl.textContent = 'Searching...';
+        const res = await fetch(`/api/wizard-search?q=${encodeURIComponent(q)}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Search failed');
+
+        const results = data.results || [];
+        hintEl.textContent = results.length ? `${results.length} result(s) found.` : 'No results.';
+        renderResults(results);
+      } catch (e) {
+        hintEl.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function loadDetail(slug) {
+      try {
+        hintEl.textContent = 'Loading...';
+        const [map, res] = await Promise.all([
+          loadQuestionMap(),
+          fetch(`/api/wizard-public?slug=${encodeURIComponent(slug)}`)
+        ]);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Failed to load details');
+
+        const labels = map?.labels || {};
+        const order = Array.isArray(map?.order) ? map.order : [];
+        const answers = data.answers || {};
+
+        dName.textContent = data.full_name || '-';
+        dDate.textContent = fmtDate(data.created_at || data.updated_at);
+
+        const seen = new Set();
+        const items = [];
+        const pushKey = (k) => {
+          if (!Object.prototype.hasOwnProperty.call(answers, k)) return;
+          seen.add(k);
+          const qText = labels[k] || k;
+          const val = formatAnswerValue(answers[k]);
+          if (!val) return;
+          items.push(`
+            <div class="answer-item">
+              <div class="answer-q">${escapeHtml(qText)}</div>
+              <div class="answer-a">${escapeHtml(val)}</div>
+            </div>
+          `);
+        };
+
+        order.forEach(pushKey);
+        Object.keys(answers).forEach((k) => { if (!seen.has(k)) pushKey(k); });
+        answersGrid.innerHTML = items.join('') || '<div class="hint">No answers found.</div>';
+
+        const notes = (data.long_text || '').trim();
+        notesEl.textContent = notes || '—';
+
+        detailCard.style.display = 'block';
+        hintEl.textContent = '';
+        detailCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (e) {
+        hintEl.textContent = 'Error: ' + e.message;
+      }
+    }
+
+    qEl.addEventListener('input', () => {
+      clearTimeout(t);
+      t = setTimeout(runSearch, 250);
+    });
+  </script>
+
+  <script data-goatcounter="https://thisisyourwebsite.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
+

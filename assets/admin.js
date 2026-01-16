@@ -431,9 +431,14 @@ function renderStatusTable() {
 
   statusRows.forEach((r) => {
     const tr = document.createElement('tr');
+    const link = r.site_url ? String(r.site_url) : '';
+    const linkCell = link
+      ? `<a href="${link}" target="_blank" rel="noopener noreferrer" style="color:#FF9500; font-weight:800;">☑️</a>`
+      : '—';
     tr.innerHTML = `
       <td>${r.id}</td>
       <td>${r.full_name}</td>
+      <td style="text-align:center;">${linkCell}</td>
       <td>${getStatusTextV2(r.status)}</td>
       <td>${r.updated_at ? new Date(r.updated_at).toLocaleString('tr-TR') : '-'}</td>
       <td>
@@ -451,6 +456,7 @@ function renderStatusTable() {
       if (!row) return;
       document.getElementById('status-id').value = row.id;
       document.getElementById('status-full-name').value = row.full_name || '';
+      document.getElementById('status-site-url').value = row.site_url || 'portfolio.html';
       document.getElementById('status-value').value = String(row.status ?? 0);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -482,6 +488,7 @@ function renderStatusTable() {
 async function upsertStatus() {
   const id = document.getElementById('status-id').value || null;
   const fullName = (document.getElementById('status-full-name').value || '').trim();
+  const siteUrl = (document.getElementById('status-site-url')?.value || '').trim();
   const statusVal = Number(document.getElementById('status-value').value || 1);
   if (!fullName) {
     alert('Ad Soyad gerekli');
@@ -492,7 +499,7 @@ async function upsertStatus() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ id, full_name: fullName, status: statusVal })
+      body: JSON.stringify({ id, full_name: fullName, site_url: siteUrl || null, status: statusVal })
     });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
@@ -509,6 +516,8 @@ async function upsertStatus() {
 function clearStatusForm() {
   document.getElementById('status-id').value = '';
   document.getElementById('status-full-name').value = '';
+  const su = document.getElementById('status-site-url');
+  if (su) su.value = 'portfolio.html';
   document.getElementById('status-value').value = '0';
 }
 

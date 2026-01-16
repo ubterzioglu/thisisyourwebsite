@@ -44,10 +44,13 @@ function statusLabel(status) {
   }
 }
 
-function safeHttpUrl(url) {
+function safeSiteUrl(url) {
   const raw = String(url || '').trim();
   if (!raw) return null;
-  return /^https?:\/\//i.test(raw) ? raw : null;
+  if (/^https?:\/\//i.test(raw)) return raw;
+  if (raw.startsWith('/')) return raw;
+  if (/^[a-z0-9._-]+\.html$/i.test(raw)) return raw;
+  return null;
 }
 
 export default async function handler(req, res) {
@@ -61,47 +64,39 @@ export default async function handler(req, res) {
   }
 
   try {
-    await ensureStatusTable();
+    // Best-effort schema ensure; do not fail the request if this throws.
+    await ensureStatusTable().catch(() => {});
+
+    // Detect if column exists; if not, query without it (prevents "no such column" 500s).
+    let hasSiteUrl = false;
+    try {
+      const cols = await turso.execute(`PRAGMA table_info(status);`);
+      hasSiteUrl = (cols.rows || []).some((r) => String(r.name) === 'site_url');
+    } catch {}
+
     const q = normalizeTrForSearch(qRaw);
 
-    // Turkish-insensitive search for common letters (ı/i, ü/u, ş/s, ğ/g, ç/c, ö/o)
-    // We normalize DB values via nested REPLACE + LOWER (SQLite doesn't have built-in TR collation).
-    const normalizedFullNameSql =
-      `lower(` +
-      `replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(` +
-      `full_name,` +
-      `'İ','i'),` +
-      `'I','i'),` +
-      `'ı','i'),` +
-      `'Ş','s'),` +
-      `'ş','s'),` +
-      `'Ğ','g'),` +
-      `'ğ','g'),` +
-      `'Ü','u'),` +
-      `'ü','u'),` +
-      `'Ö','o'),` +
-      `'ö','o')` +
-      `)` +
-      `)`;
-
+    // Robust approach: fetch a capped set and filter in JS (TR-insensitive).
     const rs = await turso.execute({
       sql: `
-        SELECT id, full_name, site_url, status, updated_at
+        SELECT id, full_name, ${hasSiteUrl ? 'site_url,' : ''} status, updated_at
         FROM status
-        WHERE ${normalizedFullNameSql} LIKE '%' || ? || '%'
         ORDER BY updated_at DESC
-        LIMIT 10
+        LIMIT 500
       `,
-      args: [q]
+      args: []
     });
 
-    const results = (rs.rows || []).map((row) => ({
-      id: row.id,
-      masked_name: maskName(row.full_name),
-      status: statusLabel(row.status),
-      site_url: safeHttpUrl(row.site_url),
-      updated_at: row.updated_at || null
-    }));
+    const results = (rs.rows || [])
+      .filter((row) => normalizeTrForSearch(row.full_name).includes(q))
+      .slice(0, 10)
+      .map((row) => ({
+        id: row.id,
+        masked_name: maskName(row.full_name),
+        status: statusLabel(row.status),
+        site_url: safeSiteUrl(hasSiteUrl ? row.site_url : null),
+        updated_at: row.updated_at || null
+      }));
 
     return res.status(200).json({ results });
   } catch (err) {

@@ -138,6 +138,7 @@
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
               <input type="hidden" id="status-id" value="" />
               <input type="text" id="status-full-name" placeholder="Ad Soyad" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35); min-width: 240px;" />
+              <input type="text" id="status-site-url" placeholder="Site linki (örn: portfolio.html veya https://...)" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35); min-width: 280px;" />
               <select id="status-value" style="padding: 0.75rem 1rem; border-radius: 12px; border: 2px solid rgba(255,149,0,0.35);">
                 <option value="0">0 - Sıradasın! Yakında seninle iletişime geçeceğiz!</option>
                 <option value="1">1 - Yorum yapıldı sıra bizde! Mesaj atacağız!</option>
@@ -159,13 +160,14 @@
               <tr>
                 <th>ID</th>
                 <th>Ad Soyad</th>
+                <th>Site</th>
                 <th>Status</th>
                 <th>Güncelleme</th>
                 <th>İşlem</th>
               </tr>
             </thead>
             <tbody id="status-table-body">
-              <tr><td colspan="5" style="text-align:center;">Yükleniyor...</td></tr>
+              <tr><td colspan="6" style="text-align:center;">Yükleniyor...</td></tr>
             </tbody>
           </table>
         </div>
