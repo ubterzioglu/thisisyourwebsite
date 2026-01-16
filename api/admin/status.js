@@ -1,4 +1,5 @@
 import { turso } from '../../lib/tursoClient.js';
+import { ensureStatusTable } from '../../lib/ensureStatusTable.js';
 
 function isAuthenticated(req) {
   const cookies = req.headers.cookie || '';
@@ -14,6 +15,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await ensureStatusTable();
     const rs = await turso.execute({
       sql: `
         SELECT id, full_name, site_url, status, created_at, updated_at

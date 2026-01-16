@@ -1,4 +1,5 @@
 import { turso } from '../lib/tursoClient.js';
+import { ensureStatusTable } from '../lib/ensureStatusTable.js';
 
 function normalizeTrForSearch(input) {
   return String(input || '')
@@ -60,6 +61,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await ensureStatusTable();
     const q = normalizeTrForSearch(qRaw);
 
     // Turkish-insensitive search for common letters (ı/i, ü/u, ş/s, ğ/g, ç/c, ö/o)

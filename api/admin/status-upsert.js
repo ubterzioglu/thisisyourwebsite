@@ -1,4 +1,5 @@
 import { turso } from '../../lib/tursoClient.js';
+import { ensureStatusTable } from '../../lib/ensureStatusTable.js';
 
 function isAuthenticated(req) {
   const cookies = req.headers.cookie || '';
@@ -27,6 +28,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await ensureStatusTable();
     if (id) {
       await turso.execute({
         sql: `UPDATE status SET full_name = ?, site_url = ?, status = ?, updated_at = (strftime('%Y-%m-%dT%H:%M:%fZ','now')) WHERE id = ?;`,

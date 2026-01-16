@@ -1,4 +1,5 @@
 import { turso } from '../lib/tursoClient.js';
+import { ensureStatusTable } from '../lib/ensureStatusTable.js';
 
 function maskName(displayName) {
   const raw = String(displayName || '').trim();
@@ -44,6 +45,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await ensureStatusTable();
     const rs = await turso.execute({
       sql: `
         SELECT id, full_name, site_url, status, updated_at
