@@ -124,6 +124,16 @@
       width: 100%;
     }
     .btn-link:hover { background: #f5f7fa; }
+
+    /* Only for the long CTA in the Feedback section */
+    .btn-link.btn-cta-compact {
+      font-size: 0.82rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 1.1rem;
+      padding-right: 1.1rem;
+    }
     .success-box {
       background: #e6f4ea;
       border-left: 4px solid #32CD32;
@@ -184,7 +194,7 @@
 
       <div class="btn-row">
         <a class="btn-link" href="index.html">🏠 Home</a>
-        <a class="btn-link" href="progress.html">✅ I want a free personal website</a>
+        <a class="btn-link btn-cta-compact" href="progress.html">✅ I want a free personal website</a>
       </div>
     </div>
   </div>
