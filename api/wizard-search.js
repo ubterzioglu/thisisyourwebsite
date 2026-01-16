@@ -52,42 +52,28 @@ export default async function handler(req, res) {
     await ensureWizardTable();
     const q = normalizeTrForSearch(qRaw);
 
-    const normalizedFullNameSql =
-      `lower(` +
-      `replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(` +
-      `full_name,` +
-      `'İ','i'),` +
-      `'I','i'),` +
-      `'ı','i'),` +
-      `'Ş','s'),` +
-      `'ş','s'),` +
-      `'Ğ','g'),` +
-      `'ğ','g'),` +
-      `'Ü','u'),` +
-      `'ü','u'),` +
-      `'Ö','o'),` +
-      `'ö','o')` +
-      `)` +
-      `)`;
-
+    // Robust approach: fetch a capped recent set and filter in JS.
+    // This avoids brittle SQL normalization and still never returns the full list to the client.
     const rs = await turso.execute({
       sql: `
         SELECT id, public_slug, full_name, updated_at
         FROM wizard_submissions
         WHERE full_name IS NOT NULL
-          AND ${normalizedFullNameSql} LIKE '%' || ? || '%'
         ORDER BY updated_at DESC
-        LIMIT 10
+        LIMIT 500
       `,
-      args: [q]
+      args: []
     });
 
-    const results = (rs.rows || []).map((row) => ({
-      id: row.id,
-      masked_name: maskName(row.full_name),
-      slug: row.public_slug,
-      updated_at: row.updated_at || null
-    }));
+    const results = (rs.rows || [])
+      .filter((row) => normalizeTrForSearch(row.full_name).includes(q))
+      .slice(0, 10)
+      .map((row) => ({
+        id: row.id,
+        masked_name: maskName(row.full_name),
+        slug: row.public_slug,
+        updated_at: row.updated_at || null
+      }));
 
     return res.status(200).json({ results });
   } catch (err) {
