@@ -38,7 +38,7 @@ export default async function handler(req, res) {
       }
     }
     
-    const { name, email, subject, message, attachments } = body;
+    const { name, email, subject, message, html, attachments } = body;
 
     if (!name || !email || !message) {
       return res.status(400).json({ error: 'name, email, and message are required' });
@@ -101,6 +101,7 @@ export default async function handler(req, res) {
       replyTo: email,
       subject: subject || 'New form submission',
       text: emailBody,
+      html: (typeof html === 'string' && html.trim()) ? html : undefined,
       attachments: emailAttachments.length > 0 ? emailAttachments : undefined
     });
 

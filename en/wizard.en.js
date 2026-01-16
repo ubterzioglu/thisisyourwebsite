@@ -541,17 +541,129 @@ async function submitWizard() {
       });
     } catch {}
 
+    async function loadQuestionMap() {
+      try {
+        const res = await fetch('/config/questions.map.json', { cache: 'no-store' });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data) throw new Error('Bad response');
+        return data;
+      } catch (e) {
+        console.warn('Question map load failed:', e);
+        return { order: [], labels: {} };
+      }
+    }
+
+    const escapeHtml = (s) => String(s ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+
+    const formatAnswerValue = (v) => {
+      if (Array.isArray(v)) return v.filter(Boolean).join(', ');
+      if (v === true) return 'Yes';
+      if (v === false) return 'No';
+      if (v === 'true') return 'Yes';
+      if (v === 'false') return 'No';
+      if (v === null || v === undefined) return '';
+      return String(v);
+    };
+
+    const buildWizardHtmlEmail = async ({ fullName, publicSlug, answers, longText, attachments }) => {
+      const qmap = await loadQuestionMap();
+      const labels = qmap?.labels || {};
+      const order = Array.isArray(qmap?.order) ? qmap.order : [];
+
+      const seen = new Set();
+      const rows = [];
+      const pushKey = (k) => {
+        if (!Object.prototype.hasOwnProperty.call(answers, k)) return;
+        seen.add(k);
+        const label = labels[k] || k;
+        const val = formatAnswerValue(answers[k]);
+        if (!val) return;
+        rows.push(`
+          <div style="padding:12px 14px; border:1px solid rgba(0,0,0,0.08); border-radius:14px; background:#fafafa;">
+            <div style="font-weight:700; margin-bottom:4px; color:#111;">${escapeHtml(label)}</div>
+            <div style="color:#222; line-height:1.6;">${escapeHtml(val)}</div>
+          </div>
+        `);
+      };
+
+      order.forEach(pushKey);
+      Object.keys(answers || {}).forEach((k) => { if (!seen.has(k)) pushKey(k); });
+
+      const attachmentLines = (attachments || []).map(a => a?.filename).filter(Boolean);
+      const attachmentsHtml = attachmentLines.length
+        ? `<ul style="margin:6px 0 0; padding-left:18px;">${attachmentLines.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>`
+        : `<div style="opacity:0.75;">None</div>`;
+
+      const longTextHtml = (longText && String(longText).trim())
+        ? `<div style="white-space:pre-wrap; background:#0b0b0b; color:#fff; padding:14px; border-radius:14px; line-height:1.6;">${escapeHtml(longText)}</div>`
+        : `<div style="opacity:0.75;">None</div>`;
+
+      return `
+        <!doctype html>
+        <html>
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+          </head>
+          <body style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif; background:#f4f6f8; color:#111;">
+            <div style="max-width:760px; margin:0 auto; padding:20px;">
+              <div style="background:#ffffff; border-radius:18px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.12); border:1px solid rgba(0,0,0,0.06);">
+                <div style="padding:18px 18px 14px; background:linear-gradient(90deg,#00bfff,#32cd32,#ff8c00,#9d4edd,#ffd700);">
+                  <div style="font-weight:900; color:#111; background:rgba(255,255,255,0.85); display:inline-block; padding:8px 12px; border-radius:12px;">
+                    New Page Details
+                  </div>
+                </div>
+                <div style="padding:18px;">
+                  <div style="display:grid; gap:8px; margin-bottom:14px;">
+                    <div><strong>Full name:</strong> ${escapeHtml(fullName || 'Not provided')}</div>
+                    <div><strong>Slug:</strong> <code style="font-weight:800;">${escapeHtml(publicSlug)}</code></div>
+                  </div>
+
+                  <div style="margin: 14px 0 18px; padding:14px; border-radius:14px; background:#eef6ff; border:1px solid rgba(0,0,0,0.06);">
+                    <div style="font-weight:800; margin-bottom:6px;">Attachments</div>
+                    ${attachmentsHtml}
+                  </div>
+
+                  <div style="margin: 0 0 18px;">
+                    <div style="font-weight:900; margin:0 0 10px;">Answers</div>
+                    <div style="display:grid; gap:10px;">
+                      ${rows.join('') || '<div style="opacity:0.75;">None</div>'}
+                    </div>
+                  </div>
+
+                  <div style="margin: 0 0 10px;">
+                    <div style="font-weight:900; margin:0 0 10px;">Additional notes</div>
+                    ${longTextHtml}
+                  </div>
+                </div>
+              </div>
+              <div style="opacity:0.65; font-size:12px; margin-top:10px; text-align:center;">
+                thisisyour.website
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+    };
+
     let emailBody = `New Page Details\n\nFull name: ${fullName || 'Not provided'}\nSlug: ${publicSlug}\n\n`;
     if (photoFile) emailBody += `✅ Photo uploaded: ${photoFile.name}\n`;
     if (cvFile) emailBody += `✅ CV uploaded: ${cvFile.name}\n`;
     emailBody += `\nSummary:\n${userSummary || 'No summary'}\n\n`;
     const emailMessage = longText ? `${emailBody}Additional notes:\n${longText}` : emailBody;
+    const emailHtml = await buildWizardHtmlEmail({ fullName, publicSlug, answers, longText, attachments });
 
     const requestBody = {
       name: fullName || 'Page Details',
       email: 'wizard@thisisyour.website',
       subject: fullName ? `New Page Details - ${fullName}` : `New Page Details - ${publicSlug}`,
       message: emailMessage,
+      html: emailHtml,
       attachments
     };
 
