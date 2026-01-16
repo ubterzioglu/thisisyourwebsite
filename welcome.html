@@ -62,9 +62,9 @@
     .btn-row {
       margin-top: 1.25rem;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       gap: 1rem;
-      flex-wrap: wrap;
     }
 
     .btn-link {
@@ -79,6 +79,7 @@
       border-radius: 12px;
       font-weight: 800;
       transition: all 0.2s;
+      width: calc(100% - 100px);
     }
 
     .btn-link:hover { background: #f5f7fa; }
@@ -104,7 +105,7 @@
       </div>
 
       <p style="margin-bottom: 0.5rem;"><strong>Hızlı linkler:</strong></p>
-      <div class="btn-row" style="justify-content:flex-start;">
+      <div class="btn-row">
         <a class="btn-link" href="yes.html">✅ Wizard’a Git</a>
         <a class="btn-link" href="status.html">🔎 Durum Sorgula</a>
         <a class="btn-link" href="progress.html">🧭 Süreci Gör</a>
