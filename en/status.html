@@ -69,7 +69,7 @@
       .name { white-space: normal; }
       .status-text { margin-left: 0; text-align: left; }
     }
-    .btn-row { margin-top: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; }
+    .btn-row { margin-top: 1.5rem; display: flex; flex-direction: column; align-items: stretch; gap: 1rem; }
     .btn-link {
       display: inline-flex;
       align-items: center;
@@ -82,6 +82,7 @@
       border-radius: 12px;
       font-weight: 700;
       transition: all 0.2s;
+      width: 100%;
     }
     .btn-link:hover { background: #f5f7fa; }
   </style>
