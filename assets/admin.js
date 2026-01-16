@@ -315,6 +315,15 @@ async function loadQueue() {
         showLogin();
         return;
       }
+      // Queue endpoints may not be deployed (this project migrated away from Supabase queue).
+      // In that case: don't block admin panel with popups.
+      if (response.status === 404) {
+        const tbody = document.getElementById('queue-table-body');
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Sıra (queue) şu an kapalı / aktif değil.</td></tr>';
+        }
+        return;
+      }
       throw new Error('Sıra yüklenemedi');
     }
     
@@ -391,7 +400,11 @@ async function loadQueue() {
     });
   } catch (error) {
     console.error('Sıra yükleme hatası:', error);
-    alert('Sıra yüklenirken bir hata oluştu');
+    // Keep admin usable; avoid noisy popups.
+    const tbody = document.getElementById('queue-table-body');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Sıra yüklenemedi.</td></tr>';
+    }
   }
 }
 
