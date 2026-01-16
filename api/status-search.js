@@ -1,5 +1,16 @@
 import { turso } from '../lib/tursoClient.js';
 
+function normalizeTrForSearch(input) {
+  return String(input || '')
+    .trim()
+    // Normalize diacritics (ü -> u, ş -> s, etc.)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Turkish dotless i
+    .replace(/ı/g, 'i')
+    .toLowerCase();
+}
+
 function maskName(displayName) {
   const raw = String(displayName || '').trim();
   if (!raw) return '';
@@ -37,17 +48,39 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const q = String(req.query?.q || '').trim();
-  if (q.length < 2) {
+  const qRaw = String(req.query?.q || '').trim();
+  if (qRaw.length < 2) {
     return res.status(200).json({ results: [], hint: 'En az 2 karakter yazın.' });
   }
 
   try {
+    const q = normalizeTrForSearch(qRaw);
+
+    // Turkish-insensitive search for common letters (ı/i, ü/u, ş/s, ğ/g, ç/c, ö/o)
+    // We normalize DB values via nested REPLACE + LOWER (SQLite doesn't have built-in TR collation).
+    const normalizedFullNameSql =
+      `lower(` +
+      `replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(` +
+      `full_name,` +
+      `'İ','i'),` +
+      `'I','i'),` +
+      `'ı','i'),` +
+      `'Ş','s'),` +
+      `'ş','s'),` +
+      `'Ğ','g'),` +
+      `'ğ','g'),` +
+      `'Ü','u'),` +
+      `'ü','u'),` +
+      `'Ö','o'),` +
+      `'ö','o')` +
+      `)` +
+      `)`;
+
     const rs = await turso.execute({
       sql: `
         SELECT id, full_name, status, updated_at
         FROM status
-        WHERE full_name LIKE '%' || ? || '%' COLLATE NOCASE
+        WHERE ${normalizedFullNameSql} LIKE '%' || ? || '%'
         ORDER BY updated_at DESC
         LIMIT 10
       `,
