@@ -163,6 +163,62 @@ body.with-site-header {
   transform: translateY(0);
 }
 
+/* Animated background: "techy wavy grid" (used by portfolio + optionally others) */
+.bg-grid-wave {
+  position: relative;
+}
+
+.bg-grid-wave::before {
+  content: '';
+  position: fixed;
+  inset: -20% -20% -20% -20%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.22;
+  transform-origin: top center;
+  background-image:
+    radial-gradient(closest-side at 20% 15%, rgba(255,255,255,0.18), transparent 60%),
+    radial-gradient(closest-side at 70% 75%, rgba(0,0,0,0.12), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 52px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 52px);
+  background-size: auto, auto, 52px 52px, 52px 52px;
+  animation: gridWave 16s ease-in-out infinite;
+  filter: blur(0.1px);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.95), transparent 72%);
+  mask-image: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.95), transparent 72%);
+}
+
+@keyframes gridWave {
+  0% {
+    transform: perspective(900px) rotateX(58deg) rotateZ(12deg) translate3d(-2%, -2%, 0);
+    background-position: 0 0, 0 0, 0 0, 0 0;
+  }
+  50% {
+    transform: perspective(900px) rotateX(58deg) rotateZ(12deg) translate3d(2%, 1%, 0);
+    background-position: 0 0, 0 0, 120px 80px, 80px 120px;
+  }
+  100% {
+    transform: perspective(900px) rotateX(58deg) rotateZ(12deg) translate3d(-2%, -2%, 0);
+    background-position: 0 0, 0 0, 240px 160px, 160px 240px;
+  }
+}
+
+/* Keep page content above the background overlay */
+.bg-grid-wave .portfolio-shell,
+.bg-grid-wave .container,
+.bg-grid-wave .wizard-container,
+.bg-grid-wave .result-container,
+.bg-grid-wave .site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid-wave::before {
+    animation: none;
+  }
+}
+
 @media (max-width: 420px) {
   .site-header__brand {
     font-size: 0.95rem;
