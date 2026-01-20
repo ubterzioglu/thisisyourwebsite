@@ -49,9 +49,10 @@ async function loadPortfolio() {
         ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 6)
         : [];
 
+      const placeholderUrl = `https://source.unsplash.com/600x400/?website,design,${encodeURIComponent(title || 'minimal')}`;
       const imageHtml = img
         ? `<img class="portfolio-cover" src="${img}" alt="${title}" loading="lazy" />`
-        : `<div class="portfolio-cover placeholder"></div>`;
+        : `<img class="portfolio-cover" src="${placeholderUrl}" alt="${title}" loading="lazy" />`;
 
       const tagsHtml = tags.length
         ? `<div class="portfolio-tags">${tags.map(t => `<span class="portfolio-tag">${t}</span>`).join('')}</div>`
