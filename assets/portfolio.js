@@ -49,7 +49,8 @@ async function loadPortfolio() {
         ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 6)
         : [];
 
-      const placeholderUrl = `https://source.unsplash.com/600x400/?website,design,${encodeURIComponent(title || 'minimal')}`;
+      const seed = encodeURIComponent(title || 'placeholder');
+      const placeholderUrl = `https://picsum.photos/seed/${seed}/600/400`;
       const imageHtml = img
         ? `<img class="portfolio-cover" src="${img}" alt="${title}" loading="lazy" />`
         : `<img class="portfolio-cover" src="${placeholderUrl}" alt="${title}" loading="lazy" />`;
