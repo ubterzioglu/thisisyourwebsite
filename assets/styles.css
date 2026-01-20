@@ -588,6 +588,8 @@ body.with-site-header {
   padding: 0;
   overflow: hidden;
   border: 3px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
 }
 
 .portfolio-cover {
@@ -605,6 +607,9 @@ body.with-site-header {
 
 .portfolio-body {
   padding: 1.25rem 1.5rem 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .portfolio-name,
@@ -660,6 +665,7 @@ body.with-site-header {
 .portfolio-actions {
   display: flex;
   justify-content: flex-end;
+  margin-top: auto;
 }
 
 .portfolio-link.disabled {
