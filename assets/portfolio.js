@@ -49,13 +49,18 @@ async function loadPortfolio() {
         ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 6)
         : [];
 
-      // Special case for 'Kasım Hanik' to get a different random image
-      let seedRaw = title || 'placeholder';
-      if (typeof seedRaw === 'string' && seedRaw.toLowerCase().includes('kasım hanik')) {
-        seedRaw += '-v2';
+      const keywords = ['sea', 'forest', 'view', 'nature'];
+      // Simple hash to consistently pick a keyword and lock ID
+      let hash = 0;
+      const str = title || 'placeholder';
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0; // Convert to 32bit integer
       }
-      const seed = encodeURIComponent(seedRaw);
-      const placeholderUrl = `https://picsum.photos/seed/${seed}/600/400`;
+      const absHash = Math.abs(hash);
+      const keyword = keywords[absHash % keywords.length];
+      // Use lock to ensure the image stays the same for the same title
+      const placeholderUrl = `https://loremflickr.com/600/400/${keyword}?lock=${absHash}`;
       const imageHtml = img
         ? `<img class="portfolio-cover" src="${img}" alt="${title}" loading="lazy" />`
         : `<img class="portfolio-cover" src="${placeholderUrl}" alt="${title}" loading="lazy" />`;
