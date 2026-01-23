@@ -49,7 +49,12 @@ async function loadPortfolio() {
         ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 6)
         : [];
 
-      const seed = encodeURIComponent(title || 'placeholder');
+      // Special case for 'Kasım Hanik' to get a different random image
+      let seedRaw = title || 'placeholder';
+      if (typeof seedRaw === 'string' && seedRaw.toLowerCase().includes('kasım hanik')) {
+        seedRaw += '-v2';
+      }
+      const seed = encodeURIComponent(seedRaw);
       const placeholderUrl = `https://picsum.photos/seed/${seed}/600/400`;
       const imageHtml = img
         ? `<img class="portfolio-cover" src="${img}" alt="${title}" loading="lazy" />`
